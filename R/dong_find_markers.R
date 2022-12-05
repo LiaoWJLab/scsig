@@ -37,6 +37,7 @@
 #' @param resolution_for_recluster
 #' @param assay_for_recluster
 #' @param palette
+#' @param feas
 #'
 #' @return
 #' @export
@@ -45,6 +46,7 @@
 dong_find_markers<-function(sce,
                             assay                    = NULL,
                             slot                     = "scale.data",
+                            feas                     = NULL,
                             group                    = NULL,
                             verbose                  = FALSE,
                             fig.type                 = "pdf",
@@ -68,8 +70,9 @@ dong_find_markers<-function(sce,
                             path                     = NULL,
                             character_limit          = 50,
                             recluster                = FALSE,
-                            assay_for_recluster,
+                            assay_for_recluster      = NULL,
                             dims_for_recluster       = 20,
+                            group_after_recluster    ="default",
                             resolution_for_recluster = 0.2){
 
   # -------------------------------------------------------------------------
@@ -135,11 +138,12 @@ dong_find_markers<-function(sce,
   if(assay=="SCT"){
    sce<- PrepSCTFindMarkers(sce)
   }
-  # help("FindAllMarkers")
+  help("FindAllMarkers")
   ###################################
   sce.markers <- FindAllMarkers(object          = sce,
                                 slot            = slot,
                                 assay           = assay,
+                                features        = feas,
                                 only.pos        = only.pos,
                                 min.pct         = 0.25,
                                 thresh.use      = 0.25,
@@ -256,23 +260,34 @@ dong_find_markers<-function(sce,
 
     #进一步降维
     ########################################
+
+
+    if(group_after_recluster=="default") Idents(sce) <- group
+
     set.seed(123)
     sce <- RunTSNE(object = sce, dims = seq(dims_for_recluster), do.fast = TRUE, verbose= T, check_duplicates = FALSE)
     sce <- RunUMAP(sce, reduction = "pca", dims = seq(dims_for_recluster), do.fast = TRUE, verbose= T)
     #########################################
     #########################################
 
-    p1<-DimPlot(sce, reduction = "tsne", cols = mycols, pt.size = 1.2)
-    p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = 1.2)
+    p1<-DimPlot(sce, reduction = "tsne", cols = mycols, pt.size = pt.size)
+    p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = pt.size)
     p<-p1+p2
 
 
-    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = 12, height = 5)
+    if(group_after_recluster=="default"){
+      width_dim<- 13
+    }else{
+      width_dim<- 11
+    }
+    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = width_dim, height = 5)
 
   }
   #############################################################
 
   #' violin-plot-and-feature-plot-of-each-clusters-----------------------------
+
+
   vars<- unique(sort(as.character(Idents(sce))))
 
   for( i in 1:length(vars) ){
@@ -282,6 +297,7 @@ dong_find_markers<-function(sce,
     markers_df <- FindMarkers(object          = sce,
                               assay           = assay,
                               ident.1         = var,
+                              features        = feas,
                               slot            = slot,
                               logfc.threshold = logfc.threshold,
                               min.pct         = 0.1,
