@@ -7,54 +7,30 @@
 find_subcluster_gene(
   sce,
   assay = "integrated",
+  slot = "scale.data",
   col_celltype = "celltypes",
   col_sub_celltype = "scpred_seurat",
+  feas = NULL,
   cols = "normal",
   seed = 123,
   palette = 1,
   show_col = F,
-  genes_for_deg = NULL,
   min_cell_count = 30,
   no_limitation_celltypes = "Epithelial cells",
   index = 1,
   path = "4-Diff-degs-of-subclusters",
   show_feas_pheatmap = 8,
+  show_feas_dim = 12,
   remove_other_celltypes = TRUE,
-  find_cluster_sig = FALSE
+  logfc.threshold = 0.15,
+  fig.type = "pdf",
+  pt.size = 0.7,
+  recluster = F,
+  assay_for_recluster = "integrated"
 )
 }
 \arguments{
-\item{sce}{}
-
-\item{assay}{}
-
-\item{col_celltype}{}
-
-\item{col_sub_celltype}{}
-
-\item{cols}{}
-
-\item{seed}{}
-
-\item{palette}{}
-
-\item{show_col}{}
-
-\item{genes_for_deg}{}
-
-\item{min_cell_count}{}
-
-\item{no_limitation_celltypes}{}
-
-\item{index}{}
-
-\item{path}{}
-
-\item{show_feas_pheatmap}{}
-
-\item{remove_other_celltypes}{}
-
-\item{find_cluster_sig}{}
+\item{assay_for_recluster}{}
 }
 \description{
 Title

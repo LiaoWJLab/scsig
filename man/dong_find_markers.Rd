@@ -7,7 +7,9 @@
 dong_find_markers(
   sce,
   assay = NULL,
+  adjust_assay = FALSE,
   slot = "scale.data",
+  feas = NULL,
   group = NULL,
   verbose = FALSE,
   fig.type = "pdf",
@@ -31,13 +33,14 @@ dong_find_markers(
   path = NULL,
   character_limit = 50,
   recluster = FALSE,
-  assay_for_recluster,
+  assay_for_recluster = NULL,
   dims_for_recluster = 20,
+  group_after_recluster = "default",
   resolution_for_recluster = 0.2
 )
 }
 \arguments{
-\item{palette}{}
+\item{adjust_assay}{}
 }
 \description{
 dong_find_markers

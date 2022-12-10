@@ -8,7 +8,7 @@ pheatmap_average(
   sce,
   assay,
   slot,
-  marker_res,
+  marker_res = NULL,
   top_n = 6,
   group = NULL,
   show_features = NULL,
