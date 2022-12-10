@@ -51,8 +51,8 @@ find_subcluster_gene<-function(sce,
                                logfc.threshold           = 0.15,
                                fig.type                  = "pdf",
                                pt.size                   = 0.7,
-                               recluster                = T,
-                               assay_for_recluster      = "integrated"){
+                               recluster                 = F,
+                               assay_for_recluster       = "integrated"){
 
 
   ############################################
@@ -113,7 +113,7 @@ find_subcluster_gene<-function(sce,
     ############################################
 
 
-    res<- dong_find_markers(   sce                      = sces_sub,
+    res<- dong_find_markers(   sce                        = sces_sub,
                                  assay                    = assay,
                                  slot                     = slot,
                                  feas =                     feas,
@@ -146,7 +146,6 @@ find_subcluster_gene<-function(sce,
 
   }
 
-
- return(res)
+ return(sces_sub)
 
 }

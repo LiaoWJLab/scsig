@@ -30,7 +30,7 @@
 pheatmap_average<-function(sce,
                            assay,
                            slot,
-                           marker_res,
+                           marker_res       = NULL,
                            top_n            = 6,
                            group            = NULL,
                            show_features    = NULL,
@@ -176,13 +176,21 @@ pheatmap_average<-function(sce,
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
-    height<- 5 + length(unique(Idents(sce)))*top_n*0.3
+    height<- 5 + length(unique(Idents(sce)))*top_n*0.45
   }
 
   if(!is.null(marker_res)){
     annotation_row<- data.frame(cluster = degs_top5$cluster, row.names = rownames(phData))
+    cluster_pheatmap<-FALSE
   }else{
-    annotation_row<- data.frame(cluster = celltypes, row.names = rownames(phData))
+    cluster_pheatmap<- TRUE
+    if(length(celltypes)!=  length(rownames(phData))){
+      celltypes2<-celltypes[1:length(rownames(phData))]
+      celltypes2[is.na(celltypes2)]<-  rep(celltypes, 20)[1:sum(is.na(celltypes2))]
+      annotation_row<- data.frame(cluster = celltypes2, row.names = rownames(phData))
+    }else{
+      annotation_row<- data.frame(cluster = celltypes, row.names = rownames(phData))
+    }
   }
   ######################################################
   # library(pheatmap)
@@ -191,7 +199,7 @@ pheatmap_average<-function(sce,
     phData,
     color             = mapal, #colorRampPalette(c("darkblue", "white", "red3"))(99), #配色
     scale             = "row",
-    cluster_rows      = F, #不按行聚类
+    cluster_rows      = cluster_pheatmap, #不按行聚类
     cluster_cols      = T, #按列聚类
     cellwidth         = 15,
     cellheight        = 15,

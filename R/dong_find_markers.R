@@ -38,6 +38,8 @@
 #' @param assay_for_recluster
 #' @param palette
 #' @param feas
+#' @param group_after_recluster
+#' @param adjust_assay
 #'
 #' @return
 #' @export
@@ -45,6 +47,7 @@
 #' @examples
 dong_find_markers<-function(sce,
                             assay                    = NULL,
+                            adjust_assay            = FALSE,
                             slot                     = "scale.data",
                             feas                     = NULL,
                             group                    = NULL,
@@ -135,10 +138,8 @@ dong_find_markers<-function(sce,
   #remove features with large name
   ##################################
   # help("PrepSCTFindMarkers")
-  if(assay=="SCT"){
-   sce<- PrepSCTFindMarkers(sce)
-  }
-  help("FindAllMarkers")
+  if(tolower(assay)=="sct"&adjust_assay) sce<- PrepSCTFindMarkers(sce)
+  # help("FindAllMarkers")
   ###################################
   sce.markers <- FindAllMarkers(object          = sce,
                                 slot            = slot,
@@ -270,8 +271,8 @@ dong_find_markers<-function(sce,
     #########################################
     #########################################
 
-    p1<-DimPlot(sce, reduction = "tsne", cols = mycols, pt.size = pt.size)
-    p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = pt.size)
+    p1<-DimPlot(sce, reduction = "tsne", cols = mycols, pt.size = pt.size, label = T)
+    p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = pt.size, label = T)
     p<-p1+p2
 
 
@@ -282,6 +283,19 @@ dong_find_markers<-function(sce,
     }
     ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = width_dim, height = 5)
 
+  }else{
+
+    set.seed(123)
+    sce <- RunTSNE(object = sce, dims = seq(30), do.fast = TRUE, verbose= T, check_duplicates = FALSE)
+    sce <- RunUMAP(sce, reduction = "pca", dims = seq(30), do.fast = TRUE, verbose= T)
+    #########################################
+    #########################################
+
+    p1<-DimPlot(sce, reduction = "tsne", cols = mycols, pt.size = pt.size, label = T)
+    p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = pt.size, label = T)
+    p<-p1+p2
+
+    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = 12.5, height = 5)
   }
   #############################################################
 
@@ -317,6 +331,22 @@ dong_find_markers<-function(sce,
 
     print(paste0(">>>-- Colors could be change by parameter: 'cols'"))
     ###############################################################
+    VlnPlot(object = sce,
+            # assay = "RNA",
+            # group.by = "scpred_seurat",
+            add.noise = FALSE,
+            features = markers_genes,
+            log = log,
+            stack = T,
+            flip = T,
+            sort = "increasing",
+            cols = mycols, #palettes(category = "random", palette = 1),
+            ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")
+    ggsave(filename=paste0(i+2,"-0-",var,"-VlnPlot_subcluster_markers.", fig.type),
+           width = 7,height = 12,
+           path = path$folder_name)
+    ################################################################
+
     VlnPlot(object = sce, features = markers_genes,  log = log , cols = mycols, ncol = 4)& theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-1-",var,"-VlnPlot_subcluster_markers.", fig.type),
            width = 18,height = 13,
