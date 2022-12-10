@@ -6,12 +6,7 @@
 
 
 
-
-
-
-
-
-#' single cell signature score plots
+#' single cell features plots
 #'
 #' @param sce seurat object
 #' @param group cell identity
@@ -29,14 +24,24 @@
 #' @param show_box_pvalue default is true, if true, boxplot will show the paired wised statistical p-value
 #' @param show_label default is true: featurePlot will show labels of cell clsuters
 #' @param show_plot if true, pheatmap of all selected variables will be shown in the R studio
+#' @param sub_group
+#' @param target
+#' @param split_by
+#' @param remove_other_celltypes
+#' @param min_cell_count
+#' @param dims_for_recluster
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #'
-sc_sig_plot<-function(sce,
+sc_fea_plot<-function(sce,
                       group           = NULL,
+                      sub_group       = NULL,
+                      target          = NULL,
+                      remove_other_celltypes = FALSE,
+                      min_cell_count  = 10,
                       show_label      = TRUE,
                       split_by        = NULL,
                       assay           = NULL,
@@ -45,13 +50,14 @@ sc_sig_plot<-function(sce,
                       show_variables  = 10,
                       dims            = c("umap", "tsne"),
                       pt.size         = 1,
-                      cols            = NULL,
-                      palette         = NULL,
+                      cols            = "normal",
+                      palette         = 1,
                       path            = NULL,
                       index           = NULL,
                       show_box_pvalue = T,
                       fig.type        = "pdf",
-                      show_plot       = FALSE){
+                      show_plot       = FALSE,
+                      dims_for_recluster = 30){
 
 
   if(length(unique(sce@meta.data[, group]))==1) stop("Cell identity has only one level...")
@@ -64,22 +70,62 @@ sc_sig_plot<-function(sce,
   }
 
   #############################################
-  if(!is.null(cols)){
-    cols<-cols
-  }else{
-    if(is.null(palette)){
-      cols<-IOBR::palettes(category = "random",show_col = T,show_message = T)
-    }else{
-      cols<-IOBR::palettes(category = "box", palette = palette, show_col = T,show_message = T)
-    }
-  }
-  #############################################
+  cols<- get_cols(cols = cols, palette = palette, show_col = T)
 
   if(is.null(index)){
     prefix<-NULL
   }else{
     prefix<-paste0(index,"-")
   }
+  #############################################
+
+  if(!is.null(sub_group)) {
+
+
+    Idents(sce)<- group
+    sces_sub<-subset(sce, idents = target)
+
+    if(remove_other_celltypes){
+      sces_sub@meta.data[, sub_group]<-ifelse(grepl(sces_sub@meta.data[, sub_group],pattern = target), sces_sub@meta.data[, sub_group], "unassigned" )
+    }else{
+      sces_sub@meta.data[, sub_group]<-ifelse(grepl(sces_sub@meta.data[, sub_group],pattern = target), sces_sub@meta.data[, sub_group], "other_celltypes" )
+    }
+
+    #去除细胞数量很少的clusters
+    ###########################################
+    sces_sub<-unassign_cell(sce                = sces_sub,
+                            cluster            = sub_group,
+                            ignore_cell_prefix = NULL,
+                            min_cell_count     = min_cell_count,
+                            new_col            = NULL,
+                            delete_unassigned  = T,
+                            return_meta_data   = FALSE)
+    ###########################################
+
+    sce<-sces_sub
+    group<- sub_group
+    Idents(sce)<- sub_group
+
+    sce <-  ScaleData(sce)
+    sce <- FindVariableFeatures(object = sce)
+    sce <- RunPCA(object = sce, npcs = dims_for_recluster, verbose = TRUE)
+
+    set.seed(123)
+    sce <- RunTSNE(object = sce, dims = seq(dims_for_recluster), do.fast = TRUE, verbose= T, check_duplicates = FALSE)
+    sce <- RunUMAP(sce, reduction = "pca", dims = seq(dims_for_recluster), do.fast = TRUE, verbose= T)
+    #########################################
+    #########################################
+    #
+    # p1<-DimPlot(sce, reduction = "tsne", cols = cols, pt.size = pt.size, label = T)
+    # p2<-DimPlot(sce, reduction = "umap", cols = cols, pt.size = pt.size, label = T)
+    # p<-p1+p2
+    #
+    # ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = file_name$folder_name, width = 12.5, height = 5)
+
+  }
+
+
+  ##############################################
   reduction_method<-dims
   #############################################
 
@@ -101,7 +147,6 @@ sc_sig_plot<-function(sce,
                       cols             = cols,
                       seed             = 4321,
                       show_col         = F,
-                      max_cols         = 50,
                       width            = 8,
                       height           = 8,
                       w_index          = 7,
@@ -122,7 +167,6 @@ sc_sig_plot<-function(sce,
   ggsave(pp_com, filename = paste0(prefix,"0-3-combined-umap-tsne-",var,"-",group,".",fig.type),
          width = 18, height = 8, path = file_name$folder_name )
   #####################################################################
-
 
   DefaultAssay(sce)<-assay
   ##############################################
@@ -261,13 +305,12 @@ sc_sig_plot<-function(sce,
                    slot            = slot,
                    marker_res      = NULL,
                    show_features   = vars,
-                   top_n           = 40,
+                   top_n           = 20,
                    group           = group,
                    character_limit = 20,
                    path            = file_name$folder_name,
                    cols            = cols,
                    seed            = 54321,
-                   max_cols        = NULL,
                    fig.type        = fig.type,
                    show_col        = FALSE,
                    width           = 12,
