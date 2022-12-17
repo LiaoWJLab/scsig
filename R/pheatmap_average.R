@@ -107,17 +107,20 @@ pheatmap_average<-function(sce,
 
   if(!is.null(marker_res)){
 
-    marker_res<-marker_res[marker_res$cluster%in%c(unique(id_sce)), ]
+    marker_res<-marker_res[marker_res$cluster %in% unique(as.character(Idents(sce))), ]
+
+    message(">>>--- Results of DEs..")
+    print(marker_res)
     # select degs for heatmap
     degs_top5 <- marker_res %>%
        # filter(cluster!= NA) %>%
-      group_by(cluster) %>%
-      top_n(top_n, -p_val_adj) %>%
-      top_n(top_n, avg_log2FC) %>%
-      arrange(cluster, p_val_adj)
+      dplyr:: group_by(cluster) %>%
+      dplyr::top_n(top_n, -p_val_adj) %>%
+      dplyr::top_n(top_n, avg_log2FC) %>%
+      dplyr:: arrange(cluster, p_val_adj)
 
     celltypes<-unique(as.character(degs_top5$cluster))
-    show_features<-degs_top5$gene
+    show_features<- degs_top5$gene
   }else{
     show_features<- show_features
     celltypes<- unique(id_sce)
@@ -126,6 +129,7 @@ pheatmap_average<-function(sce,
   print(show_features)
   ###################################################
   avgData<- SeuratObject::GetAssayData(object =  sce, assay = assay, slot = slot)
+  avgData<- avgData[show_features, ]
 
   print(paste0(">>>>> Head of feature data..."))
   print(avgData[1:10,1:10])
@@ -134,7 +138,6 @@ pheatmap_average<-function(sce,
   print(summary(show_features%in%rownames(avgData)))
   print(show_features[!show_features%in%rownames(avgData)])
 
-  avgData<- avgData[show_features, ]
 
   # 每个基因在每个cluster里的平均值
   avgData <- avgData %>%
@@ -147,7 +150,6 @@ pheatmap_average<-function(sce,
   #remove na and INF
   feas<-feature_manipulation(data = phData, feature = colnames(phData))
   phData<-phData[,feas]
-
 
   for (x in 1:length(unique(celltypes))) {
     if(length(unique(rownames(phData)))<length(rownames(phData))){

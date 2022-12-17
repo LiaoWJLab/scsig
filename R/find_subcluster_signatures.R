@@ -36,7 +36,7 @@
 find_subcluster_signatures<-function(sce,
                                      assay                     = "integrated",
                                      col_celltype              = "Model1_merge_no_rejection",
-                                     col_sub_celltype          = "Model1_merge_subcluster",
+                                     col_sub_celltype          = NULL,
                                      groups                    = c("Model1_merge_subcluster", "integrated_snn_res.1"),
                                      cols                      = "normal",
                                      seed                      = 123,
@@ -54,7 +54,8 @@ find_subcluster_signatures<-function(sce,
                                      character_limit_heatmap   = 50,
                                      remove_other_celltypes    = TRUE,
                                      find_cluster_sig          = FALSE,
-                                     groups_for_cluster        = NULL){
+                                     groups_for_cluster        = NULL,
+                                     recluster                 = FALSE){
 
 
   # assay<-"SCT"
@@ -270,7 +271,10 @@ find_subcluster_signatures<-function(sce,
                           show_plot  = T,
                           path       = path2$folder_name,
                           character_limit = character_limit_heatmap,
-                          recluster = FALSE, dims_for_recluster = 8, resolution_for_recluster = 0.3, assay_for_recluster =  assay)
+                          recluster = recluster,
+                          dims_for_recluster = 8,
+                          resolution_for_recluster = 0.3,
+                          assay_for_recluster =  assay)
 
       }
 
@@ -282,207 +286,212 @@ find_subcluster_signatures<-function(sce,
   ###############################++++find_subcluster_signatures####################
   #################################################################################
   #################################################################################
+  if(!is.null(col_sub_celltype)){
 
-  for(i in index){
+    for(i in index){
 
-    celltype<-celltypes[i]
-    message(paste0(">>>>----Processing celltypes ", celltype))
-    ############################################
+      celltype<-celltypes[i]
+      message(paste0(">>>>----Processing celltypes ", celltype))
+      ############################################
 
-    #选择细胞大类
-    # i<-3
-    # celltype<-"B lymphocytes"
-    if(!is.null(assay)) DefaultAssay(sce)<-assay
+      #选择细胞大类
+      # i<-3
+      # celltype<-"B lymphocytes"
+      if(!is.null(assay)) DefaultAssay(sce)<-assay
 
-    Idents(sce)<- col_celltype
+      Idents(sce)<- col_celltype
 
-    sces<-subset(sce, idents = celltype)
+      sces<-subset(sce, idents = celltype)
 
 
-    if(remove_other_celltypes){
-      sces@meta.data[, col_sub_celltype]<-ifelse(grepl(sces@meta.data[, col_sub_celltype],pattern = celltype), sces@meta.data[, col_sub_celltype], "unassigned" )
-    }
+      if(remove_other_celltypes){
+        sces@meta.data[, col_sub_celltype]<-ifelse(grepl(sces@meta.data[, col_sub_celltype],pattern = celltype), sces@meta.data[, col_sub_celltype], "unassigned" )
+      }
 
-    # sces<-subset(sce, Model1_merge_no_rejection == celltype)
-    ###########################################
+      # sces<-subset(sce, Model1_merge_no_rejection == celltype)
+      ###########################################
 
-    #去除细胞数量很少的clusters
-    ###########################################
-    if(!is.null(no_limitation_celltypes)){
-      if(celltype == no_limitation_celltypes){
-        ignore<- celltype
+      #去除细胞数量很少的clusters
+      ###########################################
+      if(!is.null(no_limitation_celltypes)){
+        if(celltype == no_limitation_celltypes){
+          ignore<- celltype
+        }else{
+          ignore<- NULL
+        }
       }else{
         ignore<- NULL
       }
-    }else{
-      ignore<- NULL
-    }
-    ##########################################
+      ##########################################
 
-    sces<-unassign_cell(sce                = sces,
-                        cluster            = col_sub_celltype,
-                        ignore_cell_prefix = ignore,
-                        min_cell_count     = min_cell_count,
-                        new_col            = NULL,
-                        delete_unassigned  = T,
-                        return_meta_data   = FALSE)
-
-    #' 如果目标变量没有亚组直接跳过此次循环====================
-    if(length(unique(sces@meta.data[, col_sub_celltype]))==1) {
-      message(">>>--- cells with only one level, this celltype will be skiped...")
-      print(table(sces@meta.data[, col_sub_celltype]))
-      next
-    }
-
-    ############################################
-    DefaultAssay(sces)
-    #############################################
-    path_res<-creat_folder(file_name$folder_name, paste0(i,"-",celltype,"-",sig_file_name))
-    #############################################
-    # 4.计算富集分数
-    # 当你的ncore设置大于1的时候，发生下面的错误：Error (Valid ‘mctype’: ‘snow’ or ‘doMC’)，
-    # 你应该检查一下你的AUCell 版本，确保版本大于等于1.14 。如果你比较懒，那你直接把ncore设置为1也是可以的，只是运行速度会稍微慢一点。
-    # data("signature_collection")
-    # names(signature_collection)[which(names(signature_collection)=="TGF\xa6\xc2.myCAF")]<-"TGFb-myCAF"
-    # names(signature_collection)[which(names(signature_collection)=="IFN\xa6\xc3.iCAF")]<-"IFNG-iCAF"
-    # signature_collection<-signature_collection[-length(signature_collection)]
-    # ##############################################
-
-    # help("irGSEA.score")
-    sces <- irGSEA.score(object         = sces,
-                         assay          = assay,
-                         slot           = "scale.data",
-                         seeds          = 123,
-                         ncores         = 4,
-                         min.cells      = 3,
-                         min.feature    = 0,
-                         custom         = T,
-                         geneset        = signature_for_deg,
-                         msigdb         = T,
-                         species        = "Homo sapiens",
-                         category       = "H",
-                         subcategory    = NULL,
-                         geneid         = "symbol",
-                         method         = sig_methods,
-                         aucell.MaxRank = 2000,
-                         ucell.MaxRank  = 2000,
-                         kcdf           = 'Gaussian')
-    ##########################################
-
-    # 返回一个Seurat对象，富集分数矩阵存放在RNA外的assay中
-    Seurat::Assays(sces)
-    #> [1] "RNA"       "AUCell"    "UCell"     "singscore" "ssgsea"
-    sces@assays$ssgsea
-    ##########################################
-
-    # 5.整合差异基因集
-    # Wlicox test is perform to all enrichment score matrixes and gene sets
-    # with adjusted p value &lt; 0.05 are used to integrated through RRA.
-    # Among them, Gene sets with p value &lt; 0.05 are statistically
-    # significant and common differential in all gene sets enrichment analysis
-    # methods. All results are saved in a list.
-    result.dge<-list(NULL)
-    # groups<-c("Model1_merge_subcluster", "integrated_snn_res.1")
-    groups<-groups[groups%in%colnames(sces@meta.data)]
-    names_group<-NULL
-    for (j in 1:length(groups)) {
-
-      group<-groups[j]
-      #去掉细胞数量很少的cluster==大于50个
-      #########################################
-      input<-unassign_cell(sce                =  sces,
-                           cluster            = group,
-                           ignore_cell_prefix = ignore,
-                           min_cell_count     = min_cell_count,
-                           new_col            = NULL,
-                           delete_unassigned  = T,
-                           return_meta_data   = T)
+      sces<-unassign_cell(sce                = sces,
+                          cluster            = col_sub_celltype,
+                          ignore_cell_prefix = ignore,
+                          min_cell_count     = min_cell_count,
+                          new_col            = NULL,
+                          delete_unassigned  = T,
+                          return_meta_data   = FALSE)
 
       #' 如果目标变量没有亚组直接跳过此次循环====================
+      if(length(unique(sces@meta.data[, col_sub_celltype]))==1) {
+        message(">>>--- cells with only one level, this celltype will be skiped...")
+        print(table(sces@meta.data[, col_sub_celltype]))
+        next
+      }
 
-      print(table(input[, group]))
+      ############################################
+      DefaultAssay(sces)
+      #############################################
+      path_res<-creat_folder(file_name$folder_name, paste0(i,"-",celltype,"-",sig_file_name))
+      #############################################
+      # 4.计算富集分数
+      # 当你的ncore设置大于1的时候，发生下面的错误：Error (Valid ‘mctype’: ‘snow’ or ‘doMC’)，
+      # 你应该检查一下你的AUCell 版本，确保版本大于等于1.14 。如果你比较懒，那你直接把ncore设置为1也是可以的，只是运行速度会稍微慢一点。
+      # data("signature_collection")
+      # names(signature_collection)[which(names(signature_collection)=="TGF\xa6\xc2.myCAF")]<-"TGFb-myCAF"
+      # names(signature_collection)[which(names(signature_collection)=="IFN\xa6\xc3.iCAF")]<-"IFNG-iCAF"
+      # signature_collection<-signature_collection[-length(signature_collection)]
+      # ##############################################
 
-      if(length(unique(input[, group]))==1) next
+      # help("irGSEA.score")
+      sces <- irGSEA.score(object         = sces,
+                           assay          = assay,
+                           slot           = "scale.data",
+                           seeds          = 123,
+                           ncores         = 4,
+                           min.cells      = 3,
+                           min.feature    = 0,
+                           custom         = T,
+                           geneset        = signature_for_deg,
+                           msigdb         = T,
+                           species        = "Homo sapiens",
+                           category       = "H",
+                           subcategory    = NULL,
+                           geneid         = "symbol",
+                           method         = sig_methods,
+                           aucell.MaxRank = 2000,
+                           ucell.MaxRank  = 2000,
+                           kcdf           = 'Gaussian')
+      ##########################################
 
-      names_group<-c(names_group, group)
-      result.dge[[j]] <- irGSEA.integrate(object   = sces,
-                                          group.by = group,
-                                          metadata = NULL,
-                                          col.name = NULL,
-                                          method   = sig_methods)
-    }
-    names(result.dge)<-names_group
-    class(result.dge)
+      # 返回一个Seurat对象，富集分数矩阵存放在RNA外的assay中
+      Seurat::Assays(sces)
+      #> [1] "RNA"       "AUCell"    "UCell"     "singscore" "ssgsea"
+      sces@assays$ssgsea
+      ##########################################
 
-    # 储存数据
-    save(sces, result.dge, file = paste0(path_res$abspath, "0-DE-signatues-collection-of-",celltype,".RData"))
-    ##########################################
+      # 5.整合差异基因集
+      # Wlicox test is perform to all enrichment score matrixes and gene sets
+      # with adjusted p value &lt; 0.05 are used to integrated through RRA.
+      # Among them, Gene sets with p value &lt; 0.05 are statistically
+      # significant and common differential in all gene sets enrichment analysis
+      # methods. All results are saved in a list.
+      result.dge<-list(NULL)
+      # groups<-c("Model1_merge_subcluster", "integrated_snn_res.1")
+      groups<-groups[groups%in%colnames(sces@meta.data)]
+      names_group<-NULL
+      for (j in 1:length(groups)) {
 
-    #'数据可视化==============================
-
-    ##########################################
-    # sces<-subset(sces, scpred_seurat_merge!="unassigned")
-    # groups<-c("Model1_merge_subcluster", "integrated_snn_res.1")
-    # assays<-sig_methods #"ssgsea"
-
-
-
-    for (jj in 1:length(sig_methods)) {
-
-      DefaultAssay(sces) <- sig_methods[jj]
-
-      for(ii in 1:length(groups)){
-        group<-groups[ii]
-
+        group<-groups[j]
         #去掉细胞数量很少的cluster==大于50个
         #########################################
-        sces2<-unassign_cell(sce                =  sces,
+        input<-unassign_cell(sce                =  sces,
                              cluster            = group,
                              ignore_cell_prefix = ignore,
                              min_cell_count     = min_cell_count,
                              new_col            = NULL,
                              delete_unassigned  = T,
-                             return_meta_data   = FALSE)
+                             return_meta_data   = T)
 
         #' 如果目标变量没有亚组直接跳过此次循环====================
 
-        print(table(sces2@meta.data[, group]))
-        if(length(unique(sces2@meta.data[, group]))==1) next
+        print(table(input[, group]))
 
-        path2<-creat_folder(path_res$folder_name, paste0(ii,"-",group), paste0(jj,"-",sig_methods[jj]))
+        if(length(unique(input[, group]))==1) next
 
-        # DefaultAssay(sces) <- sig_methods[jj]
-        dong_find_markers(sce                      = sces2,
-                          assay                    = sig_methods[jj],
-                          slot                     = "scale.data",
-                          group                    = group,
-                          verbose                  = T,
-                          feature_type             = "signature",
-                          fig.type                 = "pdf",
-                          pt.size                  = 0.5,
-                          cols                     = cols,
-                          palette                  = palette,
-                          seed                     = 1234,
-                          show_col                 = F,
+        names_group<-c(names_group, group)
+        result.dge[[j]] <- irGSEA.integrate(object   = sces,
+                                            group.by = group,
+                                            metadata = NULL,
+                                            col.name = NULL,
+                                            method   = sig_methods)
+      }
+      names(result.dge)<-names_group
+      class(result.dge)
 
-                          show_genes               = 7,
-                          show_genes_pheatmap      = show_feas_pheatmap,
-                          hwidth                   = 19,
-                          hheight                  = NULL,
-                          show_plot                = T,
-                          path                     = path2$folder_name,
-                          character_limit          = character_limit_heatmap,
-                          recluster                = TRUE,
-                          dims_for_recluster       = 15,
-                          resolution_for_recluster = 0.3,
-                          assay_for_recluster      =  assay)
+      # 储存数据
+      save(sces, result.dge, file = paste0(path_res$abspath, "0-DE-signatues-collection-of-",celltype,".RData"))
+      ##########################################
+
+      #'数据可视化==============================
+
+      ##########################################
+      # sces<-subset(sces, scpred_seurat_merge!="unassigned")
+      # groups<-c("Model1_merge_subcluster", "integrated_snn_res.1")
+      # assays<-sig_methods #"ssgsea"
+
+
+
+      for (jj in 1:length(sig_methods)) {
+
+        DefaultAssay(sces) <- sig_methods[jj]
+
+        for(ii in 1:length(groups)){
+          group<-groups[ii]
+
+          #去掉细胞数量很少的cluster==大于50个
+          #########################################
+          sces2<-unassign_cell(sce                =  sces,
+                               cluster            = group,
+                               ignore_cell_prefix = ignore,
+                               min_cell_count     = min_cell_count,
+                               new_col            = NULL,
+                               delete_unassigned  = T,
+                               return_meta_data   = FALSE)
+
+          #' 如果目标变量没有亚组直接跳过此次循环====================
+
+          print(table(sces2@meta.data[, group]))
+          if(length(unique(sces2@meta.data[, group]))==1) next
+
+          path2<-creat_folder(path_res$folder_name, paste0(ii,"-",group), paste0(jj,"-",sig_methods[jj]))
+
+          # DefaultAssay(sces) <- sig_methods[jj]
+          dong_find_markers(sce                      = sces2,
+                            assay                    = sig_methods[jj],
+                            slot                     = "scale.data",
+                            group                    = group,
+                            verbose                  = T,
+                            feature_type             = "signature",
+                            fig.type                 = "pdf",
+                            pt.size                  = 0.5,
+                            cols                     = cols,
+                            palette                  = palette,
+                            seed                     = 1234,
+                            show_col                 = F,
+
+                            show_genes               = 7,
+                            show_genes_pheatmap      = show_feas_pheatmap,
+                            hwidth                   = 19,
+                            hheight                  = NULL,
+                            show_plot                = T,
+                            path                     = path2$folder_name,
+                            character_limit          = character_limit_heatmap,
+                            recluster                = recluster,
+                            dims_for_recluster       = 15,
+                            resolution_for_recluster = 0.3,
+                            assay_for_recluster      =  assay)
+
+        }
 
       }
+
 
     }
 
 
   }
+
 
 }
 

@@ -6,8 +6,11 @@
 \usage{
 find_best_resolution(
   sce,
+  assay,
+  prefix,
   from = 0.2,
   to = 1.2,
+  graph.name = NULL,
   save_plot = T,
   path = NULL,
   palette = "set2",
@@ -18,7 +21,7 @@ find_best_resolution(
 )
 }
 \arguments{
-\item{return_sce}{}
+\item{prefix}{}
 }
 \description{
 Title

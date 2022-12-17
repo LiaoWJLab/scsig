@@ -8,7 +8,7 @@ find_subcluster_signatures(
   sce,
   assay = "integrated",
   col_celltype = "Model1_merge_no_rejection",
-  col_sub_celltype = "Model1_merge_subcluster",
+  col_sub_celltype = NULL,
   groups = c("Model1_merge_subcluster", "integrated_snn_res.1"),
   cols = "normal",
   seed = 123,
@@ -26,7 +26,8 @@ find_subcluster_signatures(
   character_limit_heatmap = 50,
   remove_other_celltypes = TRUE,
   find_cluster_sig = FALSE,
-  groups_for_cluster = NULL
+  groups_for_cluster = NULL,
+  recluster = FALSE
 )
 }
 \arguments{

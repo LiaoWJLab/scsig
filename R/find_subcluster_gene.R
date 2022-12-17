@@ -60,7 +60,7 @@ find_subcluster_gene<-function(sce,
   # col_sub_celltype<- "scpred_seurat"
   ############################################
   celltypes<-unique(sce@meta.data[,col_celltype])
-  ###########################################
+  ############################################
 
   message(">>>---Celltype of Seurat object:")
   print(table(sce[[col_celltype]]))
@@ -113,10 +113,10 @@ find_subcluster_gene<-function(sce,
     ############################################
 
 
-    res<- dong_find_markers(   sce                        = sces_sub,
+    res<- dong_find_markers(    sce                       = sces_sub,
                                  assay                    = assay,
                                  slot                     = slot,
-                                 feas =                     feas,
+                                 feas                     = feas,
                                  group                    = col_sub_celltype,
                                  verbose                  = T,
                                  fig.type                 = fig.type,

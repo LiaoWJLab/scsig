@@ -8,3 +8,4 @@
 ^\.RData$
 ^\.Rhistory$
 ^scsig\.Rproj$
+^test$

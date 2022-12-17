@@ -40,6 +40,7 @@
 #' @param feas
 #' @param group_after_recluster
 #' @param adjust_assay
+#' @param re_scale_tsne_umap
 #'
 #' @return
 #' @export
@@ -47,7 +48,7 @@
 #' @examples
 dong_find_markers<-function(sce,
                             assay                    = NULL,
-                            adjust_assay            = FALSE,
+                            adjust_assay             = FALSE,
                             slot                     = "scale.data",
                             feas                     = NULL,
                             group                    = NULL,
@@ -72,6 +73,7 @@ dong_find_markers<-function(sce,
                             show_plot                = T,
                             path                     = NULL,
                             character_limit          = 50,
+                            re_scale_tsne_umap       = FALSE,
                             recluster                = FALSE,
                             assay_for_recluster      = NULL,
                             dims_for_recluster       = 20,
@@ -170,12 +172,12 @@ dong_find_markers<-function(sce,
   }
 
   ####################################
-  top10 <- sce.markers %>% dplyr:: group_by(cluster) %>% top_n(show_genes, avg_log2FC)
+  top10 <- sce.markers %>% dplyr:: group_by(cluster) %>%  dplyr::top_n(show_genes, avg_log2FC)
   ####################################
 
   if(is.null(hheight)){
     # if(is.null(group)) stop("group must be define")
-    hheight<- 4.5 + length(unique(Idents(sce)))*show_genes/7
+    hheight<- 4.8 + length(unique(Idents(sce)))*show_genes/7
   }
 
   ###################################
@@ -186,7 +188,7 @@ dong_find_markers<-function(sce,
                 size         = 3.5,
                 group.colors = mycols,
                 assay        = assay,
-                slot         = "scale.data")+
+                slot         = slot)+
     scale_fill_gradientn(colours = rev(mapal))
 
   if(show_plot) print(pp)
@@ -205,11 +207,11 @@ dong_find_markers<-function(sce,
 
   pheatmap_average(sce             = sce,
                    assay           = assay,
-                   slot            = "scale.data",
+                   slot            = slot,
                    marker_res      = sce.markers,
                    top_n           = show_genes_pheatmap,
                    group           = group,
-                   character_limit = 30,
+                   character_limit = character_limit,
                    path            = path$folder_name,
                    cols            = mycols,
                    seed            = 123,
@@ -285,9 +287,11 @@ dong_find_markers<-function(sce,
 
   }else{
 
-    set.seed(123)
-    sce <- RunTSNE(object = sce, dims = seq(30), do.fast = TRUE, verbose= T, check_duplicates = FALSE)
-    sce <- RunUMAP(sce, reduction = "pca", dims = seq(30), do.fast = TRUE, verbose= T)
+    if(re_scale_tsne_umap){
+      set.seed(123)
+      sce <- RunTSNE(object = sce, dims = seq(30), do.fast = TRUE, verbose= T, check_duplicates = FALSE)
+      sce <- RunUMAP(sce, reduction = "pca", dims = seq(30), do.fast = TRUE, verbose= T)
+    }
     #########################################
     #########################################
 
@@ -336,7 +340,7 @@ dong_find_markers<-function(sce,
             # group.by = "scpred_seurat",
             add.noise = FALSE,
             features = markers_genes,
-            log = log,
+            # log = log,
             stack = T,
             flip = T,
             sort = "increasing",

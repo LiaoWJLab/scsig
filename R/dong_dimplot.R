@@ -124,7 +124,7 @@ dong_dimplot<-function(sce,
     pp <- Seurat:: DimPlot(sce,
                            reduction  = reduction,
                            group.by   = group1,
-                           label      =label,
+                           label      = label,
                            split.by   = split.by,
                            label.size = label.size,
                            pt.size    = pt.size,
@@ -163,8 +163,7 @@ dong_dimplot<-function(sce,
       hjust            = hjust,
       legend.position  = legend.position,
       legend.direction = legend.direction,
-      legend.size      = legend.size,
-      legend.size.text = 12
+      legend.size      = legend.size
     )
     pp<-pp+mytheme #+guides(color = guide_legend(override.aes = list(size = legend.size)), size = "none")
 

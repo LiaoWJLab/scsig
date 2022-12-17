@@ -32,6 +32,7 @@ dong_find_markers(
   show_plot = T,
   path = NULL,
   character_limit = 50,
+  re_scale_tsne_umap = FALSE,
   recluster = FALSE,
   assay_for_recluster = NULL,
   dims_for_recluster = 20,
@@ -40,7 +41,7 @@ dong_find_markers(
 )
 }
 \arguments{
-\item{adjust_assay}{}
+\item{re_scale_tsne_umap}{}
 }
 \description{
 dong_find_markers
