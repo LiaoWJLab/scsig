@@ -26,6 +26,7 @@
 #' @param show_feas_dim
 #' @param recluster
 #' @param assay_for_recluster
+#' @param re_scale_tsne_umap
 #'
 #' @return
 #' @export
@@ -51,6 +52,7 @@ find_subcluster_gene<-function(sce,
                                logfc.threshold           = 0.15,
                                fig.type                  = "pdf",
                                pt.size                   = 0.7,
+                               re_scale_tsne_umap        = FALSE,
                                recluster                 = F,
                                assay_for_recluster       = "integrated"){
 
@@ -139,6 +141,7 @@ find_subcluster_gene<-function(sce,
                                  show_plot                = T,
                                  path                     = path_res$folder_name,
                                  character_limit          = 50,
+                                re_scale_tsne_umap        = re_scale_tsne_umap,
                                  recluster                = recluster,
                                  assay_for_recluster      = assay_for_recluster,
                                  dims_for_recluster       = 20,

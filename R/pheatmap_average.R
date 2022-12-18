@@ -132,7 +132,7 @@ pheatmap_average<-function(sce,
   avgData<- avgData[show_features, ]
 
   print(paste0(">>>>> Head of feature data..."))
-  print(avgData[1:10,1:10])
+  print(head(avgData))
 
   print(paste0(">>>>> Features not exited in matrix data..."))
   print(summary(show_features%in%rownames(avgData)))
