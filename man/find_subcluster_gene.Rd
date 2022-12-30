@@ -25,12 +25,13 @@ find_subcluster_gene(
   logfc.threshold = 0.15,
   fig.type = "pdf",
   pt.size = 0.7,
+  re_scale_tsne_umap = FALSE,
   recluster = F,
   assay_for_recluster = "integrated"
 )
 }
 \arguments{
-\item{assay_for_recluster}{}
+\item{re_scale_tsne_umap}{}
 }
 \description{
 Title

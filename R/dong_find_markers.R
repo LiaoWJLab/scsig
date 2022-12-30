@@ -140,6 +140,7 @@ dong_find_markers<-function(sce,
   #remove features with large name
   ##################################
   # help("PrepSCTFindMarkers")
+
   if(tolower(assay)=="sct"&adjust_assay) sce<- PrepSCTFindMarkers(sce)
   # help("FindAllMarkers")
   ###################################
