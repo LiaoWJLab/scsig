@@ -11,9 +11,9 @@
                 "  For help: https://github.com/DongqiangZeng0808/", pkgname, "\n\n")
 
   citation <-paste0(" If you use ", pkgname, " in published research, please cite:\n",
-                    " Wellcome to my Single cell data processing.\n",
+                    " Identifying characteristics of cell subtype from single cell RNA data. \n",
 
-                    " Frontiers in Immunology, 2050, 7(5), 737-750", "\n",
+                    " bioRxiv, 2023, 7(5), 737-750", "\n",
                     " DOI: 10.1158/2326-6066.nejm-18-2050 ","\n" ,
                     " PMID: 3838438","\n",
                     "===========================================================================")

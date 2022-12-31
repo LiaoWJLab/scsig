@@ -46,7 +46,7 @@ sc_type_anno<-function(sce,
 
 
 
-  db_<- paste0(base::system.file("data", package = "mysc"),"/", db_)
+  db_<- paste0(base::system.file("data", package = "scsig"),"/", db_)
 
   # prepare gene sets
   gs_list = gene_sets_prepare(gs = gs, path_to_db_file = db_, cell_type = cell_type, tissue_type = tissue_type, cell_subset = cell_subset)
