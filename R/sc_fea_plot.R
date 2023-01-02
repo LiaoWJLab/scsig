@@ -46,12 +46,13 @@ sc_fea_plot<-function(sce,
                       split_by        = NULL,
                       assay           = NULL,
                       slot            = "scale.data",
-                      variables       ,
+                      variables       = NULL,
                       show_variables  = 10,
                       dims            = c("umap", "tsne"),
                       pt.size         = 1,
                       cols            = "normal",
                       palette         = 1,
+                      palette.heatmap = 1,
                       path            = NULL,
                       index           = NULL,
                       show_box_pvalue = T,
@@ -106,7 +107,7 @@ sc_fea_plot<-function(sce,
     group<- sub_group
     Idents(sce)<- sub_group
 
-    sce <-  ScaleData(sce)
+    sce <- ScaleData(sce)
     sce <- FindVariableFeatures(object = sce)
     sce <- RunPCA(object = sce, npcs = dims_for_recluster, verbose = TRUE)
 
@@ -197,7 +198,8 @@ sc_fea_plot<-function(sce,
 
     level<- unique(input[, group])
     level<-level[order(level)]
-    res<-batch_wilcoxon(input, target = group, feature = vars, group_names = level)
+    res<-batch_wilcoxon(input, target = group, feature = vars)
+    res<-rownames_to_column(res, var = "features")
     writexl::write_xlsx(res, paste0(file_name$abspath, prefix, "0-statistical-res-with-",group,".xlsx"))
   }else{
 
@@ -275,26 +277,37 @@ sc_fea_plot<-function(sce,
 
   }
 
-  Idents(sce)<- group
 
-  wwidth<- 4 + length(unique(sce@meta.data[,group]))*0.4
-  hheight<- 3 + length(unique(show_vars)) * 0.3
-  ###################################
-  mapal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdBu"))(256)
-  pp<- DoHeatmap(object =  sce,
-                features     = show_vars,
-                angle        = 60,
-                size         = 3.5,
-                group.colors = cols,
-                assay        = assay,
-                slot         = slot)+
-    scale_fill_gradientn(colours = rev(mapal))
-
-  if(show_plot) print(pp)
-
-  ggsave(plot =  pp, filename=paste0(prefix,"0-4-DoHeatmap-",group,".",fig.type),
-         path = file_name$folder_name,
-         width = wwidth, height = hheight)
+  pp<-      dong_heatmap(sce             = sce,
+                         group           = group,
+                         feas            = show_vars,
+                         assay           = assay,
+                         slot            = slot,
+                         cols            = cols,
+                         palette         = 1,
+                         palette.heatmap = palette.heatmap,
+                         path            = file_name$folder_name,
+                         show_plot       = show_plot,
+                         show_col        = FALSE,
+                         fig.type        = "pdf")
+  # Idents(sce)<- group
+  # wwidth<- 4 + length(unique(sce@meta.data[,group]))*0.4
+  # hheight<- 3 + length(unique(show_vars)) * 0.3
+  # ###################################
+  # mapal <- colorRampPalette(RColorBrewer::brewer.pal(11,"RdBu"))(256)
+  # pp<- DoHeatmap(object =  sce,
+  #                features     = show_vars,
+  #                angle        = 60,
+  #                size         = 3.5,
+  #                group.colors = cols,
+  #                assay        = assay,
+  #                slot         = slot)+
+  #   scale_fill_gradientn(colours = rev(mapal))
+  #
+  # if(show_plot) print(pp)
+  # ggsave(plot =  pp, filename=paste0(prefix,"0-4-DoHeatmap-",group,".",fig.type),
+  #        path = file_name$folder_name,
+  #        width = wwidth, height = hheight)
   ###################################
 
 
@@ -312,6 +325,7 @@ sc_fea_plot<-function(sce,
                    cols            = cols,
                    seed            = 54321,
                    fig.type        = fig.type,
+                   file_name_prefix= paste0(index, "-0-5"),
                    show_col        = FALSE,
                    width           = 12,
                    height          = height_pheatmap )

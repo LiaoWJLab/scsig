@@ -36,6 +36,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
 
     eset<- SeuratObject:: GetAssayData(sce, assay = assay, slot = slot)
     eset<- eset[rownames(eset)%in% unique(vars), ]
+    print(head(eset))
     eset<- as.data.frame(t(eset))
     eset<- tibble:: rownames_to_column(eset, var = "ID")
 
