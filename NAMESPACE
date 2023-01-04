@@ -3,6 +3,7 @@
 export(AddMt)
 export(add_pdata)
 export(copykat_plus)
+export(creat_folder)
 export(dong_cell_anno)
 export(dong_dimplot)
 export(dong_find_markers)

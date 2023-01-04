@@ -8,10 +8,10 @@
   msg <- paste0("==========================================================================\n",
                 " ", pkgname, " v", pkgVersion, "  ",
 
-                "  For help: https://github.com/DongqiangZeng0808/", pkgname, "\n\n")
+                "  For help: https://github.com/LiaoWJLab/", pkgname, "\n\n")
 
   citation <-paste0(" If you use ", pkgname, " in published research, please cite:\n",
-                    " Identifying characteristics of cell subtype from single cell RNA data. \n",
+                    " Identifying characteristics of cell subtype from single cell RNAseq data. \n",
 
                     " bioRxiv, 2023, 7(5), 737-750", "\n",
                     " DOI: 10.1158/2326-6066.nejm-18-2050 ","\n" ,
