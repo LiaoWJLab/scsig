@@ -9,3 +9,5 @@
 ^\.Rhistory$
 ^scsig\.Rproj$
 ^test$
+^3-scsig-signatures\.R$
+^msigdb\.RData$

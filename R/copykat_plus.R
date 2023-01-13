@@ -48,7 +48,7 @@ copykat_plus<-function(sce,
   }
   print(sce)
 
-  file_name<-mydb:: creat_folder(paste0(index,"-",project))
+  file_name<- creat_folder(paste0(index,"-",project))
   abspath<-file_name$abspath
   message(" >>>  Data will be deposite in ",abspath)
   ##############################################
@@ -113,14 +113,14 @@ copykat_plus<-function(sce,
   if(id_type=="emsembl") id.type<-"E"
   copykat<-mycopykat(rawmat            = eset,
                     id.type            = id.type,
-                    cell.line          ="no",
-                    ngene.chr          =5,
-                    win.size           =25,
-                    KS.cut             =0.15,
+                    cell.line          = "no",
+                    ngene.chr          = 5,
+                    win.size           = 25,
+                    KS.cut             = 0.15,
                     sam.name           = project,
                     norm.cell.names    = normal_cell_id,
-                    distance           ="euclidean",
-                    n.cores            =1,
+                    distance           = "euclidean",
+                    n.cores            = 1,
                     save_path          = path1$abspath)
   return(copykat)
 }
