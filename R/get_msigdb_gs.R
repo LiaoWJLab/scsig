@@ -5,7 +5,7 @@
 
 #' Title
 #'
-#' @param org default is 'hsa'
+#' @param org default is 'hsa', 'mus'
 #' @param category default is NULL, other options: C1 - C8,
 #' @param subcategory default is NULL, options:
 #' @param msigdb default is NULL
