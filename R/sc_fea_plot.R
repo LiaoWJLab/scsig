@@ -53,6 +53,7 @@ sc_fea_plot<-function(sce,
                       pt.size         = 1,
                       cols            = "normal",
                       palette         = 1,
+                      show_cols       = FALSE,
                       palette.heatmap = 1,
                       path            = NULL,
                       index           = NULL,
@@ -72,7 +73,7 @@ sc_fea_plot<-function(sce,
   }
 
   #############################################
-  cols<- get_cols(cols = cols, palette = palette, show_col = T)
+  cols<- get_cols(cols = cols, palette = palette, show_col = show_cols)
 
   if(is.null(index)){
     prefix<-NULL
@@ -191,7 +192,7 @@ sc_fea_plot<-function(sce,
   if(is.null(split_by)){
     feaPlot_width <- 7.5
   }else{
-    feaPlot_width <- 7 + 3.5 *length(unique(sce@meta.data[, split_by]))
+    feaPlot_width <- 7 + 3.5 * length(unique(sce@meta.data[, split_by]))
   }
 
   # statistical analysis
@@ -210,12 +211,12 @@ sc_fea_plot<-function(sce,
                     statistic = sapply(aa, getElement, name = "statistic"))
     res$p.adj<-p.adjust(res$p.value,method = "BH",n=length(res$p.value))
     res<-res[order(res$p.adj,decreasing = F),]
-
+    res<-rownames_to_column(res, var = "features")
     writexl::write_xlsx(res, paste0(file_name$abspath, prefix, "0-statistical-res-with-",group,".xlsx"))
     #######################################
   }
 
-  if(length(vars)> show_variables){
+  if(length(vars) > show_variables){
     show_vars<-res$sig_names[1:show_variables]
   }else{
     show_vars<- res$sig_names
@@ -224,7 +225,6 @@ sc_fea_plot<-function(sce,
   message(">>>>--- Features that will be proceeded:  ")
   print(show_vars)
 
-
   for (z in 1:length(show_vars)) {
 
     var<-show_vars[z]
@@ -232,19 +232,22 @@ sc_fea_plot<-function(sce,
     ######################################################################################
     message(paste0(">>> Processing target:  ", var))
 
+    width_box<- 4.5+ length(unique(sce@meta.data[, group]))*0.5
+    ###################################
     p1<-IOBR:: sig_box(data = input, signature = var, variable = group, cols = cols,
 
                        palette = "jama", angle_x_text = 60, hjust = 1, show_pvalue = show_box_pvalue, return_stat_res = FALSE)
-
     ggsave(p1, filename = paste0(prefix, z,"-7-",var,"-boxplot-with-",group, ".",fig.type),
-           width = 10, height = 11, path = file_name$folder_name)
-
+           width = width_box, height = 11, path = file_name$folder_name)
+   #####################################
     p1<-IOBR::sig_box(data = input, signature = var, variable = group, cols = cols,
-
+                      palette = "jama", angle_x_text = 60, hjust = 1, show_pvalue = FALSE, return_stat_res = FALSE)
+    ggsave(p1, filename = paste0(prefix, z,"-8-",var,"-boxplot-with-",group, ".",fig.type),
+           width = width_box, height = 11, path = file_name$folder_name)
+    ####################################
+    p1<-IOBR::sig_box(data = input, signature = var, variable = group, cols = cols,
                       palette = "jama", angle_x_text = 60, hjust = 1, show_pvalue = FALSE, return_stat_res = TRUE)
-
-    writexl::write_xlsx(p1, paste0(file_name$abspath, prefix, z, "-8-statistical-res-",var,"-",group,".xlsx"))
-
+    writexl::write_xlsx(p1, paste0(file_name$abspath, prefix, z, "-9-statistical-res-",var,"-",group,".xlsx"))
 
     if(!is.null(assay)) DefaultAssay(sce)<- assay
     print(paste0("Default assay is ", DefaultAssay(sce) ))
@@ -286,9 +289,12 @@ sc_fea_plot<-function(sce,
                          cols            = cols,
                          palette         = 1,
                          palette.heatmap = palette.heatmap,
+                         prefix          = index,
+                         disp.max        = 2.5,
+                         disp.min        = -2.5,
                          path            = file_name$folder_name,
                          show_plot       = show_plot,
-                         show_col        = FALSE,
+                         show_col        = show_cols,
                          fig.type        = fig.type)
   # Idents(sce)<- group
   # wwidth<- 4 + length(unique(sce@meta.data[,group]))*0.4
@@ -309,26 +315,46 @@ sc_fea_plot<-function(sce,
   #        path = file_name$folder_name,
   #        width = wwidth, height = hheight)
   ###################################
+  message(">>>--- Processing VlnPlot ")
+  height_VlnPlot<- 4.0+ length(show_vars)/1.5
+  width_vln<- 4.5+ length(unique(sce@meta.data[, group]))*0.6
+  ###################################
+  p<-VlnPlot(object = sce,
+          # assay = "RNA",
+          # group.by = "scpred_seurat",
+          add.noise = FALSE,
+          features = show_vars,
+          # log = log,
+          stack = T,
+          flip = T,
+          sort = "increasing",
+          cols = cols, #palettes(category = "random", palette = 1),
+          ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")
+  ggsave(p, filename=paste0(index,"-0-6-VlnPlot_subcluster_markers.", fig.type),
+         width = width_vln, height = height_VlnPlot,
+         path = file_name$folder_name)
+
+  ###################################
   message(">>>--- Processing pheatmap_average ")
 
   height_pheatmap<- 4.0+ length(show_vars)/3
 
-  pheatmap_average(sce             = sce,
-                   assay           = assay,
-                   slot            = slot,
-                   marker_res      = NULL,
-                   show_features   = vars,
-                   top_n           = 20,
-                   group           = group,
-                   character_limit = 20,
-                   path            = file_name$folder_name,
-                   cols            = cols,
-                   seed            = 54321,
-                   fig.type        = fig.type,
-                   file_name_prefix= paste0(index, "-0-5"),
-                   show_col        = FALSE,
-                   width           = 12,
-                   height          = height_pheatmap )
+  res<-pheatmap_average(sce             = sce,
+                   assay                = assay,
+                   slot                 = slot,
+                   marker_res           = NULL,
+                   show_features        = vars,
+                   top_n                = 20,
+                   group                = group,
+                   character_limit      = 20,
+                   path                 = file_name$folder_name,
+                   cols                 = cols,
+                   seed                 = 54321,
+                   fig.type             = fig.type,
+                   file_name_prefix     = paste0(index, "-0-5"),
+                   show_col             = FALSE,
+                   width                = 12,
+                   height               = height_pheatmap )
   ####################################################
 
   return(input)

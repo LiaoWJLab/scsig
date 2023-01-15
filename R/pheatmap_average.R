@@ -23,6 +23,7 @@
 #' @param file_name_prefix
 #' @param palette
 #' @param palette_for_heatmape
+#' @param scale.matrix
 #'
 #' @return
 #' @export
@@ -42,6 +43,7 @@ pheatmap_average<-function(sce,
                            show_col         = T,
                            palette          = 1,
                            palette_for_heatmape = 6,
+                           scale.matrix     = NULL,
                            fig.type         = "pdf",
                            width            = 13,
                            height           = NULL,
@@ -75,19 +77,21 @@ pheatmap_average<-function(sce,
   print(table(as.character(Idents(sce))))
   id_sce<- Idents(sce)
 
-  ###########################################
+  ##############################################
+  # substitude
+  # mycols<- get_cols(cols = cols, palette = palette, show_col = show_cols)
   ##############################################
   if(length(cols)==1){
     if(cols=="random"){
 
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col)
+      mycols<-palettes(category = "random", palette = palette, show_col = show_col, show_message = FALSE)
       message(">>>> Default seed is 123, you can change it by `seed`(parameter).")
       set.seed(seed)
       mycols<-mycols[sample(length(mycols), length(mycols))]
       if(show_col) scales::show_col(mycols)
 
     }else if(cols == "normal"){
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col)
+      mycols<-palettes(category = "random", palette = palette, show_col = show_col, , show_message = FALSE)
     }
   }else{
     mycols<-cols
@@ -136,19 +140,20 @@ pheatmap_average<-function(sce,
   print(head(avgData))
 
   print(paste0(">>>>> Features not exited in matrix data..."))
-  print(summary(show_features%in%rownames(avgData)))
+  # print(summary(show_features%in%rownames(avgData)))
   print(show_features[!show_features%in%rownames(avgData)])
 
   # 每个基因在每个cluster里的平均值
   avgData <- avgData %>%
     apply(1, function(x){
-      tapply(x,INDEX = id_sce, FUN = mean, na.rm = T) # ExpMean
+      tapply(x, INDEX = id_sce, FUN = mean, na.rm = T) # ExpMean
     }) %>% t
   ##################################################
-  phData <- MinMax(scale(avgData), -3, 3) # z-score
 
-  phData[is.na(phData)]<-0
+  # phData <- MinMax(scale(avgData), -3, 3) # z-score
+  # phData[is.na(phData)]<-0
 
+  phData<-avgData
   #remove na and INF
   feas<-feature_manipulation(data = phData, feature = colnames(phData))
   phData<-phData[, feas]
@@ -196,12 +201,23 @@ pheatmap_average<-function(sce,
     }
   }
   ######################################################
+  if(is.null(scale.matrix)){
+    if(slot=="data"){
+      scale_phmap<- "row"
+    }else{
+      scale_phmap<- "none"
+    }
+  }else if(scale.matrix){
+    scale_phmap<- "row"
+  }else{
+    scale_phmap<- "none"
+  }
   # library(pheatmap)
   # pdf(paste0(path$abspath, "2-markers-heatmap-of-average-", group, ".", fig.type), width = width, height = height)
   p<-pheatmap:: pheatmap(
     phData,
     color             = mapal, #colorRampPalette(c("darkblue", "white", "red3"))(99), #配色
-    scale             = "row",
+    scale             = scale_phmap,
     cluster_rows      = cluster_pheatmap, #不按行聚类
     cluster_cols      = T, #按列聚类
     cellwidth         = 15,
