@@ -136,6 +136,7 @@ pheatmap_average<-function(sce,
   avgData<- SeuratObject::GetAssayData(object =  sce, assay = assay, slot = slot)
   avgData<- avgData[show_features, ]
 
+  eset<- avgData
   print(paste0(">>>>> Head of feature data..."))
   print(head(avgData))
 
@@ -235,6 +236,9 @@ pheatmap_average<-function(sce,
          width = width,
          height = height,
          path = path$folder_name)
+
+  res<-list("p_matrix" = phData, "p_anno" = annotation_row, "p_cols" = cluster_colors,  "plot" = p, "eset" = eset)
+  return(res)
 }
 
 

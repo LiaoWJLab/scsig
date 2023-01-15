@@ -284,7 +284,7 @@ dong_find_markers<-function(sce,
     }else{
       width_dim<- 11
     }
-    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = width_dim, height = 5)
+    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.",fig.type), path = path$folder_name, width = width_dim, height = 5)
 
   }else{
 
@@ -300,7 +300,7 @@ dong_find_markers<-function(sce,
     p2<-DimPlot(sce, reduction = "umap", cols = mycols, pt.size = pt.size, label = T)
     p<-p1+p2
 
-    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.pdf"), path = path$folder_name, width = 12.5, height = 5)
+    ggsave(p, filename = paste0("0-",prefix,"-subcluster-dimplot-tsne-umap.",fig.type), path = path$folder_name, width = 12.5, height = 5)
   }
   #############################################################
 
