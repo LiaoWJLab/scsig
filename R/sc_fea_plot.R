@@ -161,7 +161,8 @@ sc_fea_plot<-function(sce,
                       legend.position  = "right",
                       legend.direction = "vertical",
                       legend.size      = 9,
-                      save_plot        = T)
+                      save_plot        = T,
+                      fig.type         = fig.type)
 
     pp[[ii]]<-ppi
 
@@ -222,15 +223,15 @@ sc_fea_plot<-function(sce,
     show_vars<- res$sig_names
   }
 
-  message(">>>>--- Features that will be proceeded:  ")
+  message(">>>>--- Features that will be processed:  ")
   print(show_vars)
 
+  ######################################################################################
   for (z in 1:length(show_vars)) {
 
     var<-show_vars[z]
 
-    ######################################################################################
-    message(paste0(">>> Processing target:  ", var))
+    message(paste0(">>> Processing feature:  ", var))
 
     width_box<- 4.5+ length(unique(sce@meta.data[, group]))*0.5
     ###################################
@@ -327,6 +328,7 @@ sc_fea_plot<-function(sce,
           # log = log,
           stack = T,
           flip = T,
+          y.max = 4,
           sort = "increasing",
           cols = cols, #palettes(category = "random", palette = 1),
           ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")

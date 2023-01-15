@@ -33,6 +33,7 @@
 #' @param theme
 #' @param save_plot
 #' @param palette
+#' @param fig.type
 #'
 #' @return
 #' @export
@@ -49,7 +50,7 @@ dong_dimplot<-function(sce,
                        seed             = 123,
                        palette          = 1,
                        show_col         = FALSE,
-                       width            = 8,
+                       width            = 9.2,
                        height           = 8.2,
                        w_index          = 7,
                        w_add            = 2,
@@ -66,7 +67,8 @@ dong_dimplot<-function(sce,
                        axis_text_size   = 10,
                        axis_angle       = 0,
                        hjust            = 0.5,
-                       save_plot        = TRUE){
+                       save_plot        = TRUE,
+                       fig.type         = "pdf"){
 
 
   if(!is.null(path)){
@@ -130,7 +132,12 @@ dong_dimplot<-function(sce,
                            pt.size    = pt.size,
                            cols       = mycols)
 
-    limitsize<-TRUE
+    if(dim(sce)[2]>30000){
+      limitsize<-TRUE
+    }else{
+      limitsize<-FALSE
+    }
+
     if(length(unique(sce@meta.data[,group1]))> max_category & legend.position!="bottom"){
 
       w_add<-round(length(unique(sce@meta.data[,group1]))/max_category, 0) * w_add
@@ -175,14 +182,14 @@ dong_dimplot<-function(sce,
 
     if(save_plot){
       ggsave(pp,
-             filename = paste0(index,"-",i,"-",reduction,"-",group1, fig.name,'.pdf'),
+             filename = paste0(index,"-",i,"-",reduction,"-",group1, fig.name,'.',fig.type),
              path = file_store,
              width = width,
              height = height,
              dpi = 300,
              limitsize = limitsize)
 
-      message(paste0(">>>>>> Figure name is:: ", paste0(index,"-",i,"-",reduction,"-",group1, fig.name,'.pdf')))
+      message(paste0(">>>>>> Figure name is:: ", paste0(index,"-",i,"-",reduction,"-",group1, fig.name,'.',fig.type)))
 
     }
 
