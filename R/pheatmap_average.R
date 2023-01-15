@@ -22,6 +22,7 @@
 #' @param show_features
 #' @param file_name_prefix
 #' @param palette
+#' @param palette_for_heatmape
 #'
 #' @return
 #' @export
@@ -40,6 +41,7 @@ pheatmap_average<-function(sce,
                            seed             = 54321,
                            show_col         = T,
                            palette          = 1,
+                           palette_for_heatmape = 6,
                            fig.type         = "pdf",
                            width            = 13,
                            height           = NULL,
@@ -85,7 +87,6 @@ pheatmap_average<-function(sce,
       if(show_col) scales::show_col(mycols)
 
     }else if(cols == "normal"){
-
       mycols<-palettes(category = "random", palette = palette, show_col = show_col)
     }
   }else{
@@ -138,18 +139,19 @@ pheatmap_average<-function(sce,
   print(summary(show_features%in%rownames(avgData)))
   print(show_features[!show_features%in%rownames(avgData)])
 
-
   # 每个基因在每个cluster里的平均值
   avgData <- avgData %>%
     apply(1, function(x){
       tapply(x,INDEX = id_sce, FUN = mean, na.rm = T) # ExpMean
     }) %>% t
   ##################################################
-  phData <- MinMax(scale(avgData), -2.5, 2.5) # z-score
+  phData <- MinMax(scale(avgData), -3, 3) # z-score
+
+  phData[is.na(phData)]<-0
 
   #remove na and INF
   feas<-feature_manipulation(data = phData, feature = colnames(phData))
-  phData<-phData[,feas]
+  phData<-phData[, feas]
 
   for (x in 1:length(unique(celltypes))) {
     if(length(unique(rownames(phData)))<length(rownames(phData))){
@@ -158,7 +160,6 @@ pheatmap_average<-function(sce,
       break
     }
   }
-
   ###################################################
   for (dd in 1:150) {
     if(length(unique(substring(rownames(phData), 1, character_limit))) < length(rownames(phData))){
@@ -174,13 +175,13 @@ pheatmap_average<-function(sce,
   # cluster_colors <- setNames(brewer.pal(8, "Set1"), levels(as.factor(sces$Model1_merge_subcluster)))
   ####################################################
 
-  mapal <- rev(colorRampPalette(RColorBrewer::brewer.pal(11,"RdBu"))(256))
+  mapal <- palettes(category = "heatmap", palette = palette_for_heatmape, counts = 200)
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
     height<- 5 + length(unique(Idents(sce)))*top_n*0.45
   }
-
+  ####################################################
   if(!is.null(marker_res)){
     annotation_row<- data.frame(cluster = degs_top5$cluster, row.names = rownames(phData))
     cluster_pheatmap<-FALSE
@@ -212,9 +213,12 @@ pheatmap_average<-function(sce,
     annotation_row    = annotation_row,
     annotation_colors = list(cluster = cluster_colors),
     silent            =  T) #注释的配色就用前面设置的cluster的颜色
+
   # dev.off()
   ggsave(p, filename =  paste0(file_name_prefix, "-pheatmap-of-markers-average-", group, ".", fig.type),
-         width = width, height = height, path = path$folder_name)
+         width = width,
+         height = height,
+         path = path$folder_name)
 }
 
 

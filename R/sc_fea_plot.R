@@ -8,7 +8,7 @@
 
 #' single cell features plots
 #'
-#' @param sce seurat object
+#' @param sce Seurat object
 #' @param group cell identity
 #' @param assay assay that stored variables
 #' @param slot data type used to estimation, options: scale.data, data, counts
@@ -20,7 +20,7 @@
 #' @param dims default is 'umap' and 'tsne'
 #' @param index default is null
 #' @param show_variables Maximum number of variables displayed
-#' @param pt.size defalut is 1, point size of FeaturePlot
+#' @param pt.size default is 1, point size of 'FeaturePlot'
 #' @param show_box_pvalue default is true, if true, boxplot will show the paired wised statistical p-value
 #' @param show_label default is true: featurePlot will show labels of cell clsuters
 #' @param show_plot if true, pheatmap of all selected variables will be shown in the R studio
@@ -30,6 +30,7 @@
 #' @param remove_other_celltypes
 #' @param min_cell_count
 #' @param dims_for_recluster
+#' @param palette.heatmap
 #'
 #' @return
 #' @export
@@ -183,8 +184,8 @@ sc_fea_plot<-function(sce,
   # boxplot
   if(!slot=="scale.data") input[,vars]<-scale(input[, vars], scale = T, center = T)
 
-  print(table(input[, group]))
 
+  print(table(input[, group]))
   box_width <- 3 +  length(unique(sce@meta.data[, group])) * 0.5
 
   if(is.null(split_by)){
@@ -213,7 +214,6 @@ sc_fea_plot<-function(sce,
     writexl::write_xlsx(res, paste0(file_name$abspath, prefix, "0-statistical-res-with-",group,".xlsx"))
     #######################################
   }
-
 
   if(length(vars)> show_variables){
     show_vars<-res$sig_names[1:show_variables]
@@ -289,7 +289,7 @@ sc_fea_plot<-function(sce,
                          path            = file_name$folder_name,
                          show_plot       = show_plot,
                          show_col        = FALSE,
-                         fig.type        = "pdf")
+                         fig.type        = fig.type)
   # Idents(sce)<- group
   # wwidth<- 4 + length(unique(sce@meta.data[,group]))*0.4
   # hheight<- 3 + length(unique(show_vars)) * 0.3
@@ -309,7 +309,7 @@ sc_fea_plot<-function(sce,
   #        path = file_name$folder_name,
   #        width = wwidth, height = hheight)
   ###################################
-
+  message(">>>--- Processing pheatmap_average ")
 
   height_pheatmap<- 4.0+ length(show_vars)/3
 
