@@ -16,7 +16,7 @@ dong_dimplot(
   seed = 123,
   palette = 1,
   show_col = FALSE,
-  width = 8,
+  width = 9.2,
   height = 8.2,
   w_index = 7,
   w_add = 2,
@@ -33,7 +33,8 @@ dong_dimplot(
   axis_text_size = 10,
   axis_angle = 0,
   hjust = 0.5,
-  save_plot = TRUE
+  save_plot = TRUE,
+  fig.type = "pdf"
 )
 }
 \arguments{
@@ -55,13 +56,13 @@ dong_dimplot(
 
 \item{seed}{default is 54321}
 
-\item{palette}{}
-
 \item{show_col}{default is FALSE}
 
 \item{width}{width of figure}
 
 \item{height}{height of figure}
+
+\item{fig.type}{}
 }
 \description{
 Modified_Dimplot

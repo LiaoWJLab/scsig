@@ -10,6 +10,8 @@ dong_heatmap(
   feas = NULL,
   assay = NULL,
   slot = "scale.data",
+  disp.min = -2.5,
+  disp.max = 5,
   cols = "normal",
   palette = 1,
   palette.heatmap = 1,
@@ -21,31 +23,7 @@ dong_heatmap(
 )
 }
 \arguments{
-\item{sce}{}
-
-\item{group}{}
-
-\item{feas}{}
-
-\item{assay}{}
-
-\item{slot}{}
-
-\item{cols}{}
-
-\item{palette}{}
-
-\item{palette.heatmap}{}
-
-\item{path}{}
-
 \item{prefix}{}
-
-\item{show_plot}{}
-
-\item{show_col}{}
-
-\item{fig.type}{}
 }
 \description{
 Title

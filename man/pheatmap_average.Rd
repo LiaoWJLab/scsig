@@ -18,6 +18,8 @@ pheatmap_average(
   seed = 54321,
   show_col = T,
   palette = 1,
+  palette_for_heatmape = 6,
+  scale.matrix = NULL,
   fig.type = "pdf",
   width = 13,
   height = NULL,
@@ -25,7 +27,7 @@ pheatmap_average(
 )
 }
 \arguments{
-\item{palette}{}
+\item{scale.matrix}{}
 }
 \description{
 Title

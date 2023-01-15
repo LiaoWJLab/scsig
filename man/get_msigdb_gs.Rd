@@ -15,7 +15,7 @@ get_msigdb_gs(
 \arguments{
 \item{msigdb}{default is NULL}
 
-\item{org}{default is 'hsa'}
+\item{org}{default is 'hsa', 'mus'}
 
 \item{category}{default is NULL, other options: C1 - C8,}
 

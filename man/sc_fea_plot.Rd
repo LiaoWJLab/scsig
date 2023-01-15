@@ -21,6 +21,7 @@ sc_fea_plot(
   pt.size = 1,
   cols = "normal",
   palette = 1,
+  show_cols = FALSE,
   palette.heatmap = 1,
   path = NULL,
   index = NULL,
@@ -31,7 +32,7 @@ sc_fea_plot(
 )
 }
 \arguments{
-\item{sce}{seurat object}
+\item{sce}{Seurat object}
 
 \item{group}{cell identity}
 
@@ -47,11 +48,13 @@ sc_fea_plot(
 
 \item{dims}{default is 'umap' and 'tsne'}
 
-\item{pt.size}{defalut is 1, point size of FeaturePlot}
+\item{pt.size}{default is 1, point size of 'FeaturePlot'}
 
 \item{cols}{specifying colors of cell clusters}
 
 \item{palette}{default is NULL, options: jama, jco, aaas, set2, and so on, functions derived from IOBR::palettes()}
+
+\item{palette.heatmap}{}
 
 \item{path}{default is "0-",group,"-sig-plot", users can specifying the path}
 
@@ -62,8 +65,6 @@ sc_fea_plot(
 \item{fig.type}{default is pdf, other options: png}
 
 \item{show_plot}{if true, pheatmap of all selected variables will be shown in the R studio}
-
-\item{dims_for_recluster}{}
 }
 \description{
 single cell features plots
