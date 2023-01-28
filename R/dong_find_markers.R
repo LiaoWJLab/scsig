@@ -229,8 +229,7 @@ dong_find_markers<-function(sce,
                         path              = path$folder_name,
                         index             = 88,
                         cutoff_foldchange = enrich_cutoff_logfc,
-                        cutoff_p_adj      = enrich_cutoff_padj,
-                        )
+                        cutoff_p_adj      = enrich_cutoff_padj)
   }
 
   #####################################################
