@@ -16,6 +16,7 @@ Depends:
     DoubletFinder,
     HGNChelper,
     dplyr,
+    stringr,
     ggraph,
     R (>= 3.80)
 Imports: 
