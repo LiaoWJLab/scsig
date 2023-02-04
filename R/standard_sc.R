@@ -6,15 +6,15 @@
 #' @param eset raw data or normalized data
 #' @param file_type if file_type = "10X", data_path must be provided.
 #' @param data_path absolute path of 10X file
-#' @param project project name
-#' @param index number of folder name
+#' @param project project name,
+#' @param index number of folder name,
 #' @param plot if true, relevant plot will be drawn
 #' @param minFeature minimum features of cell
 #' @param minCount minimum count of cell
 #' @param findmarkers if true, top 6 marker genes of each cluster will be defined and drawn
 #' @param nPCs maximum PC of input
 #' @param res resolution of t-SNE
-#' @param verbose verbose
+#' @param verbose verbose,
 #' @param already_normalized logistic vector, if true, `sce` object will not be normalized
 #' @param sce_object Seurat object
 #' @param vars_dim default is null
@@ -199,7 +199,7 @@ standard_sc<- function(eset               = NULL,
 
   if(!already_normalized){
     # Normalization
-    sce <-Seurat:: NormalizeData(sce, normalization.method =  "LogNormalize",scale.factor = 10000,verbose = verbose)
+    sce <-Seurat:: NormalizeData(sce, normalization.method =  "LogNormalize", scale.factor = 10000, verbose = verbose)
     # sce = NormalizeData(sce,verbose=verbose)
     #######################################################
   }
@@ -218,7 +218,7 @@ standard_sc<- function(eset               = NULL,
 
 
   sce <- FindVariableFeatures(sce,selection.method = "vst", nfeatures = 3000, verbose=verbose)
-  sce <- ScaleData(sce,verbose=verbose) #避免nCounts的影响
+  sce <- ScaleData(sce, verbose=verbose) #避免nCounts的影响
   sce <- RunPCA(object = sce, pc.genes = VariableFeatures(sce), verbose=verbose)
 
   ##########################################################
@@ -482,7 +482,7 @@ standard_sc<- function(eset               = NULL,
                       hwidth     = 13,
                       hheight    = hheight,
                       show_plot  = T,
-                      path       = path3$folder_name )
+                      path       = path3$folder_name)
 
   }
 

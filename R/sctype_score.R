@@ -12,6 +12,19 @@
 # @params: gs - list of gene sets positively expressed in the cell type
 # @params: gs2 - list of gene sets that should not be expressed in the cell type (NULL if not applicable)
 
+#' Title
+#'
+#' @param scRNAseqData
+#' @param scaled
+#' @param gs
+#' @param gs2
+#' @param gene_names_to_uppercase
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
 sctype_score <- function(scRNAseqData, scaled = !0, gs, gs2 = NULL, gene_names_to_uppercase = !0, ...){
 
   # check input matrix

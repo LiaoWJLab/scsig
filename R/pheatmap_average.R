@@ -32,22 +32,22 @@
 pheatmap_average<-function(sce,
                            assay,
                            slot,
-                           marker_res       = NULL,
-                           top_n            = 6,
-                           group            = NULL,
-                           show_features    = NULL,
-                           character_limit  = 30,
-                           path             = NULL,
-                           cols             = "random",
-                           seed             = 54321,
-                           show_col         = T,
-                           palette          = 1,
+                           marker_res           = NULL,
+                           top_n                = 6,
+                           group                = NULL,
+                           show_features        = NULL,
+                           character_limit      = 30,
+                           path                 = NULL,
+                           cols                 = "random",
+                           seed                 = 54321,
+                           show_col             = TRUE,
+                           palette              = 1,
                            palette_for_heatmape = 6,
-                           scale.matrix     = NULL,
-                           fig.type         = "pdf",
-                           width            = 13,
-                           height           = NULL,
-                           file_name_prefix = "0"){
+                           scale.matrix         = NULL,
+                           fig.type             = "pdf",
+                           width                = 13,
+                           height               = NULL,
+                           file_name_prefix     = "0"){
 
 
   if(!is.null(path)){
@@ -91,7 +91,7 @@ pheatmap_average<-function(sce,
       if(show_col) scales::show_col(mycols)
 
     }else if(cols == "normal"){
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col, , show_message = FALSE)
+      mycols<-palettes(category = "random", palette = palette, show_col = show_col, show_message = FALSE)
     }
   }else{
     mycols<-cols

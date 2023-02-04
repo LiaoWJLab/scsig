@@ -47,9 +47,9 @@
 #'
 #' @examples
 dong_find_markers<-function(sce,
-                            assay                    = NULL,
+                            assay                    = NULL,   #RNA, sct, integrated
                             adjust_assay             = FALSE,
-                            slot                     = "scale.data",
+                            slot                     = "scale.data", # count, scale.data
                             feas                     = NULL,
                             group                    = NULL,
                             verbose                  = FALSE,
@@ -69,7 +69,7 @@ dong_find_markers<-function(sce,
                             enrich_cutoff_padj       = 0.05,
                             hwidth                   = 10,
                             hheight                  = NULL,
-                            show_features            = 8,
+                            show_features            = 8,   # print
                             show_plot                = T,
                             path                     = NULL,
                             character_limit          = 50,
