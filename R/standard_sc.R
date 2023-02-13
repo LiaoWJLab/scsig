@@ -226,12 +226,9 @@ standard_sc<- function(eset               = NULL,
     # mycols<- IOBR:: palettes(category = "random", show_col = F, show_message = F)
 
     pp1<-ElbowPlot(sce)
-
     pp2<-DimHeatmap(sce, dims = 1:12, cells = 100, balanced = TRUE)
-
-    pp<-pp2+pp1
-    ggplot2::ggsave(pp,filename = paste0("3-PCA-and-ElbowPlot.pdf"),
-                    width = 5, height = 5.5, path = path2$folder_name)
+    ggsave(pp1, filename = paste0("3-1-ElbowPlot.pdf"),width = 5, height = 5.5, path = path2$folder_name)
+    ggsave(pp1, filename = paste0("3-2-DimHeatmapPlot.pdf"),width = 5, height = 10, path = path2$folder_name)
   }
   #######################################################
   message("------------------------------------------------------")
