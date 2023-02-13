@@ -228,7 +228,7 @@ standard_sc<- function(eset               = NULL,
     pp1<-ElbowPlot(sce)
     pp2<-DimHeatmap(sce, dims = 1:12, cells = 100, balanced = TRUE)
     ggsave(pp1, filename = paste0("3-1-ElbowPlot.pdf"),width = 5, height = 5.5, path = path2$folder_name)
-    ggsave(pp1, filename = paste0("3-2-DimHeatmapPlot.pdf"),width = 5, height = 10, path = path2$folder_name)
+    ggsave(pp2, filename = paste0("3-2-DimHeatmapPlot.pdf"),width = 12, height = 12, path = path2$folder_name)
   }
   #######################################################
   message("------------------------------------------------------")
@@ -264,7 +264,7 @@ standard_sc<- function(eset               = NULL,
     scale_color_brewer(palette = "Set2") +
     ggraph::scale_edge_color_continuous(low = "grey80", high = "red")
 
-  ggsave(p, filename = paste0(3,"-finding-best-resolutions.pdf"),
+  ggsave(p, filename = paste0(3,"-3-finding-best-resolutions.pdf"),
          width = 16, height = 18, path = path2$folder_name )
   #####################################################
 
