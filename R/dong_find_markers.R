@@ -49,7 +49,7 @@
 dong_find_markers<-function(sce,
                             assay                    = NULL,   #RNA, sct, integrated
                             adjust_assay             = FALSE,
-                            slot                     = "scale.data", # count, scale.data
+                            slot                     = "scale.data", # count = data, scale.data,
                             feas                     = NULL,
                             group                    = NULL,
                             verbose                  = FALSE,
@@ -76,7 +76,7 @@ dong_find_markers<-function(sce,
                             re_scale_tsne_umap       = FALSE,
                             recluster                = FALSE,
                             assay_for_recluster      = NULL,
-                            dims_for_recluster       = 20,
+                            dims_for_recluster       = 30,
                             group_after_recluster    ="default",
                             resolution_for_recluster = 0.2){
 
@@ -88,7 +88,7 @@ dong_find_markers<-function(sce,
   if(!is.null(path)){
     file_store<-path
   }else{
-    file_store<-paste0("FindMarkers-dong")
+    file_store<-paste0("res-FindMarkers")
   }
 
   path<-creat_folder(file_store)
@@ -97,11 +97,12 @@ dong_find_markers<-function(sce,
   # abspath<-paste(getwd(),"/",file_store,"/",sep ="" )
 
   message(">>>---Assay used to estimation:")
+
   if(!is.null(assay)){
-    print(DefaultAssay(sce))
     DefaultAssay(sce)<- assay
+    print(DefaultAssay(sce))
   }else{
-    print(paste0(">>>>> ",assay))
+    print(paste0(">>>>> ", assay))
   }
 
 

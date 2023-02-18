@@ -53,7 +53,7 @@ find_subcluster_gene<-function(sce,
                                fig.type                  = "pdf",
                                pt.size                   = 0.7,
                                re_scale_tsne_umap        = FALSE,
-                               recluster                 = F,
+                               recluster                 = FALSE,
                                assay_for_recluster       = "integrated"){
 
 
@@ -95,6 +95,7 @@ find_subcluster_gene<-function(sce,
       ignore<- NULL
     }
 
+    cat(crayon::green(paste0(">>>-- Step-1: Filtering cell types counting less than ", min_cell_count, "...\n")))
     sces_sub<-unassign_cell(sce            = sces_sub,
                         cluster            = col_sub_celltype,
                         ignore_cell_prefix = ignore,
@@ -114,6 +115,8 @@ find_subcluster_gene<-function(sce,
     path_res<-creat_folder(paste0(path,"/", i,"-",celltype))
     ############################################
 
+
+    cat(crayon::green(paste0(">>>-- Step-2: Performing DE analysis ...\n")))
 
     res<- dong_find_markers(    sce                       = sces_sub,
                                  assay                    = assay,
@@ -141,7 +144,7 @@ find_subcluster_gene<-function(sce,
                                  show_plot                = T,
                                  path                     = path_res$folder_name,
                                  character_limit          = 50,
-                                re_scale_tsne_umap        = re_scale_tsne_umap,
+                                 re_scale_tsne_umap       = re_scale_tsne_umap,
                                  recluster                = recluster,
                                  assay_for_recluster      = assay_for_recluster,
                                  dims_for_recluster       = 20,

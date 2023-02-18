@@ -131,31 +131,37 @@ pheatmap_average<-function(sce,
     celltypes<- unique(id_sce)
   }
   print(paste0(">>>>> Features that will be displayed..."))
-  print(show_features)
+  # print(show_features)
+  cat(crayon::green(paste0(show_features,"...\n")))
   ###################################################
   avgData<- SeuratObject::GetAssayData(object =  sce, assay = assay, slot = slot)
   avgData<- avgData[show_features, ]
-
-  eset<- avgData
-  print(paste0(">>>>> Head of feature data..."))
-  print(head(avgData))
-
-  print(paste0(">>>>> Features not exited in matrix data..."))
+  eset <- avgData
+  print(paste0(">>>>> Features not present in the matrix ..."))
   # print(summary(show_features%in%rownames(avgData)))
-  print(show_features[!show_features%in%rownames(avgData)])
-
-  # 每个基因在每个cluster里的平均值
+  ###################################################
+  not_exixt <-  show_features[!show_features%in%rownames(avgData)]
+  if(length(not_exixt)==0){
+    cat(crayon::green(paste0("No...")))
+  }else{
+    cat(crayon::green(paste0(not_exixt, "...\n")))
+  }
+  ####################################################
   avgData <- avgData %>%
     apply(1, function(x){
-      tapply(x, INDEX = id_sce, FUN = mean, na.rm = T) # ExpMean
+      tapply(x, INDEX = id_sce, FUN = mean, na.rm = T)
     }) %>% t
   ##################################################
-
-  # phData <- MinMax(scale(avgData), -3, 3) # z-score
-  # phData[is.na(phData)]<-0
-
+  if(slot=="scale.data"){
+    avgData <- MinMax(t(scale(t(avgData))), -3, 3) # z-score
+    avgData[is.na(avgData)]<-0
+  }else{
+    avgData <- MinMax(t(scale(t(avgData))), -3, 3) # z-score
+    avgData[is.na(avgData)]<-0
+  }
+  ###################################################
   phData<-avgData
-  #remove na and INF
+  #remove NA and INF
   feas<-feature_manipulation(data = phData, feature = colnames(phData))
   phData<-phData[, feas]
 
@@ -181,7 +187,7 @@ pheatmap_average<-function(sce,
   # cluster_colors <- setNames(brewer.pal(8, "Set1"), levels(as.factor(sces$Model1_merge_subcluster)))
   ####################################################
 
-  mapal <- palettes(category = "heatmap", palette = palette_for_heatmape, counts = 200)
+  mapal <- palettes(category = "heatmap", palette = palette_for_heatmape, counts = 200, show_col = FALSE, show_message = FALSE)
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
@@ -202,23 +208,23 @@ pheatmap_average<-function(sce,
     }
   }
   ######################################################
-  if(is.null(scale.matrix)){
-    if(slot=="data"){
-      scale_phmap<- "row"
-    }else{
-      scale_phmap<- "none"
-    }
-  }else if(scale.matrix){
-    scale_phmap<- "row"
-  }else{
-    scale_phmap<- "none"
-  }
+  # if(is.null(scale.matrix)){
+  #   if(slot=="data"){
+  #     scale_phmap<- "row"
+  #   }else{
+  #     scale_phmap<- "none"
+  #   }
+  # }else if(scale.matrix){
+  #   scale_phmap<- "row"
+  # }else{
+  #   scale_phmap<- "none"
+  # }
   # library(pheatmap)
   # pdf(paste0(path$abspath, "2-markers-heatmap-of-average-", group, ".", fig.type), width = width, height = height)
   p<-pheatmap:: pheatmap(
     phData,
     color             = mapal, #colorRampPalette(c("darkblue", "white", "red3"))(99), #配色
-    scale             = scale_phmap,
+    # scale             = scale_phmap,
     cluster_rows      = cluster_pheatmap, #不按行聚类
     cluster_cols      = T, #按列聚类
     cellwidth         = 15,
