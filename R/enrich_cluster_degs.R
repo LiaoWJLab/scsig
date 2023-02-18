@@ -78,7 +78,7 @@ enrich_cluster_degs<-function(sce.markers,
                                            OrgDb = org.Hs.eg.db,
                                            pvalueCutoff=0.99) # pvalueCutoff
 
-      xx<- setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+      xx<- clusterProfiler::setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
       # table(xx@compareClusterResult$Cluster)
       print(head(as.data.frame(xx)))
 
@@ -91,7 +91,7 @@ enrich_cluster_degs<-function(sce.markers,
                                            # OrgDb = org.Hs.eg.db,
                                            # count = 3,
       ) # pvalueCutoff
-      xx<- setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+      xx<-clusterProfiler:: setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
       # table(xx@compareClusterResult$Cluster)
       print(head(as.data.frame(xx)))
 

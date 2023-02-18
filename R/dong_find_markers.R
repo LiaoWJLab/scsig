@@ -266,8 +266,6 @@ dong_find_markers<-function(sce,
 
     #进一步降维
     ########################################
-
-
     if(group_after_recluster=="default") Idents(sce) <- group
 
     set.seed(123)
@@ -326,10 +324,8 @@ dong_find_markers<-function(sce,
     print(x = head(markers_df))
     markers_genes =  rownames(head(x = markers_df, n = show_features))  #show_features一般不能改变，因为涉及到下面的排版问题
 
-
-
-    if(is.null(slot_vln)) slot_vln<-slot
-    if(is.null(slot_fea)) slot_fea<-slot
+    if(is.null(slot_vln)) slot_vln <-  slot
+    if(is.null(slot_fea)) slot_fea <- "count"
 
     if(slot_vln=="scale.data"){
       log = FALSE
@@ -340,14 +336,12 @@ dong_find_markers<-function(sce,
       min.cutoff<- NULL
       max.cutoff<- NULL
     }
-
     #############################################################
     if(!is.null(assay)) DefaultAssay(sce)<- assay
-    print(paste0("Default assay is ", DefaultAssay(sce) ))
+    print(paste0("Default assay is ", DefaultAssay(sce)))
 
     print(paste0(">>>-- Colors could be change by parameter: 'cols'"))
     ###############################################################
-
 
     VlnPlot(object = sce,
             # assay = "RNA",
@@ -371,13 +365,17 @@ dong_find_markers<-function(sce,
            width = 18,height = 13,
            path = path$folder_name)
 
-    FeaturePlot(object = sce, features = markers_genes, reduction = "umap", pt.size = pt.size, slot = slot_fea, min.cutoff = min.cutoff, max.cutoff = max.cutoff,
+    FeaturePlot(object = sce, features = markers_genes, reduction = "umap", pt.size = pt.size,
+                slot = slot_fea,
+                # min.cutoff = min.cutoff, max.cutoff = max.cutoff,
                 ncol = 4, cols = c("lightgrey", "darkred")) & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-2-",var,"-FeaturePlot_subcluster_markers-umap.",fig.type),
            width = 20,height = 11,
            path = path$folder_name)
 
-    FeaturePlot(object = sce, features = markers_genes, reduction = "tsne", pt.size = pt.size, slot = slot_fea, min.cutoff = min.cutoff,  max.cutoff = max.cutoff,
+    FeaturePlot(object = sce, features = markers_genes, reduction = "tsne", pt.size = pt.size,
+                slot = slot_fea,
+                # min.cutoff = min.cutoff,  max.cutoff = max.cutoff,
                 ncol = 4, cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-3-",var,"-FeaturePlot_subcluster_markers-tsne.",fig.type),
            width = 20,height = 11,
