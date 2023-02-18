@@ -45,7 +45,7 @@ standard_sc(
 
 \item{data_path}{absolute path of 10X file}
 
-\item{project}{project name}
+\item{project}{project name,}
 
 \item{qc_identity}{default is null}
 
@@ -53,9 +53,9 @@ standard_sc(
 
 \item{res}{resolution of t-SNE}
 
-\item{verbose}{verbose}
+\item{verbose}{verbose,}
 
-\item{index}{number of folder name}
+\item{index}{number of folder name,}
 
 \item{plot}{if true, relevant plot will be drawn}
 

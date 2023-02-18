@@ -16,7 +16,7 @@ pheatmap_average(
   path = NULL,
   cols = "random",
   seed = 54321,
-  show_col = T,
+  show_col = TRUE,
   palette = 1,
   palette_for_heatmape = 6,
   scale.matrix = NULL,

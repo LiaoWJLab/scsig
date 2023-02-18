@@ -76,11 +76,11 @@ enrich_cluster_degs<-function(sce.markers,
       xx <-clusterProfiler::compareCluster(deg_list,
                                            fun= method,
                                            OrgDb = org.Hs.eg.db,
-                                           pvalueCutoff=0.99) # pvalueCutoff显著性应该为0.05
-      # table(xx@compareClusterResult$Cluster) #每个基因集富集个数
-      print(head(as.data.frame(xx))) #查看完整结果
+                                           pvalueCutoff=0.99) # pvalueCutoff
 
-
+      xx<- setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+      # table(xx@compareClusterResult$Cluster)
+      print(head(as.data.frame(xx)))
 
     }
 
@@ -90,9 +90,10 @@ enrich_cluster_degs<-function(sce.markers,
                                            pvalueCutoff=0.99
                                            # OrgDb = org.Hs.eg.db,
                                            # count = 3,
-      ) # pvalueCutoff显著性应该为0.05
-      # table(xx@compareClusterResult$Cluster) #每个基因集富集个数
-      print(head(as.data.frame(xx))) #查看完整结果
+      ) # pvalueCutoff
+      xx<- setReadable(xx, OrgDb = org.Hs.eg.db, keyType="ENTREZID")
+      # table(xx@compareClusterResult$Cluster)
+      print(head(as.data.frame(xx)))
 
     }
 
@@ -107,7 +108,7 @@ enrich_cluster_degs<-function(sce.markers,
     gg<-clusterProfiler:: dotplot(xx, showCategory = showCategory )+
       scale_color_gradientn(colours= cols,
                             guide=guide_colorbar(reverse=TRUE))+
-      scale_y_discrete(name ="Description",labels=function(x) str_wrap(x, width=40))+
+      scale_y_discrete(name ="Description",labels=function(x) stringr:: str_wrap(x, width=40))+
       scale_size_continuous(range=c(2, 10)) +
       design_mytheme(legend.position = "right", legend.direction = "vertical", legend.size =0.25 )+
       labs(x="",

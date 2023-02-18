@@ -57,3 +57,6 @@ doublet_detect(
 \description{
 Integration of  doublet detection
 }
+\author{
+Dongqiang Zeng
+}

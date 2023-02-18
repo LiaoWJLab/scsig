@@ -26,8 +26,8 @@ find_subcluster_gene(
   fig.type = "pdf",
   pt.size = 0.7,
   re_scale_tsne_umap = FALSE,
-  recluster = F,
-  assay_for_recluster = "integrated"
+  recluster = FALSE,
+  assay_for_recluster = NULL
 )
 }
 \arguments{

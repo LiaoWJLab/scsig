@@ -35,9 +35,11 @@ dong_find_markers(
   re_scale_tsne_umap = FALSE,
   recluster = FALSE,
   assay_for_recluster = NULL,
-  dims_for_recluster = 20,
+  dims_for_recluster = 30,
   group_after_recluster = "default",
-  resolution_for_recluster = 0.2
+  resolution_for_recluster = 0.2,
+  slot_vln = NULL,
+  slot_fea = NULL
 )
 }
 \arguments{

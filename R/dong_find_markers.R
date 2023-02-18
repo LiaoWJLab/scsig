@@ -78,7 +78,9 @@ dong_find_markers<-function(sce,
                             assay_for_recluster      = NULL,
                             dims_for_recluster       = 30,
                             group_after_recluster    ="default",
-                            resolution_for_recluster = 0.2){
+                            resolution_for_recluster = 0.2,
+                            slot_vln                 = NULL,
+                            slot_fea                 = NULL){
 
   # -------------------------------------------------------------------------
 
@@ -100,9 +102,9 @@ dong_find_markers<-function(sce,
 
   if(!is.null(assay)){
     DefaultAssay(sce)<- assay
-    print(DefaultAssay(sce))
+    print(paste0(">>>>> ", DefaultAssay(sce)))
   }else{
-    print(paste0(">>>>> ", assay))
+    print(paste0(">>>>> ", DefaultAssay(sce)))
   }
 
 
@@ -142,7 +144,7 @@ dong_find_markers<-function(sce,
   ##################################
   # help("PrepSCTFindMarkers")
 
-  if(tolower(assay)=="sct"&adjust_assay) sce<- PrepSCTFindMarkers(sce)
+  if(tolower(assay)=="sct" & adjust_assay) sce<- PrepSCTFindMarkers(sce)
   # help("FindAllMarkers")
   ###################################
   sce.markers <- FindAllMarkers(object          = sce,
@@ -150,8 +152,8 @@ dong_find_markers<-function(sce,
                                 assay           = assay,
                                 features        = feas,
                                 only.pos        = only.pos,
-                                min.pct         = 0.25,
-                                thresh.use      = 0.25,
+                                min.pct         = 0.15,
+                                thresh.use      = 0.15,
                                 verbose         = verbose,
                                 logfc.threshold = logfc.threshold,
                                 test.use        = test.use,
@@ -207,6 +209,7 @@ dong_find_markers<-function(sce,
 
   height_pheatmap<- 4.0 + length(unique(Idents(sce)))*show_genes*0.3
 
+
   pheatmap_average(sce             = sce,
                    assay           = assay,
                    slot            = slot,
@@ -249,7 +252,7 @@ dong_find_markers<-function(sce,
       "The reclustering result is not convinsible!!! Be cautious....."
       sce<-SCTransform(sce, verbose = TRUE)
     }else{
-      if(assay_for_recluster!="integrated")  sce <- NormalizeData(object = sce)
+      if(assay_for_recluster!="integrated") sce <- NormalizeData(object = sce)
       sce <-  ScaleData(sce)
       sce <- FindVariableFeatures(object = sce)
 
@@ -257,7 +260,6 @@ dong_find_markers<-function(sce,
 
     # sce <- ScaleData(object = sce)
     sce <- RunPCA(object = sce, npcs = dims_for_recluster, verbose = TRUE)
-
     #findclusters--------------
     sce <- FindNeighbors(sce, dims = seq(dims_for_recluster))
     sce <- FindClusters(sce, resolution = resolution_for_recluster)
@@ -324,10 +326,19 @@ dong_find_markers<-function(sce,
     print(x = head(markers_df))
     markers_genes =  rownames(head(x = markers_df, n = show_features))  #show_features一般不能改变，因为涉及到下面的排版问题
 
-    if(slot=="scale.data"){
+
+
+    if(is.null(slot_vln)) slot_vln<-slot
+    if(is.null(slot_fea)) slot_fea<-slot
+
+    if(slot_vln=="scale.data"){
       log = FALSE
+      min.cutoff<- -3
+      max.cutoff<- 3
     }else{
       log = TRUE
+      min.cutoff<- NULL
+      max.cutoff<- NULL
     }
 
     #############################################################
@@ -336,6 +347,8 @@ dong_find_markers<-function(sce,
 
     print(paste0(">>>-- Colors could be change by parameter: 'cols'"))
     ###############################################################
+
+
     VlnPlot(object = sce,
             # assay = "RNA",
             # group.by = "scpred_seurat",
@@ -344,6 +357,7 @@ dong_find_markers<-function(sce,
             # log = log,
             stack = T,
             flip = T,
+            slot = slot_vln,
             sort = "increasing",
             cols = mycols, #palettes(category = "random", palette = 1),
             ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")
@@ -352,18 +366,19 @@ dong_find_markers<-function(sce,
            path = path$folder_name)
     ################################################################
 
-    VlnPlot(object = sce, features = markers_genes,  log = log , cols = mycols, ncol = 4)& theme(plot.title = element_text(size = 10))
+    VlnPlot(object = sce, features = markers_genes,  log = log,  slot = slot_vln,  cols = mycols, ncol = 4)& theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-1-",var,"-VlnPlot_subcluster_markers.", fig.type),
            width = 18,height = 13,
            path = path$folder_name)
 
-    FeaturePlot(object = sce, features=markers_genes, reduction = "umap", pt.size = pt.size,
+    FeaturePlot(object = sce, features = markers_genes, reduction = "umap", pt.size = pt.size, slot = slot_fea, min.cutoff = min.cutoff, max.cutoff = max.cutoff,
                 ncol = 4, cols = c("lightgrey", "darkred")) & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-2-",var,"-FeaturePlot_subcluster_markers-umap.",fig.type),
            width = 20,height = 11,
            path = path$folder_name)
 
-    FeaturePlot(object = sce, features=markers_genes, reduction = "tsne", pt.size = pt.size, ncol = 4, cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
+    FeaturePlot(object = sce, features = markers_genes, reduction = "tsne", pt.size = pt.size, slot = slot_fea, min.cutoff = min.cutoff,  max.cutoff = max.cutoff,
+                ncol = 4, cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-3-",var,"-FeaturePlot_subcluster_markers-tsne.",fig.type),
            width = 20,height = 11,
            path = path$folder_name)

@@ -54,7 +54,7 @@ find_subcluster_gene<-function(sce,
                                pt.size                   = 0.7,
                                re_scale_tsne_umap        = FALSE,
                                recluster                 = FALSE,
-                               assay_for_recluster       = "integrated"){
+                               assay_for_recluster       = NULL){
 
 
   ############################################
@@ -118,6 +118,9 @@ find_subcluster_gene<-function(sce,
 
     cat(crayon::green(paste0(">>>-- Step-2: Performing DE analysis ...\n")))
 
+
+    if(is.null(assay_for_recluster)) assay_for_recluster<- assay
+
     res<- dong_find_markers(    sce                       = sces_sub,
                                  assay                    = assay,
                                  slot                     = slot,
@@ -147,7 +150,7 @@ find_subcluster_gene<-function(sce,
                                  re_scale_tsne_umap       = re_scale_tsne_umap,
                                  recluster                = recluster,
                                  assay_for_recluster      = assay_for_recluster,
-                                 dims_for_recluster       = 20,
+                                 dims_for_recluster       = 30,
                                  resolution_for_recluster = 0.2)
 
   }

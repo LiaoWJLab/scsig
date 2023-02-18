@@ -26,10 +26,12 @@
 #' @param propotion default is 0.025
 #' @param save_path default is NULL
 #'
+#' @author Dongqiang Zeng
 #' @return
 #' @export
 #'
 #' @examples
+#'
 doublet_detect<-function(sce                = NULL,
                          already_normalized = FALSE,
                          eset               = NULL,
