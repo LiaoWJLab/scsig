@@ -79,8 +79,8 @@ dong_find_markers<-function(sce,
                             dims_for_recluster       = 30,
                             group_after_recluster    ="default",
                             resolution_for_recluster = 0.2,
-                            slot_vln                 = NULL,
-                            slot_fea                 = NULL){
+                            slot_vln                 = "scale.data",
+                            slot_fea                 = "data"){
 
   # -------------------------------------------------------------------------
 
@@ -191,6 +191,7 @@ dong_find_markers<-function(sce,
                 angle        = 60,
                 size         = 3.5,
                 group.colors = mycols,
+
                 assay        = assay,
                 slot         = slot)+
     scale_fill_gradientn(colours = rev(mapal))
@@ -324,21 +325,19 @@ dong_find_markers<-function(sce,
     print(x = head(markers_df))
     markers_genes =  rownames(head(x = markers_df, n = show_features))  #show_features一般不能改变，因为涉及到下面的排版问题
 
-    if(is.null(slot_vln)) slot_vln <-  slot
-    if(is.null(slot_fea)) slot_fea <- "count"
 
+    ###########################################
+    if(is.null(slot_vln)) slot_vln <-  slot
     if(slot_vln=="scale.data"){
       log = FALSE
-      min.cutoff<- -3
-      max.cutoff<- 3
     }else{
+      slot_vln=="data"
       log = TRUE
-      min.cutoff<- NULL
-      max.cutoff<- NULL
     }
     #############################################################
-    if(!is.null(assay)) DefaultAssay(sce)<- assay
+    # if(!is.null(assay)) DefaultAssay(sce)<- assay
     print(paste0("Default assay is ", DefaultAssay(sce)))
+
 
     print(paste0(">>>-- Colors could be change by parameter: 'cols'"))
     ###############################################################
@@ -365,9 +364,15 @@ dong_find_markers<-function(sce,
            width = 18,height = 13,
            path = path$folder_name)
 
+
+    ###############################
+    if(is.null(slot_fea)) slot_fea <- "scale.data"
+
+    #################################
     FeaturePlot(object = sce, features = markers_genes, reduction = "umap", pt.size = pt.size,
                 slot = slot_fea,
-                # min.cutoff = min.cutoff, max.cutoff = max.cutoff,
+                min.cutoff = 0,
+                max.cutoff = 20,
                 ncol = 4, cols = c("lightgrey", "darkred")) & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-2-",var,"-FeaturePlot_subcluster_markers-umap.",fig.type),
            width = 20,height = 11,
@@ -375,7 +380,8 @@ dong_find_markers<-function(sce,
 
     FeaturePlot(object = sce, features = markers_genes, reduction = "tsne", pt.size = pt.size,
                 slot = slot_fea,
-                # min.cutoff = min.cutoff,  max.cutoff = max.cutoff,
+                min.cutoff = 0,
+                max.cutoff = 20,
                 ncol = 4, cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-3-",var,"-FeaturePlot_subcluster_markers-tsne.",fig.type),
            width = 20,height = 11,

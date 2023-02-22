@@ -119,7 +119,14 @@ find_subcluster_gene<-function(sce,
     cat(crayon::green(paste0(">>>-- Step-2: Performing DE analysis ...\n")))
 
 
+
+    if(assay_for_recluster!="integrated") sces_sub <- NormalizeData(object = sces_sub)
+    sces_sub <-  ScaleData(sces_sub)
+
+
     if(is.null(assay_for_recluster)) assay_for_recluster<- assay
+
+
 
     res<- dong_find_markers(    sce                       = sces_sub,
                                  assay                    = assay,
