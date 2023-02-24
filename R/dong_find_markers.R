@@ -358,11 +358,17 @@ dong_find_markers<-function(sce,
             cols = mycols, #palettes(category = "random", palette = 1),
             ncol = 4)
 
-    p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
-
-    if(max(nchar(markers_genes))>20){
-      p<- p +  scale_y_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    if(max(nchar(markers_genes))>30){
+      p<- p + theme(plot.title = element_text(size = 6), legend.position = "none")
+    }else{
+      p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
     }
+
+
+    # if(max(nchar(markers_genes))>20){
+    #   p<- p + scale_x_discrete(labels=function(x) gsub("\\-", " ", x, fixed=TRUE))
+    #   p<- p +  scale_x_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    # }
     ###############################################################
     ggsave(p, filename=paste0(i+2,"-0-",var,"-VlnPlot_subcluster_markers.", fig.type),
            width = 7,height = 12, path = path$folder_name)
@@ -370,11 +376,16 @@ dong_find_markers<-function(sce,
 
     p<- VlnPlot(object = sce, features = markers_genes,  log = log,  slot = slot_vln, cols = mycols, ncol = 4)
 
-    p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
-
-    if(max(nchar(markers_genes))>20){
-      p<- p +  scale_y_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    if(max(nchar(markers_genes))>30){
+      p<- p + theme(plot.title = element_text(size = 6), legend.position = "none")
+    }else{
+      p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
     }
+
+    # if(max(nchar(markers_genes))>30){
+    #   p<- p + scale_x_discrete(labels=function(x) gsub("-", " ", x, fixed=TRUE))
+    #   p<- p +  scale_x_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    # }
     ##############################
     ggsave(p, filename=paste0(i+2,"-1-",var,"-VlnPlot_subcluster_markers.", fig.type),
            width = 18,height = 13,
