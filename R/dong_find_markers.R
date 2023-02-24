@@ -41,6 +41,10 @@
 #' @param group_after_recluster
 #' @param adjust_assay
 #' @param re_scale_tsne_umap
+#' @param slot_vln
+#' @param slot_fea
+#' @param min.cutoff
+#' @param max.cutoff
 #'
 #' @return
 #' @export
@@ -79,12 +83,12 @@ dong_find_markers<-function(sce,
                             dims_for_recluster       = 30,
                             group_after_recluster    ="default",
                             resolution_for_recluster = 0.2,
-                            slot_vln                 = "scale.data",
-                            slot_fea                 = "data"){
+                            slot_vln                 = NULL,
+                            slot_fea                 = NULL,
+                            min.cutoff               = NULL,
+                            max.cutoff               = NULL){
 
   # -------------------------------------------------------------------------
-
-
   # -------------------------------------------------------------------------
 
   if(!is.null(path)){
@@ -191,16 +195,17 @@ dong_find_markers<-function(sce,
                 angle        = 60,
                 size         = 3.5,
                 group.colors = mycols,
-
                 assay        = assay,
                 slot         = slot)+
     scale_fill_gradientn(colours = rev(mapal))
 
   if(show_plot) print(pp)
-  ggsave(pp,filename=paste0("2-markers-heatmap-of-",prefix,".",fig.type),
-         path = path$folder_name,
-         width = hwidth,
-         height = hheight, dpi = 300)
+  ggsave(pp,
+         filename   = paste0("2-markers-heatmap-of-",prefix,".",fig.type),
+         path       = path$folder_name,
+         width      = hwidth,
+         height     = hheight,
+         dpi        = 300)
   ###################################
 
 
@@ -325,7 +330,6 @@ dong_find_markers<-function(sce,
     print(x = head(markers_df))
     markers_genes =  rownames(head(x = markers_df, n = show_features))  #show_features一般不能改变，因为涉及到下面的排版问题
 
-
     ###########################################
     if(is.null(slot_vln)) slot_vln <-  slot
     if(slot_vln=="scale.data"){
@@ -338,11 +342,10 @@ dong_find_markers<-function(sce,
     # if(!is.null(assay)) DefaultAssay(sce)<- assay
     print(paste0("Default assay is ", DefaultAssay(sce)))
 
-
     print(paste0(">>>-- Colors could be change by parameter: 'cols'"))
     ###############################################################
 
-    VlnPlot(object = sce,
+    p<- VlnPlot(object = sce,
             # assay = "RNA",
             # group.by = "scpred_seurat",
             add.noise = FALSE,
@@ -353,26 +356,47 @@ dong_find_markers<-function(sce,
             slot = slot_vln,
             sort = "increasing",
             cols = mycols, #palettes(category = "random", palette = 1),
-            ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")
-    ggsave(filename=paste0(i+2,"-0-",var,"-VlnPlot_subcluster_markers.", fig.type),
-           width = 7,height = 12,
-           path = path$folder_name)
+            ncol = 4)
+
+    p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
+
+    if(max(nchar(markers_genes))>20){
+      p<- p +  scale_y_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    }
+    ###############################################################
+    ggsave(p, filename=paste0(i+2,"-0-",var,"-VlnPlot_subcluster_markers.", fig.type),
+           width = 7,height = 12, path = path$folder_name)
     ################################################################
 
-    VlnPlot(object = sce, features = markers_genes,  log = log,  slot = slot_vln,  cols = mycols, ncol = 4)& theme(plot.title = element_text(size = 10))
-    ggsave(filename=paste0(i+2,"-1-",var,"-VlnPlot_subcluster_markers.", fig.type),
+    p<- VlnPlot(object = sce, features = markers_genes,  log = log,  slot = slot_vln, cols = mycols, ncol = 4)
+
+    p<- p + theme(plot.title = element_text(size = 10), legend.position = "none")
+
+    if(max(nchar(markers_genes))>20){
+      p<- p +  scale_y_discrete(labels=function(x) stringr::str_wrap(x, width = 40))
+    }
+    ##############################
+    ggsave(p, filename=paste0(i+2,"-1-",var,"-VlnPlot_subcluster_markers.", fig.type),
            width = 18,height = 13,
            path = path$folder_name)
 
-
     ###############################
-    if(is.null(slot_fea)) slot_fea <- "scale.data"
+    if(is.null(slot_fea)) slot_fea <-  "scale.data"
 
-    #################################
+    if(slot_fea =="scale.data"){
+      if(is.null(min.cutoff)) min.cutoff = -2
+      if(is.null(max.cutoff)) max.cutoff = 2
+    }else{
+      if(is.null(min.cutoff)) min.cutoff = 0
+      if(is.null(max.cutoff)) max.cutoff = 10
+    }
+
+    # annotation:
+    ###############################
     FeaturePlot(object = sce, features = markers_genes, reduction = "umap", pt.size = pt.size,
                 slot = slot_fea,
-                min.cutoff = 0,
-                max.cutoff = 20,
+                min.cutoff = min.cutoff,
+                max.cutoff = max.cutoff,
                 ncol = 4, cols = c("lightgrey", "darkred")) & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-2-",var,"-FeaturePlot_subcluster_markers-umap.",fig.type),
            width = 20,height = 11,
@@ -380,8 +404,8 @@ dong_find_markers<-function(sce,
 
     FeaturePlot(object = sce, features = markers_genes, reduction = "tsne", pt.size = pt.size,
                 slot = slot_fea,
-                min.cutoff = 0,
-                max.cutoff = 20,
+                min.cutoff = min.cutoff,
+                max.cutoff = max.cutoff,
                 ncol = 4, cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
     ggsave(filename=paste0(i+2,"-3-",var,"-FeaturePlot_subcluster_markers-tsne.",fig.type),
            width = 20,height = 11,

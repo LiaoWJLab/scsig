@@ -251,30 +251,29 @@ find_subcluster_signatures<-function(sce,
         ggsave(p, filename = paste0("0-",group,"-subcluster-dimplot-tsne-umap.pdf"), path = path2$folder_name, width = 13, height = 6 )
 
         # DefaultAssay(sces) <- sig_methods[jj]
-        dong_find_markers(sce        = sces2,
-                          assay      = sig_methods[jj],
-                          slot       = "scale.data",
-
-                          group      = group,
-                          verbose    = T,
-                          feature_type = "signature",
-                          fig.type   = "pdf",
-                          pt.size    = 0.5,
-                          cols       = cols,
-                          seed       = seed,
-                          palette    = palette,
-                          show_col   = show_col,
-                          show_genes = 7,
-                          show_genes_pheatmap = show_feas_pheatmap,
-                          hwidth     = 19,
-                          hheight    = NULL,
-                          show_plot  = T,
-                          path       = path2$folder_name,
-                          character_limit = character_limit_heatmap,
-                          recluster = recluster,
-                          dims_for_recluster = 8,
+        dong_find_markers(sce                      = sces2,
+                          assay                    = sig_methods[jj],
+                          slot                     = "scale.data",
+                          group                    = group,
+                          verbose                  = T,
+                          feature_type             = "signature",
+                          fig.type                 = "pdf",
+                          pt.size                  = 0.5,
+                          cols                     = cols,
+                          seed                     = seed,
+                          palette                  = palette,
+                          show_col                 = show_col,
+                          show_genes               = 7,
+                          show_genes_pheatmap      = show_feas_pheatmap,
+                          hwidth                   = 19,
+                          hheight                  = NULL,
+                          show_plot                = T,
+                          path                     = path2$folder_name,
+                          character_limit          = character_limit_heatmap,
+                          recluster                = recluster,
+                          dims_for_recluster       = 8,
                           resolution_for_recluster = 0.3,
-                          assay_for_recluster =  assay)
+                          assay_for_recluster      =  assay)
 
       }
 
@@ -299,10 +298,11 @@ find_subcluster_signatures<-function(sce,
       # celltype<-"B lymphocytes"
       if(!is.null(assay)) DefaultAssay(sce)<-assay
 
+      # print(rownames(sce))
+
       Idents(sce)<- col_celltype
 
       sces<-subset(sce, idents = celltype)
-
 
       if(remove_other_celltypes){
         sces@meta.data[, col_sub_celltype]<-ifelse(grepl(sces@meta.data[, col_sub_celltype],pattern = celltype), sces@meta.data[, col_sub_celltype], "unassigned" )
@@ -469,7 +469,6 @@ find_subcluster_signatures<-function(sce,
                             palette                  = palette,
                             seed                     = 1234,
                             show_col                 = F,
-
                             show_genes               = 7,
                             show_genes_pheatmap      = show_feas_pheatmap,
                             hwidth                   = 19,
