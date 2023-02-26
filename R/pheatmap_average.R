@@ -115,7 +115,7 @@ pheatmap_average<-function(sce,
     marker_res<-marker_res[marker_res$cluster %in% unique(as.character(Idents(sce))), ]
 
     message(">>>--- Results of DEs..")
-    print(marker_res)
+    print(as.tibble(marker_res))
     # select degs for heatmap
     degs_top5 <- marker_res %>%
        # filter(cluster!= NA) %>%
@@ -142,7 +142,7 @@ pheatmap_average<-function(sce,
   ###################################################
   not_exixt <-  show_features[!show_features%in%rownames(avgData)]
   if(length(not_exixt)==0){
-    cat(crayon::green(paste0("No...")))
+    cat(crayon::green(paste0("No...\n")))
   }else{
     cat(crayon::green(paste0(not_exixt, "...\n")))
   }
