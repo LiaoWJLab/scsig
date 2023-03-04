@@ -35,11 +35,17 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
     DefaultAssay(sce)<-method
 
     eset<- SeuratObject:: GetAssayData(sce, assay = assay, slot = slot)
-    eset<- eset[rownames(eset)%in% unique(vars), ]
-    # print(head(eset))
-    eset<- as.data.frame(t(eset))
-    eset<- tibble:: rownames_to_column(eset, var = "ID")
 
+    feas_e<- rownames(eset)[rownames(eset)%in%unique(vars)]
+    eset<- eset[feas_e, ]
+    # print(head(eset))
+    if(length(feas_e)==1){
+     eset<- data.frame("ID" = as.character(names(eset)), vars = as.numeric(eset))
+     colnames(eset)[2] <- feas_e
+    }else{
+      eset<- as.data.frame(t(eset))
+      eset<- tibble:: rownames_to_column(eset, var = "ID")
+    }
       # base::as.data.frame() %>%
       # tibble:: rownames_to_column(.,var = "id") %>%
       # dplyr:: filter(.$id%in%unique(vars)) %>%
@@ -47,9 +53,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
       # base:: t() %>%
       # base:: as.data.frame() %>%
 
-    exit_vars<-vars[vars%in%colnames(eset)]
-
-    if(length(exit_vars)==0) next
+    if(length(feas_e)==0) next
 
     # print(head(eset))
 
@@ -74,7 +78,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
   }
 
   # eset_cbind<-eset_cbind[,-which(colnames(eset_cbind)=="index")]
-  print(head(eset_cbind))
+  # print(head(eset_cbind))
   return(eset_cbind)
 
 }
