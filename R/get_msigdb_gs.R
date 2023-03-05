@@ -27,7 +27,7 @@ get_msigdb_gs<-function(msigdb = NULL, org = "hsa", category = NULL, subcategory
   ################################################
 
   if(is.null(category)){
-    message(">>>---Category is NULL, default is Hallmark gene sets...")
+    message(">>>---Category is NULL, Hallmark gene sets will be obtained from MSigDB...")
     category = "H"
   }
   ##################################################
