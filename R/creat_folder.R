@@ -3,17 +3,23 @@
 
 
 
-#' Title
+#' Title Creating folders
 #'
-#' @param f1
-#' @param f2
-#' @param return
-#' @param f3
+#' @param f1 a character vector, primary directory of file paths
+#' @param f2 a character vector, second-level directory of file paths, default is NULL
+#' @param return level number of file paths, choose from 1, 2 and 3, default if NULL
+#' @param f3 a character vector, third-level directory of file paths, default is NULL
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#' creat a file path containing one level directory
+#' path<-creat_folder("1")
+#' creat a file path containing three level directory
+#' path<-creat_folder(f1="1",f2="2",f3="3")
+#' creat a file path containing two level directory
+#' path<-creat_folder(f1="1",f2="2",f3="3", return=2)
 creat_folder<-function(f1, f2 = NULL, f3 = NULL, return = NULL){
 
 

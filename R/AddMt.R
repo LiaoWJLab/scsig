@@ -2,10 +2,10 @@
 
 
 
-#' Title
+#' Title Calculate the percentage of all counts that belong to mitochondrial genes and Ribosomal genes
 #'
-#' @param sce seurat object
-#' @param species species
+#' @param sce Seurat object
+#' @param species species name, such as human or mouse
 #'
 #' @return
 #' @export

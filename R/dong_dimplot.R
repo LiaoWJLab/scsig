@@ -2,38 +2,38 @@
 
 
 
-#' Modified_Dimplot
+#' Modified Dimplot
 #'
-#' @param sce seurat object
-#' @param reduction default is umap, other options: tsne, pca
-#' @param groups colors of group
-#' @param split.by variables used to split the figures
-#' @param label true or false
+#' @param sce Seurat object
+#' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
+#' @param groups Name of one or more metadata columns to group (color) cells by (for example, orig.ident); pass 'ident' to group by identity class
+#' @param split.by Name of a metadata column to split plot by
+#' @param label logical.Whether to label the clusters
 #' @param label.size size of label
 #' @param pt.size size of point
-#' @param cols users can define the cols manualy
-#' @param seed default is 54321
-#' @param show_col default is FALSE
+#' @param cols selection of colors for plots, such as normal, random, default is normal. users can define the cols manualy
+#' @param seed seed of the random number generator, defuat is 123
+#' @param show_col logical. if TRUE, palettes will be displayed
 #' @param width width of figure
 #' @param height height of figure
-#' @param w_index
+#' @param w_index the parameter of width
 #' @param w_add
-#' @param max_category
-#' @param show_plot
-#' @param path
-#' @param index
-#' @param legend.position
-#' @param legend.direction
-#' @param legend.size
-#' @param plot_title_size
-#' @param axis_title_size
-#' @param axis_text_size
-#' @param axis_angle
-#' @param hjust
-#' @param theme
-#' @param save_plot
-#' @param palette
-#' @param fig.type
+#' @param max_category maximal number of groups
+#' @param show_plot logical. if TRUE, plots will be displayed
+#' @param path path of the output saving directory, default is null
+#' @param index index number of folder name
+#' @param legend.position position of legend
+#' @param legend.direction direction of legend
+#' @param legend.size font size of legend
+#' @param plot_title_size title size
+#' @param axis_title_size axis title size
+#' @param axis_text_size axis text size
+#' @param axis_angle axis angle
+#' @param hjust horizontal justification
+#' @param theme theme of figure, default is "classic"
+#' @param save_plot logical. if TRUE, plots will be saved
+#' @param palette color palette, default is 1, other options: 2,3,4
+#' @param fig.type figure type, such as pdf and png
 #'
 #' @return
 #' @export
