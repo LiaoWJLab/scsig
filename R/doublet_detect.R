@@ -9,29 +9,36 @@
 
 #' Integration of  doublet detection
 #'
-#' @param eset expression set, default is null
-#' @param file_type if file is from 10X, data_path must be provide
-#' @param data_path data_path of 10X data
-#' @param project project name
-#' @param check_data if true
-#' @param index folder name of save_path
-#' @param minFeature minimum feature of cell
-#' @param minCount minimum count of cell
-#' @param percent.mt max of percentage of mitochondrial gens
-#' @param filter_data if TRUE, cells will be filtered by aforementioned criterion
-#' @param method default is `doubletfinder`: Benchmarking Computational Doublet-Detection Methods for Single-Cell RNA Sequencing Data
-#' @param sce default is null, a seurat object
-#' @param cores default is 1
-#' @param already_normalized
-#' @param propotion default is 0.025
-#' @param save_path default is NULL
+#' Here, we provide two doublet-detection methods:`doubletFinder{DoubletFinder}` and `scds`,
+#' since the DoubletFinder method has the best detection accuracy, and the cxds method has the highest computational efficiency[1]
+#' You can use `help(doubletFinder)` and `help(scds)` for more details.
 #'
-#' @author Dongqiang Zeng
-#' @return
+#' @param eset Raw data or normalized data
+#' @param file_type If file is from 10X, data_path must be provide
+#' @param data_path Absolute path of sparse data matrices provided by 10X genomics
+#' @param project Project name for the Seurat object, such as TNBC. If save_path is NULL, the project name will be part of folder name of save_path. default is NULL
+#' @param check_data If TRUE, quality control will be done
+#' @param index Prefix of the file name for saving
+#' @param minFeature Minimum features of cell
+#' @param minCount Minimum counts of cell
+#' @param percent.mt Maximum of percentage of mitochondrial gens
+#' @param filter_data If TRUE, cells will be filtered by aforementioned criterion
+#' @param method Methods for doublet detection, choose from `doubletfinder` and `scds`
+#' @param sce Seurat object, default is NULL
+#' @param cores Number of cores to use for parallelization, default is 1
+#' @param already_normalized if TRUE, input data has been normalized
+#' @param propotion Doublet formation rate,  default is 0.025
+#' @param save_path Path of the output saving directory
+#'
+#' @return Seurat object with updated metadata including pANN and doublet classifications when `method= "doubletfinder"`;
+#' Seurat object with updated metadata including doublet scores by `cxds`, `bcds` and `cxds_bcds_hybrid`, and doublet classifications when `method= "scds"`
+#'
+#'
 #' @export
 #'
 #' @examples
-#'
+#' data("pbmc_small")
+#' doublet_detect( sce=pbmc_small)
 doublet_detect<-function(sce                = NULL,
                          already_normalized = FALSE,
                          eset               = NULL,
@@ -67,7 +74,7 @@ doublet_detect<-function(sce                = NULL,
   if(!is.null(save_path)){
     file_name<-creat_folder(save_path)
   }else{
-    file_name<-mydb:: creat_folder(paste0(index,"-",project,"-doublet-detection"))
+    file_name<-creat_folder(paste0(index,"-",project,"-doublet-detection"))
   }
 
   abspath<-file_name$abspath

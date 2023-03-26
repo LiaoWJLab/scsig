@@ -3,22 +3,31 @@
 
 
 
-#' Title
+#' Get gene sets from MSigDB
 #'
-#' @param org default is 'hsa', 'mus'
-#' @param category default is NULL, other options: C1 - C8,
-#' @param subcategory default is NULL, options:
-#' @param msigdb default is NULL
-#' @param format default is list
+#' Retrieve a list or data frame of gene sets and their member genes.
+#' Users can not only download gene sets from MSigSB online directly,
+#' but also get them from local datasets by setting the parameter `msigdb`.
 #'
-#' @return
+#' @param org Species name of organisms, choose from 'hsa' and 'mus'
+#' @param category MSigDB collection abbreviation, such as H or C1
+#' @param subcategory MSigDB sub-collection abbreviation, such as CGP or BP
+#' @param msigdb Local data frame of gent sets. If NULL, it will download from MSigSB automatically
+#' @param format Format of the output. Default is list, otherwise data frame
+#'
+#' @return A list of gene sets or a data frame of gene sets
 #' @export
 #'
 #' @examples
+#' ## get human Hallmark gene sets by default
 #' gs<- get_msigdb_gs()
+#' ## NOTRUN
+#' ## get human Hallmark gene sets from local datasets
+#' # load local datasets
+#' load("msigdb.RData")
+#' ##get human C5 (ontology gene sets) GO:BP (GO Biological Process ontology) gene sets
+#' term_genes <- get_msigdb_gs(msigdb = msigdb, org = "hsa", category = "C5", subcategory = "GO:BP", format = "list")
 get_msigdb_gs<-function(msigdb = NULL, org = "hsa", category = NULL, subcategory = NULL, format = "list"){
-
-
   if(org=="hsa"){
     species<- "Homo sapiens"
   }else if(org=="mus"){
@@ -27,12 +36,11 @@ get_msigdb_gs<-function(msigdb = NULL, org = "hsa", category = NULL, subcategory
   ################################################
 
   if(is.null(category)){
-    message(">>>---Category is NULL, Hallmark gene sets will be obtained from MSigDB...")
+    message(">>>---Category is NULL, default is Hallmark gene sets...")
     category = "H"
   }
   ##################################################
   message(">>>---Categories that can be choosed... ")
-
 
   if(is.null(msigdb)){
     m_df = msigdbr::msigdbr(species = species)

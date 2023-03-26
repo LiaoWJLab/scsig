@@ -2,43 +2,45 @@
 
 
 
-#' Modified Dimplot
+#' Modified dimensional reduction plot
 #'
 #' @param sce Seurat object
-#' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
+#' @param reduction Which dimensionality reduction to use. If NULL, first searches for umap, then tsne, then pca.
 #' @param groups Name of one or more metadata columns to group (color) cells by (for example, orig.ident); pass 'ident' to group by identity class
 #' @param split.by Name of a metadata column to split plot by
-#' @param label logical.Whether to label the clusters
-#' @param label.size size of label
-#' @param pt.size size of point
-#' @param cols selection of colors for plots, such as normal, random, default is normal. users can define the cols manualy
-#' @param seed seed of the random number generator, defuat is 123
-#' @param show_col logical. if TRUE, palettes will be displayed
-#' @param width width of figure
-#' @param height height of figure
-#' @param w_index the parameter of width
-#' @param w_add
-#' @param max_category maximal number of groups
-#' @param show_plot logical. if TRUE, plots will be displayed
-#' @param path path of the output saving directory, default is null
-#' @param index index number of folder name
-#' @param legend.position position of legend
-#' @param legend.direction direction of legend
-#' @param legend.size font size of legend
-#' @param plot_title_size title size
-#' @param axis_title_size axis title size
-#' @param axis_text_size axis text size
-#' @param axis_angle axis angle
-#' @param hjust horizontal justification
-#' @param theme theme of figure, default is "classic"
-#' @param save_plot logical. if TRUE, plots will be saved
-#' @param palette color palette, default is 1, other options: 2,3,4
-#' @param fig.type figure type, such as pdf and png
+#' @param label Whether to label the clusters
+#' @param label.size Size of label
+#' @param pt.size Size of point
+#' @param cols Vector of colors, each color corresponds to an identity class. This may also be a single character, such as normal and random, to a palette as specified by `IOBR::palettes`. See `palettes` for details
+#' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
+#' @param show_col Whether to display the palettes
+#' @param width Width of plot when saving
+#' @param height Height of plot when saving
+#' @param w_index Numeric value corresponding to `width`. The parameter works when `split.by` not NULL
+#' @param w_add Numeric value corresponding to `width`. The parameter can be used to increase `width` when necessary
+#' @param max_category Maximal number of groups
+#' @param show_plot Whether to displaye the plot
+#' @param path Path of the output saving directory
+#' @param index Index number of folder name
+#' @param legend.position Position of legend
+#' @param legend.direction Direction of legend
+#' @param legend.size Font size of legend
+#' @param plot_title_size Title size
+#' @param axis_title_size Axis title size
+#' @param axis_text_size Axis text size
+#' @param axis_angle Axis angle
+#' @param hjust Horizontal justification
+#' @param theme Theme of plot.
+#' @param save_plot Whether to save the plot
+#' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
+#' @param fig.type Format of plot saving, such as pdf and png
 #'
-#' @return
+#' @return A list of ggplot objects
 #' @export
 #'
 #' @examples
+#' data("pbmc_small")
+#' dong_dimplot(object = pbmc_small)
 dong_dimplot<-function(sce,
                        reduction        = "umap",
                        groups           = "orig.ident",
@@ -77,8 +79,9 @@ dong_dimplot<-function(sce,
     file_store<-paste0("Dimplot-dong")
   }
 
-  if(!file.exists(file_store)) dir.create(file_store)
-  abspath<-paste(getwd(),"/",file_store,"/",sep ="" )
+  path<-creat_folder(file_store)
+  #if(!file.exists(file_store)) dir.create(file_store)
+  #abspath<-paste(getwd(),"/",file_store,"/",sep ="" )
 
 
   num_cols<-length(unique(as.character(sce@meta.data[,groups])))
@@ -96,7 +99,7 @@ dong_dimplot<-function(sce,
       message(">>>> Default seed is 123, you can change it by `seed`(parameter).")
       set.seed(seed)
       mycols<-mycols[sample(length(mycols), length(mycols))]
-     ##########################################
+      ##########################################
 
       if(show_col) scales::show_col(mycols)
 

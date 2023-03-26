@@ -3,38 +3,45 @@
 
 #' standard_Seurat_data_processing
 #'
-#' @param eset raw data or normalized data
-#' @param file_type if file_type = "10X", data_path must be provided.
-#' @param data_path absolute path of 10X file
-#' @param project project name,
-#' @param index number of folder name,
-#' @param plot if true, relevant plot will be drawn
-#' @param minFeature minimum features of cell
-#' @param minCount minimum count of cell
-#' @param findmarkers if true, top 6 marker genes of each cluster will be defined and drawn
-#' @param nPCs maximum PC of input
-#' @param res resolution of t-SNE
-#' @param verbose verbose,
-#' @param already_normalized logistic vector, if true, `sce` object will not be normalized
-#' @param sce_object Seurat object
-#' @param vars_dim default is null
-#' @param qc_identity default is null
-#' @param save_sce_object default is TRUE
-#' @param save_path default is null
-#' @param species default is human
-#' @param cutoff_percent_mt default is 25
-#' @param assay default is RNA
-#' @param filter_min_cells default is FALSE
-#' @param min_cell_count default is 20
-#' @param cols default is 'normal'
-#' @param palette default is 1, other options: 2,3,4
-#' @param show_col default is TRUE, palettes will be displayed
-#' @param seed default is 123
+#' The standard data process includes quality control, dimension reduction, unsupervised clustering and differential expression
 #'
-#' @return
+#' @param eset Either a matrix-like object with unnormalized data with cells as columns and features as rows or an Assay-derived object
+#' @param file_type If file_type = "10X", data_path must be provided
+#' @param data_path Absolute path of sparse data matrices provided by 10X genomics
+#' @param project Project name for the Seurat object
+#' @param index Prefix of folder name
+#' @param plot If TURE, relevant plot will be drawn
+#' @param minFeature Minimum features of cell
+#' @param minCount Minimum feature counts of cell
+#' @param findmarkers If TRUE, top 6 marker genes of each cluster will be defined and drawn
+#' @param nPCs Maximum PC of input
+#' @param res Value of the resolution parameter. The higher the value, the larger number of communities you will obtain.
+#' @param verbose Whether to show progress bar for procedure
+#' @param already_normalized If TRUE, `sce` object will not be normalized
+#' @param sce_object Seurat object
+#' @param vars_dim A vector of variables to group cells by
+#' @param qc_identity Default is Null
+#' @param save_sce_object If TRUE, Suerat object will be saved
+#' @param save_path Path of the output saving directory
+#' @param species Species name, such as human or mouse
+#' @param cutoff_percent_mt Cutoffs for filtering cells that have >n percent mitochondrial gene counts, default is 25
+#' @param assay Assay to pull data from such as RNA,sct,integrated, default is RNA
+#' @param filter_min_cells Whether to filter out the clusters that contain < n cells, default is FALSE
+#' @param min_cell_count Minimal cell counts of the clusters, default is 20
+#' @param cols Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+#'             See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details
+#' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
+#' @param show_col Whether to show color palettes
+#' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
+#'
+#' @return Returns the standard processed object
 #' @export
 #'
 #' @examples
+#' ## Not run:
+#' data("pbmc_small")
+#' pbmc_small<-standard_sc( sce_object=pbmc_small )
+#' ## End(Not run)
 standard_sc<- function(eset               = NULL,
                        sce_object         = NULL,
                        assay              = "RNA",
@@ -199,7 +206,7 @@ standard_sc<- function(eset               = NULL,
 
   if(!already_normalized){
     # Normalization
-    sce <-Seurat:: NormalizeData(sce, normalization.method =  "LogNormalize", scale.factor = 10000, verbose = verbose)
+    sce <-Seurat:: NormalizeData(sce, normalization.method =  "LogNormalize",scale.factor = 10000,verbose = verbose)
     # sce = NormalizeData(sce,verbose=verbose)
     #######################################################
   }
@@ -218,7 +225,7 @@ standard_sc<- function(eset               = NULL,
 
 
   sce <- FindVariableFeatures(sce,selection.method = "vst", nfeatures = 3000, verbose=verbose)
-  sce <- ScaleData(sce, verbose=verbose) #避免nCounts的影响
+  sce <- ScaleData(sce,verbose=verbose)
   sce <- RunPCA(object = sce, pc.genes = VariableFeatures(sce), verbose=verbose)
 
   ##########################################################
@@ -226,9 +233,12 @@ standard_sc<- function(eset               = NULL,
     # mycols<- IOBR:: palettes(category = "random", show_col = F, show_message = F)
 
     pp1<-ElbowPlot(sce)
+
     pp2<-DimHeatmap(sce, dims = 1:12, cells = 100, balanced = TRUE)
-    ggsave(pp1, filename = paste0("3-1-ElbowPlot.pdf"),width = 5, height = 5.5, path = path2$folder_name)
-    ggsave(pp2, filename = paste0("3-2-DimHeatmapPlot.pdf"),width = 12, height = 12, path = path2$folder_name)
+
+    pp<-pp2+pp1
+    ggplot2::ggsave(pp,filename = paste0("3-PCA-and-ElbowPlot.pdf"),
+                    width = 5, height = 5.5, path = path2$folder_name)
   }
   #######################################################
   message("------------------------------------------------------")
@@ -248,7 +258,7 @@ standard_sc<- function(eset               = NULL,
   # message("------------------------------------------------------")
 
 
-###########################################################
+  ###########################################################
   for (xx in seq(0.4, 2.0, by = 0.4)) {
 
     message(paste0("Resolution is ", xx))
@@ -264,7 +274,7 @@ standard_sc<- function(eset               = NULL,
     scale_color_brewer(palette = "Set2") +
     ggraph::scale_edge_color_continuous(low = "grey80", high = "red")
 
-  ggsave(p, filename = paste0(3,"-3-finding-best-resolutions.pdf"),
+  ggsave(p, filename = paste0(3,"-finding-best-resolutions.pdf"),
          width = 16, height = 18, path = path2$folder_name )
   #####################################################
 
@@ -292,7 +302,7 @@ standard_sc<- function(eset               = NULL,
 
 
 
-  #进一步降维
+
   ########################################
   set.seed(123)
   sce <- RunTSNE(object = sce, dims = seq(nPCs), do.fast = TRUE, verbose=verbose, check_duplicates = FALSE)
@@ -324,7 +334,7 @@ standard_sc<- function(eset               = NULL,
   head(tsne_pos)
   dat=cbind(tsne_pos,phe,umap_pos)
   head(dat)
- ############################################
+  ############################################
 
   meta<-sce@meta.data
   save(meta,file=paste0(file_name$abspath,"1-",project,'-meta.data.Rdata'))
@@ -340,7 +350,6 @@ standard_sc<- function(eset               = NULL,
                         geom = "polygon",alpha=0.2,level=0.9,type="t",linetype = 2,show.legend = F)+
       coord_fixed()+
       theme_light()
-    print(p)
     theme <- theme(panel.grid =element_blank()) +
       theme(panel.border = element_blank(),panel.background = element_blank()) +
       theme(axis.line = element_line(size=1, colour = "black"))
@@ -358,7 +367,6 @@ standard_sc<- function(eset               = NULL,
                         geom = "polygon",alpha=0.2,level=0.9,type="t",linetype = 2,show.legend = F)+
       coord_fixed()+
       theme_light()
-    print(p)
     theme <- theme(panel.grid =element_blank()) +
       theme(panel.border = element_blank(),panel.background = element_blank()) +
       theme(axis.line = element_line(size=1, colour = "black"))
@@ -401,17 +409,13 @@ standard_sc<- function(eset               = NULL,
 
     resolution<- res
     #############################################
-    #' 查看降维数据与细胞注释的关系--PCA--TSNE---UMAP------
-    reduction_method<-c("pca","tsne","umap")
+    #' View the relationship between dimensionality reduction data and cell annotation
     #############################################
 
     for (i in 1:length(vars_dim)) {
 
       var<-vars_dim[i]
 
-      #' 选择需要分析的变量------labels不多的-------------------------
-      # groups<-c("orig.ident","final_celltype","tissue_type","seurat_clusters")
-      #' 使用双重循环进行-------------------------
       pp<-list(NULL)
       for(jj in 1:length(reduction_method)){
 
@@ -479,7 +483,7 @@ standard_sc<- function(eset               = NULL,
                       hwidth     = 13,
                       hheight    = hheight,
                       show_plot  = T,
-                      path       = path3$folder_name)
+                      path       = path3$folder_name )
 
   }
 

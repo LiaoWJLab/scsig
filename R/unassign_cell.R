@@ -7,25 +7,38 @@
 
 
 
-#' Title
+#' Filter out clusters with low cell counts
 #'
-#' @param sce
-#' @param cluster
-#' @param ignore_cell_prefix
-#' @param min_cell_count
-#' @param new_col
-#' @param delete_unassigned
-#' @param return_meta_data
-#' @param alread_unassigned
-#' @param minimal_cell
+#' First, filter out the clusters with less than x cell counts by setting `minimal_cell = x`.
+#' Secondly, choose the clusters with more than y cell counts by setting `min_cell_count = y`,while retaining the clusters of interest.
 #'
-#' @return
+#' @param sce Seurat object
+#' @param cluster Name of one metadata column to group (color) cells by
+#' @param ignore_cell_prefix A character vector corresponding to cell types with no cell count limitation
+#' @param min_cell_count Minimal cell counts of the clusters
+#' @param new_col A character used to name a new column of metedata
+#' @param delete_unassigned If TURE, cells in the clusters with cell counts less than `min_cell_count` will be deleted
+#' @param return_meta_data If TURE, seurat meta data will be output as the result
+#' @param alread_unassigned A character uesd to describe the state of unassigned cells, default is "unassigned"
+#' @param minimal_cell Minimal cell counts of all clusters
+#'
+#' @return Seurat object or metadata
 #' @export
 #'
 #' @examples
-unassign_cell<-function(sce, cluster, ignore_cell_prefix = NULL, min_cell_count = 30,
-                        new_col = NULL, delete_unassigned = FALSE, return_meta_data = FALSE,
-                        alread_unassigned = "unassigned", minimal_cell = 10){
+#' #Load data
+#' data("pbmc_small")
+#' # Find the clusters containing cell counts less than 30 and filter out them from the dataset.
+#' sce<-uassign_cell(sce = pbmc_small, cluster= "RNA_snn_res.1", min_cell_count = 30, delete_unassigned  = T )
+unassign_cell<-function(sce,
+                        cluster,
+                        ignore_cell_prefix = NULL,
+                        min_cell_count     = 30,
+                        new_col            = NULL,
+                        delete_unassigned  = FALSE,
+                        return_meta_data   = FALSE,
+                        alread_unassigned  = "unassigned",
+                        minimal_cell       = 10){
 
   if(class(sce)!="Seurat") stop("sce must be a seurat object...")
 

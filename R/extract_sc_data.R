@@ -6,17 +6,26 @@
 
 
 
-#' Title
+#' Extract data frame
 #'
-#' @param sce
-#' @param vars
-#' @param assay
-#' @param combine_meta_data
+#' Extract and combine data frame with cells as rows and features as columns from Seurat assay data.
+#' @param sce Seurat object
+#' @param vars Vector of variables as features
+#' @param assay Assay to pull data from
+#' @param slot Specific assay data to get or set
+#' @param combine_meta_data Whether to combine metadata with the extracted data frame
 #'
-#' @return
+#' @return Data frame with cells as rows and features as columns
 #' @export
 #'
 #' @examples
+#' #Load data
+#' data("pbmc_small")
+#' pbmc_small
+#' #Choose features
+#' vars<-c("PPBP", "IGLL5", "VDAC3", "CD1C", "AKR1C3", "PF4", "MYL9", "GNLY", "TREML1", "CA2")
+#' #Get extracted data frame
+#' eset<-extract_sc_data(sce= pbmc_small, vars= vars, assay= "RNA")
 extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_meta_data = TRUE){
 
 
@@ -35,27 +44,23 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
     DefaultAssay(sce)<-method
 
     eset<- SeuratObject:: GetAssayData(sce, assay = assay, slot = slot)
+    eset<- eset[rownames(eset)%in% unique(vars), ]
+    print(head(eset))
+    eset<- as.data.frame(t(eset))
+    eset<- tibble:: rownames_to_column(eset, var = "ID")
 
-    feas_e<- rownames(eset)[rownames(eset)%in%unique(vars)]
-    eset<- eset[feas_e, ]
-    # print(head(eset))
-    if(length(feas_e)==1){
-     eset<- data.frame("ID" = as.character(names(eset)), vars = as.numeric(eset))
-     colnames(eset)[2] <- feas_e
-    }else{
-      eset<- as.data.frame(t(eset))
-      eset<- tibble:: rownames_to_column(eset, var = "ID")
-    }
-      # base::as.data.frame() %>%
-      # tibble:: rownames_to_column(.,var = "id") %>%
-      # dplyr:: filter(.$id%in%unique(vars)) %>%
-      # column_to_rownames(.,var = "id") %>%
-      # base:: t() %>%
-      # base:: as.data.frame() %>%
+    # base::as.data.frame() %>%
+    # tibble:: rownames_to_column(.,var = "id") %>%
+    # dplyr:: filter(.$id%in%unique(vars)) %>%
+    # column_to_rownames(.,var = "id") %>%
+    # base:: t() %>%
+    # base:: as.data.frame() %>%
 
-    if(length(feas_e)==0) next
+    exit_vars<-vars[vars%in%colnames(eset)]
 
-    # print(head(eset))
+    if(length(exit_vars)==0) next
+
+    #print(head(eset))
 
     if(length(assay)>1) colnames(eset)[2:ncol(eset)] <-paste0(colnames(eset)[2:ncol(eset)], "_", method)
 
@@ -78,7 +83,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
   }
 
   # eset_cbind<-eset_cbind[,-which(colnames(eset_cbind)=="index")]
-  # print(head(eset_cbind))
+  #print(head(eset_cbind))
   return(eset_cbind)
 
 }

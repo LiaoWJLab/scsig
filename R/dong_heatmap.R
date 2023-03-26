@@ -4,26 +4,32 @@
 
 
 
-#' Title
+#' Modified feature expression heatmap
 #'
-#' @param sce
-#' @param group
-#' @param feas
-#' @param assay
-#' @param slot
-#' @param cols
-#' @param palette
-#' @param palette.heatmap
-#' @param path
-#' @param show_plot
-#' @param show_col
-#' @param fig.type
-#' @param prefix
+#'The function is a modified version of `DoHeatmap{Seurat}`.
 #'
-#' @return
+#' @param sce Seurat object
+#' @param group A vector of variables to group cells by; pass 'ident' to group by cell identity classes
+#' @param feas A vector of features to plot, defaults to `VariableFeatures(object = object)`
+#' @param assay Assay to pull from
+#' @param slot Data slot to use, choose from 'raw.data', 'data', or 'scale.data'
+#' @param disp.min Minimum display value (all values below are clipped)
+#' @param disp.max Maximum display value (all values above are clipped); defaults to 2.5 if slot is 'scale.data', 6 otherwise
+#' @param cols Vector of colors, each color corresponds to an identity class. This may also be a single character, such as normal and random,  to a palette as specified by `IOBR::palettes`. See `palettes` for details
+#' @param palette Numeric value corresponding with colors to use for the color bar. Default is 1, other options: 2, 3, 4
+#' @param palette.heatmap Numeric value corresponding with colors  to use for n-colour gradient, default is 1, other options: 2, 3, 4, 5, 6
+#' @param path Path of the output saving directory
+#' @param show_plot Whether to show the plot
+#' @param show_col Whether to show color palettes
+#' @param fig.type Format of plot saving, such as pdf and png
+#' @param prefix Prefix of the file name
+#'
+#' @return a list of ggplot objects
 #' @export
 #'
 #' @examples
+#' data("pbmc_small")
+#' dong_heatmap(sce = pbmc_small,group= "RNA_snn_res.1")
 dong_heatmap<-function(sce,
                        group,
                        feas            = NULL,
@@ -82,3 +88,4 @@ dong_heatmap<-function(sce,
   return(pp)
 
 }
+pp

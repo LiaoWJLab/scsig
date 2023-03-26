@@ -1,26 +1,29 @@
 
 
 
-#' single cell annotation by scType
+#' Cell type annotation by scType
 #'
-#' @param sce seurat object
-#' @param assay default is RNA
-#' @param slot default is scaled data
-#' @param scale default is NULL
-#' @param cluster cluster used to annotation
-#' @param point.size default is 1.5
-#' @param db_ default is ScTypeDB_full.xlsx, deposited in data
-#' @param cols 'random', 'normal', or colors
-#' @param palette options: 1, 2
-#' @param show_col default is TRUE
-#' @param seed default is 123 if cols = 'random'
-#' @param reduction default is umap
-#' @param gs default is null, user can provide gene set file manually
-#' @param tissue_type default is null = base
-#' @param cell_type default is null,
-#' @param cell_subset default is null
+#' Cell type annotation using specific marker combinations from single-cell transcriptomic data
+#' refer to [ScType](https://www.nature.com/articles/s41467-022-28803-w)
+#' @param sce Seurat object
+#' @param assay Assay to pull from, e.g. RNA, SCT, integrated
+#' @param slot Data slot to use, choose from 'counts', 'data', or 'scale.data'
+#' @param scale Whether the matrix is scaled，default is NULL
+#' @param cluster A vector of variables to group cells by
+#' @param point.size Size of point, default is 1.5
+#' @param db_ Database of manually collected cell type annotation, default is "ScTypeDB_full.xlsx" deposited in data
+#' @param cols Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+#'             See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details
+#' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
+#' @param show_col Whether to show color palettes
+#' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
+#' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
+#' @param gs Default is null, user can provide gene set file manually
+#' @param tissue_type Default is NULL
+#' @param cell_type Cell types choosed from "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"
+#' @param cell_subset Default is NULL
 #'
-#' @return
+#' @return Seurat object with updated metadata containing cell type annotation
 #' @export
 #'
 #' @examples
@@ -69,9 +72,6 @@ sc_type_anno<-function(sce,
   }else{
     scale<-scale
   }
-
-
-
   es.max = sctype_score(scRNAseqData = scRNAseqData,
                         scaled = !scale,
                         gs = gs_list$gs_positive,
@@ -100,7 +100,7 @@ sc_type_anno<-function(sce,
   #cell being of specific cell type) just set gs2 argument to NULL (i.e. gs2 = NULL).
 
   #We can also overlay the identified cell types on UMAP plot:
-  sce@meta.data$sc_typer = ""
+  #sce@meta.data$sc_typer = ""
 
   for(j in unique(sctype_scores$cluster)){
     cl_type = sctype_scores[sctype_scores$cluster==j,];

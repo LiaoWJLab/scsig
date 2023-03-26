@@ -2,15 +2,17 @@
 
 
 
-#' Title Calculate the percentage of all counts that belong to mitochondrial genes and Ribosomal genes
+#' Calculate the percentage of mitochondrial and ribosomal genes
 #'
 #' @param sce Seurat object
-#' @param species species name, such as human or mouse
+#' @param species Species name. Species must be one of human or mouse
 #'
-#' @return
+#' @return A Seurat object with the percentage of mitochondrial and ribosomal genes stored in metadata.
 #' @export
 #'
 #' @examples
+#' data(pbmc_small)
+#' pbmc_small <- AddMt(pbmc_small , species= "human" )
 AddMt<-function(sce, species='human'){
 
   message("species must be one of `human` or `mouse`.")
