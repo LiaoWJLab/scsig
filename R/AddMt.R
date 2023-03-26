@@ -4,8 +4,8 @@
 
 #' Title
 #'
-#' @param sce
-#' @param species
+#' @param sce seurat object
+#' @param species species
 #'
 #' @return
 #' @export

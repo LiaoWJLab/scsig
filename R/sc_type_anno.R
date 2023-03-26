@@ -69,6 +69,9 @@ sc_type_anno<-function(sce,
   }else{
     scale<-scale
   }
+
+
+
   es.max = sctype_score(scRNAseqData = scRNAseqData,
                         scaled = !scale,
                         gs = gs_list$gs_positive,
