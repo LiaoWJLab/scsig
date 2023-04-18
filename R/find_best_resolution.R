@@ -3,6 +3,10 @@
 
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 #' Find best resolution for clustering
 #'
 #' Find best resolution for clustering. First, for a given seurat object, identify clusters of cells by setting the resolution value from low to high.
@@ -23,6 +27,7 @@
 #'
 #' @return Suerat object or a ggplot object
 #' @export
+#' @author Dongqiang Zeng
 #'
 #' @examples
 find_best_resolution<-function(sce, assay,  prefix, from = 0.2, to = 1.2, graph.name = NULL,  save_plot = T, path = NULL,

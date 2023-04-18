@@ -5,6 +5,7 @@
 #' Compare and show gene clusters functional profile for all identity classes
 #'
 #' This function combines `compareCluster()` and `dotplot()` both from package [clusterProfiler](http://127.0.0.1:60491/help/library/clusterProfiler/html/00Index.html)
+<<<<<<< Updated upstream
 #' to perform enrichment analysis and draw dotplot  for all identity classes.
 #'
 #' @param sce.markers A data frame of Gene expression markers for all identity classes(output from `FindAllMarkers`)
@@ -21,7 +22,26 @@
 #' @param width Width of plot for saving
 #' @param height Height of plot for saving
 #' @param index Prefix of file name when saving
+=======
+#' to perform enrichment analysis and draw dot plot  for all identity classes.
+>>>>>>> Stashed changes
 #'
+#' @param sce.markers A data frame of Gene expression markers for all identity classes(output from `FindAllMarkers`)
+#' @param cutoff_foldchangeLimit Cutoff for filtering gene signatures which show on average, less than X-fold difference (log-scale) between the two groups of cells for enrichment analysis, default is 0.5
+#' @param cutoff_p_adj Cutoff for filtering gene signatures which adjust P values are < n for enrichment  analysis, default is 0.01
+#' @param methods A list of methods, choose from "groupGO", "enrichGO", "enrichKEGG", "enrichDO" or "enrichPathway"
+#' @param path Path of the output saving directory
+#' @param showCategory Number of terms to show, default is 5
+#' @param cols Vector of colors to use for n-color gradient, default is c('#b3eebe', "#46bac2", '#371ea3'), users can define the colors manualy
+#' @param cluster Name of the column where the clusters in the data frame, default is "cluster"
+#' @param gene Name of the column where the genes in the data frame in the data framer, default is "gene"
+#' @param p.adj Name of the column where P adjust value in the data framer, default is "p_val_adj"
+#' @param logfc Name of the column where log-scaled fold change in the data frame, default is "avg_log2FC"
+#' @param width Width of plot for saving
+#' @param height Height of plot for saving
+#' @param index Prefix of file name when saving
+#'
+#' @author Dongqiang Zeng
 #' @return
 #' @export
 #'

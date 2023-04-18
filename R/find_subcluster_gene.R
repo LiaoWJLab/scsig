@@ -32,8 +32,12 @@
 #' @param re_scale_tsne_umap
 #'
 #' @return Seurat object containing specific type of cells
+<<<<<<< Updated upstream
 #' @export
 #'
+=======
+#' @author Dongqiang Zeng
+>>>>>>> Stashed changes
 #' @examples
 find_subcluster_gene<-function(sce,
                                assay                     = "integrated",

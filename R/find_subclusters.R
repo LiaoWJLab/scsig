@@ -4,6 +4,7 @@
 
 
 #' Sub-cluster determination
+<<<<<<< Updated upstream
 #' 
 #' Identify sub-clusters for each cluster of cells
 #' @param sce Seurat object
@@ -16,6 +17,20 @@
 #' @param min_cell_count Minimum number of cell counts of each cluster, dedault is 50
 #' @param ignore_cell_prefix A character vector corresponding to cell types with no cell count limitation
 #'
+=======
+#'
+#' Identify sub-clusters for each cluster of cells
+#' @param sce Seurat object
+#' @param celltype Name of the metadata column to group cells by
+#' @param combined_subclusters New name of a metadata column, dedault is "celltype_subcluster"
+#' @param graph.name Name of graph to use for the clustering algorithm
+#' @param resolution Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities
+#' @param delete_new_variable Dedault is TRUE
+#' @param filtering_mini_cell Whether to filter out the clusters with few cells, dedault is TRUE
+#' @param min_cell_count Minimum number of cell counts of each cluster, dedault is 50
+#' @param ignore_cell_prefix A character vector corresponding to cell types with no cell count limitation
+#'
+>>>>>>> Stashed changes
 #' @return Suerat object with updated metadata containing subgroups of cells
 #' @export
 #'

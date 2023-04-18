@@ -2,7 +2,10 @@
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #' Feature average expression heatmap
 #'
 #' Draw a heatmap of feature average expression for all identity classes.
@@ -29,6 +32,7 @@
 #'
 #' @return A list containing  markers average expression matrix, markers of each cluster, colors of each cluster, average expression heatmap and markers expression tibble.
 #' @export
+#' @author Dongqiang Zeng
 #'
 #' @examples
 #' data("pbmc_small")
@@ -36,6 +40,10 @@
 #' all.markers <- FindAllMarkers(object = pbmc_small)
 #' # Draw a heatmap of markers average expression for all clusters
 #' res<-pheatmap_average(sce = pbmc_small, assay ="RNA", slot="data", scale.matrix = all.markers, show_col = F)
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 pheatmap_average<-function(sce,
                            assay,
                            slot,

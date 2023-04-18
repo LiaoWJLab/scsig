@@ -3,7 +3,10 @@
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #' Gene-set expression calculation and visualization for cell subtypes
 #'
 #' For the cell type of interest, firstly, `unassign_cell()` is used to remove the cell subtypes with few cells.
@@ -38,6 +41,7 @@
 #'
 #' @return Seurat Object
 #' @export
+#' @author Dongqiang Zeng
 #'
 #' @examples
 find_subcluster_signatures<-function(sce,

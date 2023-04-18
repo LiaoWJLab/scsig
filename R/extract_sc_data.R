@@ -6,6 +6,10 @@
 
 
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 #' Extract data frame
 #'
 #' Extract and combine data frame with cells as rows and features as columns from Seurat assay data.

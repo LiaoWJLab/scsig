@@ -2,7 +2,10 @@
 
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #'  Construct path to a file or directory
 #'
 #' @param f1 A character vector containing primary directory of path name

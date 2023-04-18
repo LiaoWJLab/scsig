@@ -5,6 +5,7 @@
 
 
 #' Add in metedata associated with cells
+<<<<<<< Updated upstream
 #' 
 #' Adds additional data to the Seurat object base on `AddMetaData{SeuratObject}` 
 #' Can be any piece of information associated with a cell (examples include read depth, alignment rate, experimental batch, or subpopulation identity)
@@ -13,6 +14,16 @@
 #' @param id_sce One name of metadata column associated with cell identity
 #' @param id_pdata One name of additional data column associated with cell identity
 #'
+=======
+#'
+#' Adds additional data to the Seurat object base on `AddMetaData{SeuratObject}`
+#' Can be any piece of information associated with a cell (examples include read depth, alignment rate, experimental batch, or subpopulation identity)
+#' @param sce Seurat object
+#' @param pdata A vector, list, or data.frame with metadata to add
+#' @param id_sce One name of metadata column associated with cell identity
+#' @param id_pdata One name of additional data column associated with cell identity
+#'
+>>>>>>> Stashed changes
 #' @return Seurat object with metadata added
 #' @export
 #'

@@ -12,8 +12,8 @@
 #' @param minum_count minimum count of each cell type
 #' @param minum_count_include
 #' @param max_count
-#' @param sub_cluster
-#' @param cell_type
+#' @param sub_cluster default is NULL, if this parameter was set
+#' @param cell_type default is NULL, The default identity of Seurat object will be used
 #'
 #' @return
 #' @export

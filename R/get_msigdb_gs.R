@@ -17,6 +17,7 @@
 #'
 #' @return A list of gene sets or a data frame of gene sets
 #' @export
+#' @author Dongqiang Zeng
 #'
 #' @examples
 #' ## get human Hallmark gene sets by default
@@ -81,7 +82,7 @@ get_msigdb_gs<-function(msigdb = NULL, org = "hsa", category = NULL, subcategory
   }
 
   if(format=="list"){
-    term2genes <- select(term2genes, gs_name, gene_symbol) %>%
+    term2genes <- dplyr:: select(term2genes, gs_name, gene_symbol) %>%
       as.data.frame %>%
       split(., .$gs_name) %>%
       lapply(., function(x)(x$gene_symbol))

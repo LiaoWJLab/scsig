@@ -93,7 +93,7 @@ sc_type_anno<-function(sce,
 
   # set low-confident (low ScType score) clusters to "unknown"
   sctype_scores$type[as.numeric(as.character(sctype_scores$scores)) < sctype_scores$ncells/4] = "Unknown"
-  print(sctype_scores[,1:3])
+  print(sctype_scores[, 1:3])
 
   #Please note that sctype_score function (used above) accepts both positive and negative markers through gs and gs2 arguments.
   #In case, there are no negative markers (i.e. markers providing evidence against a
@@ -103,7 +103,7 @@ sc_type_anno<-function(sce,
   #sce@meta.data$sc_typer = ""
 
   for(j in unique(sctype_scores$cluster)){
-    cl_type = sctype_scores[sctype_scores$cluster==j,];
+    cl_type = sctype_scores[sctype_scores$cluster==j,]
     sce@meta.data$sc_typer[sce@meta.data[, cluster] == j] = as.character(cl_type$type[1])
   }
 

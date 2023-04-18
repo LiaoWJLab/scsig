@@ -20,7 +20,8 @@
 #' @export
 #'
 #' @examples
-dong_cell_anno<-function(sce, sce_ref = NULL, name = "Model1", merge_seurat_cluster = T, name_merge_seurat = "scpred_seurat", mini_cluster = 50, threshold = 0.65, source = "win", path_ref = NULL){
+dong_cell_anno<-function(sce, sce_ref = NULL, name = "Model1", merge_seurat_cluster = T, name_merge_seurat = "scpred_seurat",
+                         mini_cluster = 50, threshold = 0.65, source = "win", path_ref = NULL){
 
 
   if(is.null(sce_ref)){

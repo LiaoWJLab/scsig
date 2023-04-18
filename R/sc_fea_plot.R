@@ -2,10 +2,6 @@
 
 
 
-
-
-
-
 #' single cell features plots
 #' 
 #' Visualize features for specific cell identity classes. First select features with significant differences from the input features.
@@ -36,8 +32,40 @@
 #' @param dims_for_recluster Number of PCs for re-clustering, default is 30
 #' @param palette.heatmap Numeric value corresponding with colors to use for n-colour gradient in heatmap, default is 1, other options: 2, 3, 4, 5, 6
 #'
+<<<<<<< Updated upstream
+=======
+#' Visualize features for specific cell identity classes. First select features with significant differences from the input features.
+#' Then use a variety of plot types to visualize above features for specific cell identity classes, including box plots, umap plots, tsne plots,
+#' violin plots, and heatmap.
+#' @param sce Seurat object after umap and tsne dimensionality reduction
+#' @param group Name of a metadata column to group cells by
+#' @param assay Assay to pull data from
+#' @param slot Data slot to use, options: scale.data, data, counts
+#' @param variables Vector of variables to show in plot
+#' @param cols Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+#'             See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details
+#' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
+#' @param path Path of the output saving directory
+#' @param fig.type Format of plot saving, such as pdf and png
+#' @param dims Vector of dimensionality reduction methods, such as 'umap' and 'tsne'
+#' @param index Prefix of file name for saving
+#' @param show_variables Number of variables to show in plot, default is 10
+#' @param pt.size Point size of 'FeaturePlot', default is 1
+#' @param show_box_pvalue If TRUE, paired wised statistical p-value will be shown in boxplot
+#' @param show_label If TRUE, labels of cell clusters will be shown in featurePlot
+#' @param show_plot If TRUE, pheatmap of all selected variables will be shown in the Rstudio
+#' @param sub_group Name of a metadata column to re-group a subset of cells by
+#' @param target Vector of specific cell identity classes in `group`
+#' @param split_by Name of a metadata column to split plot by
+#' @param remove_other_celltypes Default is False
+#' @param min_cell_count Minimal cell counts in each cluster, default is 10
+#' @param dims_for_recluster Number of PCs for re-clustering, default is 30
+#' @param palette.heatmap Numeric value corresponding with colors to use for n-colour gradient in heatmap, default is 1, other options: 2, 3, 4, 5, 6
+#'
+>>>>>>> Stashed changes
 #' @return Data frame with cells as rows and features as columns
 #' @export
+#' @author Dongqiang Zeng
 #'
 #' @examples
 #' data("pbmc_small")
