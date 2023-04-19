@@ -29,8 +29,8 @@
 #'
 #' @examples
 #' data("pbmc_small")
-#' dong_heatmap(sce = pbmc_small,group= "RNA_snn_res.1")
-dong_heatmap<-function(sce,
+#' scsig_heatmap(sce = pbmc_small,group= "RNA_snn_res.1")
+scsig_heatmap<-function(sce,
                        group,
                        feas            = NULL,
                        assay           = NULL,

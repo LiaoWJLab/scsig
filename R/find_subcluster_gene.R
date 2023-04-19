@@ -30,14 +30,9 @@
 #' @param recluster If TRUE, assay_for_recluster must be provided
 #' @param assay_for_recluster Name of assay to use, such as RNA, SCT, integrated, default is integrated
 #' @param re_scale_tsne_umap
-#'
 #' @return Seurat object containing specific type of cells
-<<<<<<< Updated upstream
 #' @export
-#'
-=======
 #' @author Dongqiang Zeng
->>>>>>> Stashed changes
 #' @examples
 find_subcluster_gene<-function(sce,
                                assay                     = "integrated",
@@ -122,7 +117,7 @@ find_subcluster_gene<-function(sce,
     ############################################
 
 
-         dong_find_markers(    sce                       = sces_sub,
+         scsig_find_markers(    sce                       = sces_sub,
                                 assay                    = assay,
                                 slot                     = slot,
                                 feas                     = feas,

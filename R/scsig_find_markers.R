@@ -5,10 +5,6 @@
 #'based on `FindAllMarkers(){Seurat}`. Then, use `DoHeatmap(){Seurat}` and `pheatmap_average()`to draw a heatmap
 #'and `VlnPlot(){Seurat}` to draw a violin plot of single cell feature expression.
 #'Besides, `enrich_cluster_degs()` is used to perform enrichment analysis.
-<<<<<<< Updated upstream
-=======
-#'
->>>>>>> Stashed changes
 #' @param sce Seurat object
 #' @param group A vector of variables to group cells
 #' @param verbose Whether to print a progress bar once expression testing begins
@@ -38,16 +34,13 @@
 #' @param assay_for_recluster Name of assay to use, such as RNA,SCT,integrated
 #' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
 #' @param feas Genes to test. Default is to use all genes
-<<<<<<< Updated upstream
 #' @param group_after_recluster
 #' @param adjust_assay
 #' @param re_scale_tsne_umap
-=======
 #' @param group_after_recluster if TRUE, finding cluster  will be proceeded in new data
 #' @param adjust_assay default is FALSE
 #' @param re_scale_tsne_umap if TRUE, dimension reduction will be proceeded in new data
 #' @param recluster default is FALSE
->>>>>>> Stashed changes
 #'
 #' @return
 #' @export
@@ -55,8 +48,8 @@
 #'
 #' @examples
 #' data("pbmc_small")
-#' dong_find_markers(sce = pbmc_small)
-dong_find_markers<-function(sce,
+#' scsig_find_markers(sce = pbmc_small)
+scsig_find_markers<-function(sce,
                             assay                    = NULL,   #RNA, sct, integrated
                             adjust_assay             = FALSE,
                             slot                     = "scale.data", # count, scale.data
@@ -91,8 +84,6 @@ dong_find_markers<-function(sce,
                             resolution_for_recluster = 0.2){
 
   # -------------------------------------------------------------------------
-
-
   # -------------------------------------------------------------------------
 
   if(!is.null(path)){

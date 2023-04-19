@@ -19,11 +19,8 @@
 #' @param w_index Numeric value corresponding to `width`. The parameter works when `split.by` not NULL
 #' @param w_add Numeric value corresponding to `width`. The parameter can be used to increase `width` when necessary
 #' @param max_category Maximal number of groups
-<<<<<<< Updated upstream
-#' @param show_plot Whether to displaye the plot
-=======
 #' @param show_plot Whether to display the plot
->>>>>>> Stashed changes
+#' @param show_plot Whether to display the plot
 #' @param path Path of the output saving directory
 #' @param index Index number of folder name
 #' @param legend.position Position of legend
@@ -40,16 +37,13 @@
 #' @param fig.type Format of plot saving, such as pdf and png
 #'
 #' @return A list of ggplot objects
-<<<<<<< Updated upstream
-=======
 #' @author Dongqiang Zeng
->>>>>>> Stashed changes
 #' @export
 #'
 #' @examples
 #' data("pbmc_small")
-#' dong_dimplot(object = pbmc_small)
-dong_dimplot<-function(sce,
+#' scsig_dimplot(object = pbmc_small)
+scsig_dimplot<-function(sce,
                        reduction        = "umap",
                        groups           = "orig.ident",
                        split.by         = NULL,

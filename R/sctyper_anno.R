@@ -18,7 +18,7 @@
 #' @param show_col Whether to show color palettes
 #' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
 #' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
-#' @param gs Default is null, user can provide gene set file manually
+#' @param gs_sctyper Default is null, user can provide gene set file manually
 #' @param tissue_type Default is NULL
 #' @param cell_type Cell types choosed from "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"
 #' @param cell_subset Default is NULL
@@ -27,9 +27,9 @@
 #' @export
 #'
 #' @examples
-#' tnbc<-sc_type_anno(sce = sce, tissue = "Immune system")
-sc_type_anno<-function(sce,
-                       gs         = NULL,
+#' tnbc<-sctyper_anno(sce = sce, tissue = "Immune system")
+sctyper_anno<-function(sce,
+                       gs_sctyper = NULL,
                        tissue_type= NULL,
                        cell_type  = "base",
                        cell_subset= NULL,
@@ -38,21 +38,19 @@ sc_type_anno<-function(sce,
                        slot       = "scale.data",
                        scale      = NULL,
                        cluster    = "seurat_clusters",
-                       cols       = "normal",
-                       palette    = 1,
-                       show_col   = T,
-                       seed       = 123,
-                       point.size = 1.5,
-                       reduction  = "umap",
                        db_        = "ScTyperDB-merged.xlsx",
+                       db_path    = NULL,
                        gene_names_to_uppercase = TRUE){
 
 
-
-  db_<- paste0(base::system.file("data", package = "scsig"),"/", db_)
+  if(!is.null(db_path)){
+    db_<- db_path
+  }else{
+    db_<- paste0(base::system.file("data", package = "scsig"),"/", db_)
+  }
 
   # prepare gene sets
-  gs_list = gene_sets_prepare(gs = gs, path_to_db_file = db_, cell_type = cell_type, tissue_type = tissue_type, cell_subset = cell_subset)
+  gs_sctyper_list = gene_sets_prepare(gs_sctyper = gs_sctyper, path_to_db_file = db_, cell_type = cell_type, tissue_type = tissue_type, cell_subset = cell_subset)
   ###################################
 
   message(">>>---Assay used to estimation:")
@@ -74,8 +72,8 @@ sc_type_anno<-function(sce,
   }
   es.max = sctype_score(scRNAseqData = scRNAseqData,
                         scaled = !scale,
-                        gs = gs_list$gs_positive,
-                        gs2 = gs_list$gs_negative,
+                        gs_sctyper = gs_sctyper_list$gs_sctyper_positive,
+                        gs_sctyper2 = gs_sctyper_list$gs_sctyper_negative,
                         gene_names_to_uppercase = gene_names_to_uppercase)
 
   # NOTE: scRNAseqData parameter should correspond to your input scRNA-seq matrix.
@@ -95,9 +93,9 @@ sc_type_anno<-function(sce,
   sctype_scores$type[as.numeric(as.character(sctype_scores$scores)) < sctype_scores$ncells/4] = "Unknown"
   print(sctype_scores[, 1:3])
 
-  #Please note that sctype_score function (used above) accepts both positive and negative markers through gs and gs2 arguments.
+  #Please note that sctype_score function (used above) accepts both positive and negative markers through gs_sctyper and gs_sctyper2 arguments.
   #In case, there are no negative markers (i.e. markers providing evidence against a
-  #cell being of specific cell type) just set gs2 argument to NULL (i.e. gs2 = NULL).
+  #cell being of specific cell type) just set gs_sctyper2 argument to NULL (i.e. gs_sctyper2 = NULL).
 
   #We can also overlay the identified cell types on UMAP plot:
   #sce@meta.data$sc_typer = ""
@@ -107,33 +105,5 @@ sc_type_anno<-function(sce,
     sce@meta.data$sc_typer[sce@meta.data[, cluster] == j] = as.character(cl_type$type[1])
   }
 
-  #####################################################
-  if(length(cols)==1){
-    if(cols=="random"){
-
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col)
-      message(">>>> Default seed is 123, you can change it by `seed`(parameter).")
-      set.seed(seed)
-      mycols<-mycols[sample(length(mycols), length(mycols))]
-      if(show_col) scales::show_col(mycols)
-
-    }else if(cols == "normal"){
-
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col)
-    }
-  }else{
-    mycols<-cols
-    if(show_col) scales::show_col(mycols)
-  }
-
-
-  p1<-DimPlot(sce, reduction = reduction, label = TRUE, cols = mycols,
-              repel = TRUE, pt.size = point.size, group.by = 'sc_typer')
-
-  p2<-DimPlot(sce, reduction = reduction, label = TRUE, cols = mycols,
-              repel = TRUE, pt.size = point.size, group.by = cluster)
-  p<-p1+p2
-
-  print(p)
   return(sce)
 }

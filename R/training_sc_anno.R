@@ -2,31 +2,33 @@
 
 
 
-#' Title
+#' Train a prediction model by scPred
 #'
-#' @param sce
-#' @param group
-#' @param remove_cell
-#' @param subset_cell
-#' @param propotion
-#' @param dims
-#' @param model
-#' @param verbose
-#' @param fig.type
-#' @param pt.size
-#' @param cols
-#' @param seed
-#' @param show_col
-#' @param show_plot
-#' @param path
-#' @param cores
-#' @param palette
-#' @param assay
-#' @param width
-#' @param height
-#' @param recorrect
+#' Given a seurat object with cell-type labels, train a prediction model for cell type annotation by `scPred`.
+#' Refer to [scPred](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1862-5)
+#' @param sce A seurat object
+#' @param group Column in meta.data containing the cell-type labels of each single cell
+#' @param remove_cell A vector of variables in `group` you want to remove from the model
+#' @param subset_cell Whether to select the subsets of cells as training model according to certain proportion
+#' @param proportion Proportion used to select the subsets of cells. The parameter works when subset_cell ="True".
+#' @param dims Number of PCs for clustering
+#' @param model Classification model supported via caret package. Default is "mda"
+#' @param verbose Whether to print a progress bar once expression testing begins
+#' @param fig.type Format of plot saving, such as pdf and png
+#' @param pt.size Size of point
+#' @param cols Vector of colors, each color corresponds to an identity class. This may also be a single character, such as "normal" and "random",  to a palette as specified by `IOBR::palettes`. See `palettes` for details
+#' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
+#' @param show_col Whether to display the palettes
+#' @param show_plot Whether to display the plot
+#' @param path Path of the output saving directory
+#' @param cores Number of nodes to be forked
+#' @param palette Numeric value corresponding with color palette. Default is 4, other options: 1, 2, 3
+#' @param assay Assay to use in model training, e.g. RNA, SCT, integrated
+#' @param width  width of plot when saving
+#' @param height  height of plot when saving
+#' @param recorrect Whether to correct for batch effects
 #'
-#' @return
+#' @return scPred object
 #' @export
 #'
 #' @examples

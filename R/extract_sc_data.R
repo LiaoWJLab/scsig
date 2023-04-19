@@ -5,11 +5,6 @@
 
 
 
-
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 #' Extract data frame
 #'
 #' Extract and combine data frame with cells as rows and features as columns from Seurat assay data.
@@ -49,7 +44,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
 
     eset<- SeuratObject:: GetAssayData(sce, assay = assay, slot = slot)
     eset<- eset[rownames(eset)%in% unique(vars), ]
-    print(head(eset))
+    # print(head(eset))
     eset<- as.data.frame(t(eset))
     eset<- tibble:: rownames_to_column(eset, var = "ID")
 
@@ -82,6 +77,8 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
   }
 
   if(combine_meta_data){
+
+    message(paste0(">>>--- Conbim metadata... "))
     meta.data<-rownames_to_column(sce@meta.data, var = "ID")
     eset_cbind<- inner_join(meta.data, eset_cbind, by = "ID" )
   }

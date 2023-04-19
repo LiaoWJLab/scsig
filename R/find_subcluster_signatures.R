@@ -2,18 +2,13 @@
 
 
 
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 #' Gene-set expression calculation and visualization for cell subtypes
 #'
 #' For the cell type of interest, firstly, `unassign_cell()` is used to remove the cell subtypes with few cells.
 #' Secondly, use `irGSEA.score()` to calculate gene-set enrichment scores score by optional methods
 #' and `irGSEA.integrate` to integrate differential gene set calculated by all enrichment score matrixes.
 #' See more details in [irGSEA.score](http://127.0.0.1:56860/help/library/scsig/help/irGSEA.score) and [irGSEA.integrate](http://127.0.0.1:56860/help/library/scsig/help/irGSEA.integrate.).
-#' Finally, data visualization is achieved by `dong_find_markers()`.
+#' Finally, data visualization is achieved by `scsig_find_markers()`.
 #'
 #' @param sce Seurat object
 #' @param assay Assay to pull from, e.g. RNA, SCT, integrated
@@ -259,7 +254,7 @@ find_subcluster_signatures<-function(sce,
         ggsave(p, filename = paste0("0-",group,"-subcluster-dimplot-tsne-umap.pdf"), path = path2$folder_name, width = 13, height = 6 )
 
         # DefaultAssay(sces) <- sig_methods[jj]
-        dong_find_markers(sce        = sces2,
+        scsig_find_markers(sce        = sces2,
                           assay      = sig_methods[jj],
                           slot       = "scale.data",
 
@@ -460,7 +455,7 @@ find_subcluster_signatures<-function(sce,
           path2<-creat_folder(path_res$folder_name, paste0(ii,"-",group), paste0(jj,"-",sig_methods[jj]))
 
           # DefaultAssay(sces) <- sig_methods[jj]
-          dong_find_markers(sce                      = sces2,
+          scsig_find_markers(sce                      = sces2,
                             assay                    = sig_methods[jj],
                             slot                     = "scale.data",
                             group                    = group,
