@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_subcluster_signatures.R
 \name{find_subcluster_signatures}
 \alias{find_subcluster_signatures}
-\title{Title}
+\title{Gene-set expression calculation and visualization for cell subtypes}
 \usage{
 find_subcluster_signatures(
   sce,
@@ -31,46 +31,69 @@ find_subcluster_signatures(
 )
 }
 \arguments{
-\item{sce}{seurat object}
+\item{sce}{Seurat object}
 
-\item{assay}{default is NULL}
+\item{assay}{Assay to pull from, e.g. RNA, SCT, integrated}
 
-\item{col_celltype}{name of celltype}
+\item{col_celltype}{Name of column where cell types in the metadata}
 
-\item{col_sub_celltype}{name of subcluster}
+\item{col_sub_celltype}{Name of column where cell subtypes in the metadata}
 
-\item{groups}{column of}
+\item{groups}{Name of one or more metadata columns to group cells by}
 
-\item{cols}{default is normal}
+\item{cols}{Vector of colors, users can define the cols manually. This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
 
-\item{show_col}{}
+\item{seed}{Seed of the random number generator, default is 123. The parameter works when cols ="random"}
 
-\item{signature_for_deg}{signature list}
+\item{palette}{Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4}
 
-\item{signature_character_limit}{remove signature with large names}
+\item{show_col}{Whether to show color palettes}
 
-\item{min_cell_count}{minimal cell count in each cluster}
+\item{signature_for_deg}{Gene-set list}
 
-\item{no_limitation_celltypes}{celltypes with no cell count limitation}
+\item{signature_character_limit}{Limit length of gene-set name, default is 60}
 
-\item{index}{default is null, user can choose specific cell types to save computing source}
+\item{min_cell_count}{Minimal cell counts in each cluster, default is 50}
 
-\item{sig_methods}{method used to etimate signature score}
+\item{no_limitation_celltypes}{A character vector corresponding to cell types with no cell count limitation}
 
-\item{path}{path to deposided results}
+\item{index}{User can choose specific cell types to save computing source, default is NULL}
 
-\item{sig_file_name}{prefix of path}
+\item{sig_methods}{Method used to estimate Gene-set expression score, default is `PCAscore`,`ssgsea`, `AUCell`}
 
-\item{find_cluster_sig}{default is FALSE}
+\item{path}{Path of the output saving directory}
+
+\item{sig_file_name}{Name of the storage file}
+
+\item{show_feas_pheatmap}{Number of genes displayed in the heatmap. Default is 8}
+
+\item{character_limit_heatmap}{Limit length of character. Default is 50}
+
+\item{remove_other_celltypes}{Default is TURE}
+
+\item{find_cluster_sig}{If TRUE, the analysis process will be performed in all clusters. Default is FALSE}
+
+\item{groups_for_cluster}{Name of one or more metadata columns to group cells by. The parameter works when find_cluster_sig = TRUE}
+}
+\value{
+Seurat Object
 }
 \description{
-Title
+For the cell type of interest, firstly, `unassign_cell()` is used to remove the cell subtypes with few cells.
+Secondly, use `irGSEA.score()` to calculate gene-set enrichment scores score by optional methods
+and `irGSEA.integrate` to integrate differential gene set calculated by all enrichment score matrixes.
+See more details in [irGSEA.score](http://127.0.0.1:56860/help/library/scsig/help/irGSEA.score) and [irGSEA.integrate](http://127.0.0.1:56860/help/library/scsig/help/irGSEA.integrate.).
+Finally, data visualization is achieved by `scsig_find_markers()`.
 }
 \examples{
-如果目标变量没有亚组直接跳过此次循环====================
-如果目标变量没有亚组直接跳过此次循环====================
-如果目标变量没有亚组直接跳过此次循环====================
-如果目标变量没有亚组直接跳过此次循环====================
-数据可视化==============================
-如果目标变量没有亚组直接跳过此次循环====================
+If the target variable has no subgroup, skip the loop directly====================
+If the target variable has no subgroup, skip the loop directly====================
+ If the target variable has no subgroup, skip the loop directly====================
+ If the target variable has no subgroup, skip the loop directly====================
+data visualization==============================
+If the target variable has no subgroup, skip the loop directly====================
+}
+\author{
+Dongqiang Zeng
 }

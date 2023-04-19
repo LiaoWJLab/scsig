@@ -2,7 +2,7 @@ Package: scsig
 Type: Package
 Title: Functions for single cell differential signature analysis
 Version: 0.1.0
-Author: Dongqiang Zeng
+Author: Dongqiang Zeng, Qianqian Mao, Xiatong Huang
 Maintainer: The package maintainer <dongqiangzeng0808@gmail.com>
 Description: Summary of single cell sequencing data analysis functions.
 License: GPL (>= 3)
@@ -24,4 +24,5 @@ Imports:
     ggplot2,
     IOBR,
     scales,
+    Seurat,
     tibble

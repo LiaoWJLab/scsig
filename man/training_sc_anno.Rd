@@ -2,7 +2,7 @@
 % Please edit documentation in R/training_sc_anno.R
 \name{training_sc_anno}
 \alias{training_sc_anno}
-\title{Title}
+\title{Train a prediction model by scPred}
 \usage{
 training_sc_anno(
   sce,
@@ -29,10 +29,54 @@ training_sc_anno(
 )
 }
 \arguments{
-\item{recorrect}{}
+\item{sce}{A seurat object}
+
+\item{group}{Column in meta.data containing the cell-type labels of each single cell}
+
+\item{assay}{Assay to use in model training, e.g. RNA, SCT, integrated}
+
+\item{recorrect}{Whether to correct for batch effects}
+
+\item{remove_cell}{A vector of variables in `group` you want to remove from the model}
+
+\item{subset_cell}{Whether to select the subsets of cells as training model according to certain proportion}
+
+\item{dims}{Number of PCs for clustering}
+
+\item{model}{Classification model supported via caret package. Default is "mda"}
+
+\item{cores}{Number of nodes to be forked}
+
+\item{verbose}{Whether to print a progress bar once expression testing begins}
+
+\item{fig.type}{Format of plot saving, such as pdf and png}
+
+\item{pt.size}{Size of point}
+
+\item{cols}{Vector of colors, each color corresponds to an identity class. This may also be a single character, such as "normal" and "random",  to a palette as specified by `IOBR::palettes`. See `palettes` for details}
+
+\item{seed}{Seed of the random number generator, default is 123. The parameter works when cols ="random"}
+
+\item{show_col}{Whether to display the palettes}
+
+\item{palette}{Numeric value corresponding with color palette. Default is 4, other options: 1, 2, 3}
+
+\item{width}{width of plot when saving}
+
+\item{height}{height of plot when saving}
+
+\item{show_plot}{Whether to display the plot}
+
+\item{path}{Path of the output saving directory}
+
+\item{proportion}{Proportion used to select the subsets of cells. The parameter works when subset_cell ="True".}
+}
+\value{
+scPred object
 }
 \description{
-Title
+Given a seurat object with cell-type labels, train a prediction model for cell type annotation by `scPred`.
+Refer to [scPred](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1862-5)
 }
 \examples{
 利用变异的feature跑PCA

@@ -5,9 +5,7 @@
 #' Compare and show gene clusters functional profile for all identity classes
 #'
 #' This function combines `compareCluster()` and `dotplot()` both from package [clusterProfiler](http://127.0.0.1:60491/help/library/clusterProfiler/html/00Index.html)
-<<<<<<< Updated upstream
 #' to perform enrichment analysis and draw dotplot  for all identity classes.
-#'
 #' @param sce.markers A data frame of Gene expression markers for all identity classes(output from `FindAllMarkers`)
 #' @param cutoff_foldchangeLimit Cutoff for filtering gene signatures which show on average, less than X-fold difference (log-scale) between the two groups of cells for enrichment analysis, default is 0.5
 #' @param cutoff_p_adj Cutoff for filtering gene signatures which adjust P values are < n for enrichment  analysis, default is 0.01
@@ -21,11 +19,7 @@
 #' @param logfc Name of the column where log-scaled fold change in the data frame, default is "avg_log2FC"
 #' @param width Width of plot for saving
 #' @param height Height of plot for saving
-#' @param index Prefix of file name when saving
-=======
-#' to perform enrichment analysis and draw dot plot  for all identity classes.
->>>>>>> Stashed changes
-#'
+#' @param index Prefix of file name when saving to perform enrichment analysis and draw dot plot for all identity classes.
 #' @param sce.markers A data frame of Gene expression markers for all identity classes(output from `FindAllMarkers`)
 #' @param cutoff_foldchangeLimit Cutoff for filtering gene signatures which show on average, less than X-fold difference (log-scale) between the two groups of cells for enrichment analysis, default is 0.5
 #' @param cutoff_p_adj Cutoff for filtering gene signatures which adjust P values are < n for enrichment  analysis, default is 0.01
@@ -64,7 +58,7 @@ enrich_cluster_degs<-function(sce.markers,
   if(!is.null(path)){
     path<-creat_folder(path)
   }
-  
+
   #########################################
   colnames(sce.markers)[which(colnames(sce.markers)== cluster )] <- "cluster"
   colnames(sce.markers)[which(colnames(sce.markers)== gene )] <- "gene"
@@ -114,7 +108,9 @@ enrich_cluster_degs<-function(sce.markers,
                                            # count = 3,
       )
 
+
       print(head(as_tibble(xx)))
+
 
     }
 
@@ -124,6 +120,9 @@ enrich_cluster_degs<-function(sce.markers,
       writexl::write_xlsx(as.data.frame(xx), paste0(path$abspath, z,"-",method, "-enrichment-result.xlsx"))
     }
     ##############################################################
+
+    if(dim(head(as_tibble(xx)))[1]==0) next
+
     gg<-clusterProfiler:: dotplot(xx, showCategory = showCategory,font.size =2.5)+
       scale_color_gradientn(colours= cols,
                             guide=guide_colorbar(reverse=TRUE))+

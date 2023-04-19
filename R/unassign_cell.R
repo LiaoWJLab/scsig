@@ -30,7 +30,6 @@
 #' data("pbmc_small")
 #' # Find the clusters containing cell counts less than 30 and filter out them from the dataset.
 #' sce<-uassign_cell(sce = pbmc_small, cluster= "RNA_snn_res.1", min_cell_count = 30, delete_unassigned  = T )
-<<<<<<< Updated upstream
 unassign_cell<-function(sce,
                         cluster,
                         ignore_cell_prefix = NULL,
@@ -40,11 +39,6 @@ unassign_cell<-function(sce,
                         return_meta_data   = FALSE,
                         alread_unassigned  = "unassigned",
                         minimal_cell       = 10){
-=======
-unassign_cell<-function(sce, cluster, ignore_cell_prefix = NULL, min_cell_count = 30,
-                        new_col = NULL, delete_unassigned = FALSE, return_meta_data = FALSE,
-                        alread_unassigned = "unassigned", minimal_cell = 10){
->>>>>>> Stashed changes
 
   if(class(sce)!="Seurat") stop("sce must be a seurat object...")
 

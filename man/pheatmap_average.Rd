@@ -2,7 +2,7 @@
 % Please edit documentation in R/pheatmap_average.R
 \name{pheatmap_average}
 \alias{pheatmap_average}
-\title{Title}
+\title{Feature average expression heatmap}
 \usage{
 pheatmap_average(
   sce,
@@ -16,7 +16,7 @@ pheatmap_average(
   path = NULL,
   cols = "random",
   seed = 54321,
-  show_col = TRUE,
+  show_col = T,
   palette = 1,
   palette_for_heatmape = 6,
   scale.matrix = NULL,
@@ -27,8 +27,58 @@ pheatmap_average(
 )
 }
 \arguments{
+\item{sce}{Seurat object}
+
+\item{assay}{Assay to pull from, such as RNA,SCT,integrated}
+
+\item{slot}{Data slot to use, choose from 'raw.data', 'data', or 'scale.data'}
+
+\item{marker_res}{A data frame of markers for all identity classes which output from `FindAllMarkers(){Seurat}`}
+
+\item{top_n}{Number of top markers to show in the heatmap, default is 6}
+
+\item{group}{A vector of variables to group cells by}
+
+\item{show_features}{A list of features you want to displayed in the heatmap}
+
+\item{character_limit}{Limit length of character, default is 30}
+
+\item{path}{Path of the output saving directory}
+
+\item{cols}{Vector of colors, users can define the cols manually. This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
+
+\item{seed}{Seed of the random number generator, default is 54321. The parameter works when cols ="random"}
+
+\item{show_col}{Whether to show color palettes}
+
+\item{palette}{Numeric value corresponding with colors to use for the color bar. Default is 1, other options: 2, 3, 4}
+
+\item{palette_for_heatmape}{Numeric value corresponding with colors to use for n-color gradient. Default is 6, other options: 1, 2, 3, 4, 5}
+
 \item{scale.matrix}{}
+
+\item{fig.type}{Format of plot saving, such as pdf and png}
+
+\item{width}{Width of plot for saving}
+
+\item{height}{Height of plot for saving}
+
+\item{file_name_prefix}{Prefix of file name}
+}
+\value{
+A list containing  markers average expression matrix, markers of each cluster, colors of each cluster, average expression heatmap and markers expression tibble.
 }
 \description{
-Title
+Draw a heatmap of feature average expression for all identity classes.
+}
+\examples{
+data("pbmc_small")
+# Find markers for all clusters
+all.markers <- FindAllMarkers(object = pbmc_small)
+# Draw a heatmap of markers average expression for all clusters
+res<-pheatmap_average(sce = pbmc_small, assay ="RNA", slot="data", scale.matrix = all.markers, show_col = F)
+}
+\author{
+Dongqiang Zeng
 }

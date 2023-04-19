@@ -32,44 +32,71 @@ sc_fea_plot(
 )
 }
 \arguments{
-\item{sce}{Seurat object}
+\item{sce}{Seurat object after umap and tsne dimensionality reduction}
 
-\item{group}{cell identity}
+\item{group}{Name of a metadata column to group cells by}
 
-\item{show_label}{default is true: featurePlot will show labels of cell clsuters}
+\item{sub_group}{Name of a metadata column to re-group a subset of cells by}
 
-\item{assay}{assay that stored variables}
+\item{target}{Vector of specific cell identity classes in `group`}
 
-\item{slot}{data type used to estimation, options: scale.data, data, counts}
+\item{remove_other_celltypes}{Default is False}
 
-\item{variables}{targets that users want to draw plots}
+\item{min_cell_count}{Minimal cell counts in each cluster, default is 10}
 
-\item{show_variables}{Maximum number of variables displayed}
+\item{show_label}{If TRUE, labels of cell clusters will be shown in featurePlot}
 
-\item{dims}{default is 'umap' and 'tsne'}
+\item{split_by}{Name of a metadata column to split plot by}
 
-\item{pt.size}{default is 1, point size of 'FeaturePlot'}
+\item{assay}{Assay to pull data from}
 
-\item{cols}{specifying colors of cell clusters}
+\item{slot}{Data slot to use, options: scale.data, data, counts}
 
-\item{palette}{default is NULL, options: jama, jco, aaas, set2, and so on, functions derived from IOBR::palettes()}
+\item{variables}{Vector of variables to show in plot}
 
-\item{palette.heatmap}{}
+\item{show_variables}{Number of variables to show in plot, default is 10}
 
-\item{path}{default is "0-",group,"-sig-plot", users can specifying the path}
+\item{dims}{Vector of dimensionality reduction methods, such as 'umap' and 'tsne'}
 
-\item{index}{default is null}
+\item{pt.size}{Point size of 'FeaturePlot', default is 1}
 
-\item{show_box_pvalue}{default is true, if true, boxplot will show the paired wised statistical p-value}
+\item{cols}{Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
 
-\item{fig.type}{default is pdf, other options: png}
+\item{palette}{Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4}
 
-\item{show_plot}{if true, pheatmap of all selected variables will be shown in the R studio}
+\item{palette.heatmap}{Numeric value corresponding with colors to use for n-colour gradient in heatmap, default is 1, other options: 2, 3, 4, 5, 6}
+
+\item{path}{Path of the output saving directory}
+
+\item{index}{Prefix of file name for saving}
+
+\item{show_box_pvalue}{If TRUE, paired wised statistical p-value will be shown in boxplot}
+
+\item{fig.type}{Format of plot saving, such as pdf and png}
+
+\item{show_plot}{If TRUE, pheatmap of all selected variables will be shown in the Rstudio}
+
+\item{dims_for_recluster}{Number of PCs for re-clustering, default is 30}
+}
+\value{
+Data frame with cells as rows and features as columns
 }
 \description{
-single cell features plots
+Visualize features for specific cell identity classes. First select features with significant differences from the input features.
+Then use a variety of plot types to visualize above features for specific cell identity classes, including box plots, umap plots, tsne plots,
+violin plots, and heatmap.
 }
 \examples{
-
-选择需要分析的变量------labels不多的-------------------------
+data("pbmc_small")
+pbmc_small
+# Run UMAP map on first 20 PCs
+pbmc_small <- RunUMAP(object = pbmc_small, dims = 1:10)
+#Choose features
+variables<-c("PPBP", "IGLL5", "VDAC3", "CD1C", "AKR1C3", "PF4", "MYL9", "GNLY", "TREML1", "CA2")
+res<-sc_fea_plot(sce= pbmc_small, variables= variables, group= "RNA_snn_res.1", assay="RNA")
+choose cell identity classes-------------------------
+}
+\author{
+Dongqiang Zeng
 }

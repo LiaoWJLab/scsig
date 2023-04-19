@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_sc_data.R
 \name{extract_sc_data}
 \alias{extract_sc_data}
-\title{Title}
+\title{Extract data frame}
 \usage{
 extract_sc_data(
   sce,
@@ -13,8 +13,28 @@ extract_sc_data(
 )
 }
 \arguments{
-\item{combine_meta_data}{}
+\item{sce}{Seurat object}
+
+\item{vars}{Vector of variables as features}
+
+\item{assay}{Assay to pull data from}
+
+\item{slot}{Specific assay data to get or set}
+
+\item{combine_meta_data}{Whether to combine metadata with the extracted data frame}
+}
+\value{
+Data frame with cells as rows and features as columns
 }
 \description{
-Title
+Extract and combine data frame with cells as rows and features as columns from Seurat assay data.
+}
+\examples{
+#Load data
+data("pbmc_small")
+pbmc_small
+#Choose features
+vars<-c("PPBP", "IGLL5", "VDAC3", "CD1C", "AKR1C3", "PF4", "MYL9", "GNLY", "TREML1", "CA2")
+#Get extracted data frame
+eset<-extract_sc_data(sce= pbmc_small, vars= vars, assay= "RNA")
 }

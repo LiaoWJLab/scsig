@@ -2,13 +2,22 @@
 % Please edit documentation in R/AddMt.R
 \name{AddMt}
 \alias{AddMt}
-\title{Title}
+\title{Calculate the percentage of mitochondrial and ribosomal genes}
 \usage{
 AddMt(sce, species = "human")
 }
 \arguments{
-\item{species}{}
+\item{sce}{Seurat object}
+
+\item{species}{Species name. Species must be one of human or mouse}
+}
+\value{
+A Seurat object with the percentage of mitochondrial and ribosomal genes stored in metadata.
 }
 \description{
-Title
+Calculate the percentage of mitochondrial and ribosomal genes
+}
+\examples{
+data(pbmc_small)
+pbmc_small <- AddMt(pbmc_small , species= "human" )
 }

@@ -369,5 +369,6 @@ scsig_find_markers<-function(sce,
            path = path$folder_name)
   }
 
+  return(sce.markers)
 
 }

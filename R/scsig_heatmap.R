@@ -88,4 +88,3 @@ scsig_heatmap<-function(sce,
   return(pp)
 
 }
-pp

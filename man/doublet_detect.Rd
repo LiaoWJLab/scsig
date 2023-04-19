@@ -24,39 +24,48 @@ doublet_detect(
 )
 }
 \arguments{
-\item{sce}{default is null, a seurat object}
+\item{sce}{Seurat object, default is NULL}
 
-\item{eset}{expression set, default is null}
+\item{already_normalized}{if TRUE, input data has been normalized}
 
-\item{file_type}{if file is from 10X, data_path must be provide}
+\item{eset}{Raw data or normalized data}
 
-\item{data_path}{data_path of 10X data}
+\item{file_type}{If file is from 10X, data_path must be provide}
 
-\item{project}{project name}
+\item{data_path}{Absolute path of sparse data matrices provided by 10X genomics}
 
-\item{index}{folder name of save_path}
+\item{project}{Project name for the Seurat object, such as TNBC. If save_path is NULL, the project name will be part of folder name of save_path. default is NULL}
 
-\item{propotion}{default is 0.025}
+\item{index}{Prefix of the file name for saving}
 
-\item{check_data}{if true}
+\item{propotion}{Doublet formation rate,  default is 0.025}
 
-\item{filter_data}{if TRUE, cells will be filtered by aforementioned criterion}
+\item{check_data}{If TRUE, quality control will be done}
 
-\item{minFeature}{minimum feature of cell}
+\item{filter_data}{If TRUE, cells will be filtered by aforementioned criterion}
 
-\item{minCount}{minimum count of cell}
+\item{minFeature}{Minimum features of cell}
 
-\item{percent.mt}{max of percentage of mitochondrial gens}
+\item{minCount}{Minimum counts of cell}
 
-\item{method}{default is `doubletfinder`: Benchmarking Computational Doublet-Detection Methods for Single-Cell RNA Sequencing Data}
+\item{percent.mt}{Maximum of percentage of mitochondrial gens}
 
-\item{cores}{default is 1}
+\item{method}{Methods for doublet detection, choose from `doubletfinder` and `scds`}
 
-\item{save_path}{default is NULL}
+\item{cores}{Number of cores to use for parallelization, default is 1}
+
+\item{save_path}{Path of the output saving directory}
+}
+\value{
+Seurat object with updated metadata including pANN and doublet classifications when `method= "doubletfinder"`;
+Seurat object with updated metadata including doublet scores by `cxds`, `bcds` and `cxds_bcds_hybrid`, and doublet classifications when `method= "scds"`
 }
 \description{
-Integration of  doublet detection
+Here, we provide two doublet-detection methods:`doubletFinder{DoubletFinder}` and `scds`,
+since the DoubletFinder method has the best detection accuracy, and the cxds method has the highest computational efficiency[1]
+You can use `help(doubletFinder)` and `help(scds)` for more details.
 }
-\author{
-Dongqiang Zeng
+\examples{
+data("pbmc_small")
+doublet_detect( sce=pbmc_small)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_subclusters.R
 \name{find_subclusters}
 \alias{find_subclusters}
-\title{Title}
+\title{Sub-cluster determination}
 \usage{
 find_subclusters(
   sce,
@@ -17,13 +17,36 @@ find_subclusters(
 )
 }
 \arguments{
-\item{ignore_cell_prefix}{}
+\item{sce}{Seurat object}
+
+\item{celltype}{Name of the metadata column to group cells by}
+
+\item{combined_subclusters}{New name of a metadata column, dedault is "celltype_subcluster"}
+
+\item{graph.name}{Name of graph to use for the clustering algorithm}
+
+\item{resolution}{Value of the resolution parameter, use a value above (below) 1.0 if you want to obtain a larger (smaller) number of communities}
+
+\item{delete_new_variable}{Dedault is TRUE}
+
+\item{filtering_mini_cell}{Whether to filter out the clusters with few cells, dedault is TRUE}
+
+\item{min_cell_count}{Minimum number of cell counts of each cluster, dedault is 50}
+
+\item{ignore_cell_prefix}{A character vector corresponding to cell types with no cell count limitation}
+}
+\value{
+Suerat object with updated metadata containing subgroups of cells
 }
 \description{
-Title
+Identify sub-clusters for each cluster of cells
 }
 \examples{
-批量寻找个细胞大类的亚组细胞=================================
-将以上细胞亚组整合到一个列中======combined_column==================================
-去掉一些离散的细胞
+## Not RUN
+data("pbmc_small")
+sce<-find_subclusters(sce=pbmc_small, celltype= "RNA_snn_res.1")
+## Not RUN
+Batch search for subgroups of cells of a group of cell =================================
+Integrating the above cell subgroups information into one column======combined_column==================================
+Removal of some discrete cells
 }

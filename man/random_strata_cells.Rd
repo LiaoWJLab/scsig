@@ -24,7 +24,9 @@ random_strata_cells(
 
 \item{minum_count}{minimum count of each cell type}
 
-\item{cell_type}{}
+\item{sub_cluster}{default is NULL, if this parameter was set}
+
+\item{cell_type}{default is NULL, The default identity of Seurat object will be used}
 }
 \description{
 randomly strata cells

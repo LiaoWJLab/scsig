@@ -2,13 +2,30 @@
 % Please edit documentation in R/creat_folder.R
 \name{creat_folder}
 \alias{creat_folder}
-\title{Title}
+\title{Construct path to a file or directory}
 \usage{
 creat_folder(f1, f2 = NULL, f3 = NULL, return = NULL)
 }
 \arguments{
-\item{f3}{}
+\item{f1}{A character vector containing primary directory of path name}
+
+\item{f2}{A character vector containing second-level directory of path name. Default is NULL.}
+
+\item{f3}{A character vector containing third-level directory of path name. Default is NULL}
+
+\item{return}{Number of levels of the directory, choose from 1, 2 and 3. Default is NULL.}
+}
+\value{
+A list containing folder name and absolute path from the current working directory.
 }
 \description{
-Title
+Construct path to a file or directory
+}
+\examples{
+##Construct a file path containing one level directory
+path<-creat_folder("1")
+##Construct a file path containing three level directory
+path<-creat_folder(f1="1",f2="2",f3="3")
+##Construct a file path containing two level directory
+path<-creat_folder(f1="1",f2="2",f3="3", return=2)
 }

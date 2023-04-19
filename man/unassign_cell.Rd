@@ -2,7 +2,7 @@
 % Please edit documentation in R/unassign_cell.R
 \name{unassign_cell}
 \alias{unassign_cell}
-\title{Title}
+\title{Filter out clusters with low cell counts}
 \usage{
 unassign_cell(
   sce,
@@ -17,8 +17,34 @@ unassign_cell(
 )
 }
 \arguments{
-\item{minimal_cell}{}
+\item{sce}{Seurat object}
+
+\item{cluster}{Name of one metadata column to group (color) cells by}
+
+\item{ignore_cell_prefix}{A character vector corresponding to cell types with no cell count limitation}
+
+\item{min_cell_count}{Minimal cell counts of the clusters}
+
+\item{new_col}{A character used to name a new column of metedata}
+
+\item{delete_unassigned}{If TURE, cells in the clusters with cell counts less than `min_cell_count` will be deleted}
+
+\item{return_meta_data}{If TURE, seurat meta data will be output as the result}
+
+\item{alread_unassigned}{A character uesd to describe the state of unassigned cells, default is "unassigned"}
+
+\item{minimal_cell}{Minimal cell counts of all clusters}
+}
+\value{
+Seurat object or metadata
 }
 \description{
-Title
+First, filter out the clusters with less than x cell counts by setting `minimal_cell = x`.
+Secondly, choose the clusters with more than y cell counts by setting `min_cell_count = y`,while retaining the clusters of interest.
+}
+\examples{
+#Load data
+data("pbmc_small")
+# Find the clusters containing cell counts less than 30 and filter out them from the dataset.
+sce<-uassign_cell(sce = pbmc_small, cluster= "RNA_snn_res.1", min_cell_count = 30, delete_unassigned  = T )
 }

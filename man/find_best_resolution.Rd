@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_best_resolution.R
 \name{find_best_resolution}
 \alias{find_best_resolution}
-\title{Title}
+\title{Find best resolution for clustering}
 \usage{
 find_best_resolution(
   sce,
@@ -21,8 +21,39 @@ find_best_resolution(
 )
 }
 \arguments{
-\item{prefix}{}
+\item{sce}{Suerat object}
+
+\item{assay}{Assay to pull from, e.g. RNA, SCT, integrated}
+
+\item{prefix}{String indicating columns containing clustering information}
+
+\item{from}{Minimum resolution value for testing}
+
+\item{to}{Maximum resolution value for testing}
+
+\item{graph.name}{Name of graph to use for the clustering algorithm}
+
+\item{save_plot}{Whether to save plot}
+
+\item{path}{Path of the output saving directory}
+
+\item{palette}{If a string, will use that named palette. If a number, will index into the list of palettes of appropriate type. The list of available palettes can found in the Palettes section}
+
+\item{index}{Prefix of file name for saving}
+
+\item{alpha}{Either a numeric value giving the alpha of all nodes or the name of a metadata column to use for node transparency}
+
+\item{verbose}{Whether to print output}
+
+\item{return_sce}{Whether to return suerat object}
+}
+\value{
+Suerat object or a ggplot object
 }
 \description{
-Title
+Find best resolution for clustering. First, for a given seurat object, identify clusters of cells by setting the resolution value from low to high.
+Then create a plot of a clustering tree showing the relationship between clusters at different resolutions.
+}
+\author{
+Dongqiang Zeng
 }

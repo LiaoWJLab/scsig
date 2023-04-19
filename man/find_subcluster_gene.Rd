@@ -2,7 +2,7 @@
 % Please edit documentation in R/find_subcluster_gene.R
 \name{find_subcluster_gene}
 \alias{find_subcluster_gene}
-\title{Title}
+\title{Find and show gene expression markers for cell subtypes}
 \usage{
 find_subcluster_gene(
   sce,
@@ -26,16 +26,65 @@ find_subcluster_gene(
   fig.type = "pdf",
   pt.size = 0.7,
   re_scale_tsne_umap = FALSE,
-  recluster = FALSE,
-  assay_for_recluster = NULL
+  recluster = F,
+  assay_for_recluster = "integrated"
 )
 }
 \arguments{
-\item{re_scale_tsne_umap}{}
+\item{sce}{Seurat object with cell type annotation.}
+
+\item{assay}{Assay to pull from, e.g. RNA, SCT, integrated}
+
+\item{slot}{Data slot to use, choose from 'raw.data', 'data', or 'scale.data'}
+
+\item{col_celltype}{Name of column where cell types in the metadata}
+
+\item{col_sub_celltype}{Name of column where cell subtypes in the metadata}
+
+\item{feas}{Genes to test. Default is to use all genes}
+
+\item{cols}{Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
+See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
+
+\item{seed}{Seed of the random number generator, default is 123. The parameter works when cols ="random"}
+
+\item{palette}{Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4}
+
+\item{show_col}{Whether to show color palettes}
+
+\item{min_cell_count}{Minimal cell counts in each cluster}
+
+\item{no_limitation_celltypes}{A character vector corresponding to cell types with no cell count limitation}
+
+\item{index}{User can choose specific cell types to save computing source, default is 1}
+
+\item{path}{Path of the output saving directory}
+
+\item{show_feas_pheatmap}{Number of genes displayed in the heatmap. Default is 8}
+
+\item{show_feas_dim}{Number of genes displayed in the violin plot, default is 8}
+
+\item{remove_other_celltypes}{Default is TRUE}
+
+\item{logfc.threshold}{Limit testing to genes which show, on average, at least X-fold difference (log-scale) between the two groups of cells. Default is 0.15 Increasing logfc.threshold speeds up the function, but can miss weaker signals}
+
+\item{fig.type}{Format of plot saving, such as pdf and png}
+
+\item{pt.size}{Size of point}
+
+\item{recluster}{If TRUE, assay_for_recluster must be provided}
+
+\item{assay_for_recluster}{Name of assay to use, such as RNA, SCT, integrated, default is integrated}
+}
+\value{
+Seurat object containing specific type of cells
 }
 \description{
-Title
+Find and show markers (differentially expressed genes) for cell subytpes in a dataset
 }
 \examples{
-如果目标变量没有亚组直接跳过此次循环====================
+If the target variable has no subgroup, skip the loop directly====================
+}
+\author{
+Dongqiang Zeng
 }

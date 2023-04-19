@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_msigdb_gs.R
 \name{get_msigdb_gs}
 \alias{get_msigdb_gs}
-\title{Title}
+\title{Get gene sets from MSigDB}
 \usage{
 get_msigdb_gs(
   msigdb = NULL,
@@ -13,19 +13,34 @@ get_msigdb_gs(
 )
 }
 \arguments{
-\item{msigdb}{default is NULL}
+\item{msigdb}{Local data frame of gent sets. If NULL, it will download from MSigSB automatically}
 
-\item{org}{default is 'hsa', 'mus'}
+\item{org}{Species name of organisms, choose from 'hsa' and 'mus'}
 
-\item{category}{default is NULL, other options: C1 - C8,}
+\item{category}{MSigDB collection abbreviation, such as H or C1}
 
-\item{subcategory}{default is NULL, options:}
+\item{subcategory}{MSigDB sub-collection abbreviation, such as CGP or BP}
 
-\item{format}{default is list}
+\item{format}{Format of the output. Default is list, otherwise data frame}
+}
+\value{
+A list of gene sets or a data frame of gene sets
 }
 \description{
-Title
+Retrieve a list or data frame of gene sets and their member genes.
+Users can not only download gene sets from MSigSB online directly,
+but also get them from local datasets by setting the parameter `msigdb`.
 }
 \examples{
+## get human Hallmark gene sets by default
 gs<- get_msigdb_gs()
+## NOTRUN
+## get human Hallmark gene sets from local datasets
+# load local datasets
+load("msigdb.RData")
+##get human C5 (ontology gene sets) GO:BP (GO Biological Process ontology) gene sets
+term_genes <- get_msigdb_gs(msigdb = msigdb, org = "hsa", category = "C5", subcategory = "GO:BP", format = "list")
+}
+\author{
+Dongqiang Zeng
 }

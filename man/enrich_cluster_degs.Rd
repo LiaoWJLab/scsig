@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrich_cluster_degs.R
 \name{enrich_cluster_degs}
 \alias{enrich_cluster_degs}
-\title{enrich_cluster_degs}
+\title{Compare and show gene clusters functional profile for all identity classes}
 \usage{
 enrich_cluster_degs(
   sce.markers,
@@ -13,7 +13,7 @@ enrich_cluster_degs(
   gene = "gene",
   p.adj = "p_val_adj",
   logfc = "avg_log2FC",
-  showCategory = 12,
+  showCategory = 5,
   path = NULL,
   cols = c("#b3eebe", "#46bac2", "#371ea3"),
   index = NULL,
@@ -22,16 +22,38 @@ enrich_cluster_degs(
 )
 }
 \arguments{
-\item{sce.markers}{result of find_markers}
+\item{sce.markers}{A data frame of Gene expression markers for all identity classes(output from `FindAllMarkers`)}
 
-\item{cutoff_foldchange}{default is 0.5}
+\item{cutoff_p_adj}{Cutoff for filtering gene signatures which adjust P values are < n for enrichment  analysis, default is 0.01}
 
-\item{cutoff_p_adj}{"enrichGO", "enrichKEGG"}
+\item{methods}{A list of methods, choose from "groupGO", "enrichGO", "enrichKEGG", "enrichDO" or "enrichPathway"}
 
-\item{showCategory}{number of terms to show}
+\item{cluster}{Name of the column where the clusters in the data frame, default is "cluster"}
 
-\item{index}{default is NULL}
+\item{gene}{Name of the column where the genes in the data frame in the data framer, default is "gene"}
+
+\item{p.adj}{Name of the column where P adjust value in the data framer, default is "p_val_adj"}
+
+\item{logfc}{Name of the column where log-scaled fold change in the data frame, default is "avg_log2FC"}
+
+\item{showCategory}{Number of terms to show, default is 5}
+
+\item{path}{Path of the output saving directory}
+
+\item{cols}{Vector of colors to use for n-color gradient, default is c('#b3eebe', "#46bac2", '#371ea3'), users can define the colors manualy}
+
+\item{index}{Prefix of file name when saving}
+
+\item{width}{Width of plot for saving}
+
+\item{height}{Height of plot for saving}
+
+\item{cutoff_foldchangeLimit}{Cutoff for filtering gene signatures which show on average, less than X-fold difference (log-scale) between the two groups of cells for enrichment analysis, default is 0.5}
 }
 \description{
-enrich_cluster_degs
+This function combines `compareCluster()` and `dotplot()` both from package [clusterProfiler](http://127.0.0.1:60491/help/library/clusterProfiler/html/00Index.html)
+to perform enrichment analysis and draw dotplot  for all identity classes.
+}
+\author{
+Dongqiang Zeng
 }

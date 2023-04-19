@@ -7,7 +7,7 @@ Written by Aleksandr Ianevski <aleksandr.ianevski@helsinki.fi>, June 2021
 Modified by IOBR organization <iobr2019@163.com>, Oct 2022}
 \usage{
 gene_sets_prepare(
-  gs = NULL,
+  gs_sctyper = NULL,
   path_to_db_file = NULL,
   cell_type = NULL,
   tissue_type = NULL,
@@ -16,7 +16,7 @@ gene_sets_prepare(
 )
 }
 \arguments{
-\item{gs}{user can provide gene set file manually}
+\item{gs_sctyper}{user can provide gene set file manually}
 
 \item{path_to_db_file}{- DB file with cell types}
 

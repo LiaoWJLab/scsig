@@ -48,7 +48,7 @@ standard_sc<- function(eset               = NULL,
                        assay              = "RNA",
                        file_type          = "10X",
                        data_path          = NULL,
-                       project            = NULL,
+                       project            = "sc",
                        qc_identity        = NULL,
                        nPCs               = 30,
                        res                = 1.0,
@@ -65,7 +65,7 @@ standard_sc<- function(eset               = NULL,
                        findmarkers        = FALSE,
                        cols               = "normal",
                        palette            = 1,
-                       show_col           = T,
+                       show_col           = FALSE,
                        seed               = 123,
                        already_normalized = FALSE,
                        save_path          = NULL,
@@ -116,7 +116,7 @@ standard_sc<- function(eset               = NULL,
 
   message(" >>>-----  Data will be deposite in ",file_name$abspath)
   ##############################################
-  path1<-creat_folder(paste0(file_name$folder_name,"/1-QC-and-Dimplot"))
+  path1<-creat_folder(paste0(file_name$folder_name,"/1-QC"))
   #############################################
   print(">>>----- Step-1: Quality control")
 
@@ -412,6 +412,7 @@ standard_sc<- function(eset               = NULL,
     #############################################
     #' View the relationship between dimensionality reduction data and cell annotation
     #############################################
+    reduction_method<- c("umap", "tsne", "pca")
 
     for (i in 1:length(vars_dim)) {
 
@@ -424,7 +425,7 @@ standard_sc<- function(eset               = NULL,
         message("------------------------------------------------------")
         message(paste0(">>> Processing method:: ", reduction))
 
-        pj<-dong_dimplot(sce              = sce,
+        pj<-scsig_dimplot(sce              = sce,
                          reduction        = reduction,
                          groups           = var,
                          split.by         = NULL,
@@ -469,7 +470,7 @@ standard_sc<- function(eset               = NULL,
 
 
     hheight<- 4.0 + length(unique(Idents(sce)))*6/4
-    dong_find_markers(sce        = sce,
+    scsig_find_markers(sce        = sce,
                       group      = NULL,
                       assay      = assay,
                       slot       = "scale.data",

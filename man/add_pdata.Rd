@@ -2,13 +2,23 @@
 % Please edit documentation in R/add_pdata.R
 \name{add_pdata}
 \alias{add_pdata}
-\title{Title}
+\title{Add in metedata associated with cells}
 \usage{
 add_pdata(sce, pdata, id_sce = "orig.ident", id_pdata = "ID")
 }
 \arguments{
-\item{id_pdata}{}
+\item{sce}{Seurat object}
+
+\item{pdata}{A vector, list, or data.frame with metadata to add}
+
+\item{id_sce}{One name of metadata column associated with cell identity}
+
+\item{id_pdata}{One name of additional data column associated with cell identity}
+}
+\value{
+Seurat object with metadata added
 }
 \description{
-Title
+Adds additional data to the Seurat object base on `AddMetaData{SeuratObject}`
+Can be any piece of information associated with a cell (examples include read depth, alignment rate, experimental batch, or subpopulation identity)
 }
