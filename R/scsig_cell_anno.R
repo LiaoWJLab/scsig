@@ -35,13 +35,14 @@ format_sig_from_df<-function(deg, cluster = "cluster", gene = "gene", avg_log2FC
 #' @param input
 #' @param x
 #' @param y
+#' @param axis_angle
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #'
-ggplotConfusionMatrix <- function(input, x, y){
+ggplotConfusionMatrix <- function(input, x, y, axis_angle = 60){
 
 
   if(class(input)[1]=="Seurat"){
@@ -57,7 +58,8 @@ ggplotConfusionMatrix <- function(input, x, y){
     geom_tile(aes(fill = log(Freq)), colour = "white") +
     scale_fill_gradient(low = "white", high = "steelblue") +
     geom_text(aes(x = Reference, y = Prediction, label = Freq)) +
-    theme(legend.position = "none") + theme_light()+
+    # theme(legend.position = "none") + theme_light()+
+    design_mytheme(legend.position = "none", axis_angle = axis_angle)+
     ggtitle(mytitle)+
     xlab(x) + ylab(y)
   return(p)
@@ -112,6 +114,7 @@ scsig_cell_anno<-function(sce,
                           gs         = NULL,
                           gs_data    = NULL,  # for sctyper
                           deg        = NULL,
+                          top_n_deg  = 100,
                           method     = c("pca", "sctyper", "model", "censu"),
                           assay      = NULL,
                           slot       = "scale.data",
@@ -159,7 +162,7 @@ scsig_cell_anno<-function(sce,
     cat(crayon::green(">>>--PCA score of celltype signatures will be estimate and used to celltype annotation...\n"))
     new_cluster<- "pca_cluster"
 
-    if(!is.null(deg)) gs<- format_sig_from_df(deg = deg, cluster = "cluster", gene = "gene")
+    if(!is.null(deg)) gs<- format_sig_from_df(deg = deg, n = top_n_deg)
 
     sces  <-irGSEA.score(object         = sce,
                          assay          = assay,
@@ -208,6 +211,9 @@ scsig_cell_anno<-function(sce,
     cat(crayon::green("Reference: Ianevski, A., Giri, A.K. & Aittokallio, T. Nat Commun 13, 1246 (2022). https://doi.org/10.1038/s41467-022-28803-w \n"))
 
     new_cluster<- "sc_typer"
+
+    if(!is.null(deg)) gs<- format_sig_from_df(deg = deg, n = top_n_deg)
+
     sces<- sctyper_anno(sce                     = sce,
                         gs_list_positive        = gs,
                         gs_data                 = gs_data,
@@ -218,7 +224,7 @@ scsig_cell_anno<-function(sce,
                         assay                   = assay,
                         slot                    = slot,
                         scale                   = scale,
-                        cluster                 = clsuter,
+                        cluster                 = cluster,
                         db_                     = db_,
                         db_path                 = db_path,
                         gene_names_to_uppercase = gene_names_to_uppercase)
