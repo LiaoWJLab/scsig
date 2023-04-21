@@ -21,7 +21,7 @@ pheatmap_average(
   palette_for_heatmape = 6,
   scale.matrix = NULL,
   fig.type = "pdf",
-  width = 13,
+  width = 9,
   height = NULL,
   file_name_prefix = "0"
 )

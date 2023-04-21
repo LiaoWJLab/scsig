@@ -51,7 +51,7 @@ pheatmap_average<-function(sce,
                            palette_for_heatmape = 6,
                            scale.matrix     = NULL,
                            fig.type         = "pdf",
-                           width            = 13,
+                           width            = 9,
                            height           = NULL,
                            file_name_prefix = "0"){
 
@@ -191,7 +191,7 @@ pheatmap_average<-function(sce,
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
-    height<- 5 + length(unique(Idents(sce)))*top_n*0.45
+    height<- 5 + length(unique(Idents(sce)))*top_n*0.25
   }
   ####################################################
   if(!is.null(marker_res)){
@@ -227,15 +227,15 @@ pheatmap_average<-function(sce,
     scale             = scale_phmap,
     cluster_rows      = cluster_pheatmap,
     cluster_cols      = T, #clustered by columns
-    cellwidth         = 6,
-    cellheight        = 6,
-    treeheight_col    = 6,
+    cellwidth         = 7,
+    cellheight        = 7,
+    treeheight_col    = 8,
     clustering_method = "complete",
     show_rownames     = T, #show cluster names
     angle_col         = "45",
     annotation_row    = annotation_row,
     annotation_colors = list(cluster = cluster_colors),
-    fontsize          = 6.5,
+    fontsize          = 6,
     silent            =  T) #The color for clusters are sames as previous setting
   # dev.off()
   ggsave(p, filename =  paste0(file_name_prefix, "-pheatmap-of-markers-average-", group, ".", fig.type),

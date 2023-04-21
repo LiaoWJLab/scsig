@@ -9,6 +9,7 @@ scsig_cell_anno(
   gs = NULL,
   gs_data = NULL,
   deg = NULL,
+  top_n_deg = 100,
   method = c("pca", "sctyper", "model", "censu"),
   assay = NULL,
   slot = "scale.data",

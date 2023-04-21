@@ -4,10 +4,10 @@
 \alias{ggplotConfusionMatrix}
 \title{draw confusion matrix}
 \usage{
-ggplotConfusionMatrix(input, x, y)
+ggplotConfusionMatrix(input, x, y, axis_angle = 60)
 }
 \arguments{
-\item{y}{}
+\item{axis_angle}{}
 }
 \description{
 draw confusion matrix
