@@ -110,6 +110,7 @@ ggplotConfusionMatrix <- function(input, x, y){
 #' @examples
 scsig_cell_anno<-function(sce,
                           gs         = NULL,
+                          gs_data    = NULL,  # for sctyper
                           deg        = NULL,
                           method     = c("pca", "sctyper", "model", "censu"),
                           assay      = NULL,
@@ -207,18 +208,19 @@ scsig_cell_anno<-function(sce,
     cat(crayon::green("Reference: Ianevski, A., Giri, A.K. & Aittokallio, T. Nat Commun 13, 1246 (2022). https://doi.org/10.1038/s41467-022-28803-w \n"))
 
     new_cluster<- "sc_typer"
-    sces<- sctyper_anno(sce        = sce,
-                        gs         = gs,
-                        tissue_type= tissue_type,
-                        cell_type  = cell_type,
-                        cell_subset= cell_subset,
-                        study      = study,
-                        assay      = assay,
-                        slot       = slot,
-                        scale      = scale,
-                        cluster    = clsuter,
-                        db_        = db_,
-                        db_path    = db_path,
+    sces<- sctyper_anno(sce                     = sce,
+                        gs_list_positive        = gs,
+                        gs_data                 = gs_data,
+                        tissue_type             = tissue_type,
+                        cell_type               = cell_type,
+                        cell_subset             = cell_subset,
+                        study                   = study,
+                        assay                   = assay,
+                        slot                    = slot,
+                        scale                   = scale,
+                        cluster                 = clsuter,
+                        db_                     = db_,
+                        db_path                 = db_path,
                         gene_names_to_uppercase = gene_names_to_uppercase)
 
   }

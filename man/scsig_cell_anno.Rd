@@ -7,6 +7,7 @@
 scsig_cell_anno(
   sce,
   gs = NULL,
+  gs_data = NULL,
   deg = NULL,
   method = c("pca", "sctyper", "model", "censu"),
   assay = NULL,
@@ -30,7 +31,7 @@ scsig_cell_anno(
   gene_names_to_uppercase = TRUE,
   cols = "normal",
   palette = 1,
-  show_col = T,
+  show_col = FALSE,
   seed = 123,
   point.size = 1.5,
   reduction = "umap",
@@ -38,7 +39,8 @@ scsig_cell_anno(
   save_plot = TRUE,
   width = 12,
   height = 5,
-  path = NULL
+  path = NULL,
+  fig.type = "pdf"
 )
 }
 \arguments{
@@ -55,7 +57,7 @@ See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for 
 
 \item{reduction}{Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca}
 
-\item{height}{}
+\item{fig.type}{}
 }
 \description{
 Title

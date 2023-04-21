@@ -6,7 +6,9 @@
 \usage{
 sctyper_anno(
   sce,
-  gs_sctyper = NULL,
+  gs_list_positive = NULL,
+  gs_list_netative = NULL,
+  gs_data = NULL,
   tissue_type = NULL,
   cell_type = "base",
   cell_subset = NULL,
@@ -23,13 +25,19 @@ sctyper_anno(
 \arguments{
 \item{sce}{Seurat object}
 
-\item{gs_sctyper}{Default is null, user can provide gene set file manually}
+\item{gs_list_positive}{gene set list that up regulated in cell types}
+
+\item{gs_list_netative}{gene set list that down regulated in cell types}
+
+\item{gs_data}{gene signature data with data frame format}
 
 \item{tissue_type}{Default is NULL}
 
-\item{cell_type}{Cell types choosed from "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"}
+\item{cell_type}{Cell types options: "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"}
 
 \item{cell_subset}{Default is NULL}
+
+\item{study}{an option to choose gene signatures}
 
 \item{assay}{Assay to pull from, e.g. RNA, SCT, integrated}
 
@@ -41,18 +49,9 @@ sctyper_anno(
 
 \item{db_}{Database of manually collected cell type annotation, default is "ScTypeDB_full.xlsx" deposited in data}
 
-\item{point.size}{Size of point, default is 1.5}
+\item{db_path}{path of signature data, an example: paste0(base::system.file("data", package = "scsig"),"/ScTyperDB-merged.xlsx")}
 
-\item{cols}{Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
-See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
-
-\item{palette}{Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4}
-
-\item{show_col}{Whether to show color palettes}
-
-\item{seed}{Seed of the random number generator, default is 123. The parameter works when cols ="random"}
-
-\item{reduction}{Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca}
+\item{gene_names_to_uppercase}{if TRUE, all gene symbol will be in uppercase}
 }
 \value{
 Seurat object with updated metadata containing cell type annotation

@@ -5,7 +5,7 @@
 \title{Get gene sets from DB, or modified gene sets data}
 \usage{
 get_gene_sets(
-  gs_sctyper = NULL,
+  gs = NULL,
   path_to_db_file = NULL,
   cell_type = NULL,
   tissue_type = NULL,
@@ -13,7 +13,7 @@ get_gene_sets(
 )
 }
 \arguments{
-\item{gs_sctyper}{user can provide gene set file manually}
+\item{gs}{user can provide gene set file manually}
 
 \item{path_to_db_file}{- DB file with cell types}
 

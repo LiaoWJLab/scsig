@@ -9,15 +9,15 @@
 #
 # @params: scRNAseqData - input scRNA-seq matrix (rownames - genes, column names - cells),
 # @params: scale - indicates whether the matrix is scaled (TRUE by default)
-# @params: gs_sctyper - list of gene sets positively expressed in the cell type
-# @params: gs_sctyper2 - list of gene sets that should not be expressed in the cell type (NULL if not applicable)
+# @params: gs - list of gene sets positively expressed in the cell type
+# @params: gs2 - list of gene sets that should not be expressed in the cell type (NULL if not applicable)
 
 #' Title
 #'
 #' @param scRNAseqData
 #' @param scaled
-#' @param gs_sctyper
-#' @param gs_sctyper2
+#' @param gs
+#' @param gs2
 #' @param gene_names_to_uppercase
 #' @param ...
 #'
@@ -25,7 +25,7 @@
 #' @export
 #'
 #' @examples
-sctype_score <- function(scRNAseqData, scaled = !0, gs_sctyper, gs_sctyper2 = NULL, gene_names_to_uppercase = !0, ...){
+sctype_score <- function(scRNAseqData, scaled = !0, gs, gs2 = NULL, gene_names_to_uppercase = !0, ...){
 
   # check input matrix
   if(!is.matrix(scRNAseqData)){
@@ -37,9 +37,9 @@ sctype_score <- function(scRNAseqData, scaled = !0, gs_sctyper, gs_sctyper2 = NU
   }
 
   # marker sensitivity
-  marker_stat = sort(table(unlist(gs_sctyper)), decreasing = T);
-  marker_sensitivity = data.frame(score_marker_sensitivity = scales::rescale(as.numeric(marker_stat), to = c(0,1), from = c(length(gs_sctyper),1)),
-                                  gene_ = names(marker_stat), strings_sctyperAsFactors = !1)
+  marker_stat = sort(table(unlist(gs)), decreasing = T);
+  marker_sensitivity = data.frame(score_marker_sensitivity = scales::rescale(as.numeric(marker_stat), to = c(0,1), from = c(length(gs),1)),
+                                  gene_ = names(marker_stat), stringsAsFactors = !1)
 
   # convert gene names to Uppercase
   if(gene_names_to_uppercase){
@@ -47,15 +47,15 @@ sctype_score <- function(scRNAseqData, scaled = !0, gs_sctyper, gs_sctyper2 = NU
   }
 
   # subselect genes only found in data
-  names_gs_sctyper_cp = names(gs_sctyper)
-  names_gs_sctyper_2_cp = names(gs_sctyper2)
-  gs_sctyper = lapply(1:length(gs_sctyper), function(d_){
-    GeneIndToKeep = rownames(scRNAseqData) %in% as.character(gs_sctyper[[d_]]); rownames(scRNAseqData)[GeneIndToKeep]})
-  gs_sctyper2 = lapply(1:length(gs_sctyper2), function(d_){
-    GeneIndToKeep = rownames(scRNAseqData) %in% as.character(gs_sctyper2[[d_]]); rownames(scRNAseqData)[GeneIndToKeep]})
-  names(gs_sctyper) = names_gs_sctyper_cp
-  names(gs_sctyper2) = names_gs_sctyper_2_cp
-  cell_markers_genes_score = marker_sensitivity[marker_sensitivity$gene_ %in% unique(unlist(gs_sctyper)),]
+  names_gs_cp = names(gs)
+  names_gs_2_cp = names(gs2)
+  gs = lapply(1:length(gs), function(d_){
+    GeneIndToKeep = rownames(scRNAseqData) %in% as.character(gs[[d_]]); rownames(scRNAseqData)[GeneIndToKeep]})
+  gs2 = lapply(1:length(gs2), function(d_){
+    GeneIndToKeep = rownames(scRNAseqData) %in% as.character(gs2[[d_]]); rownames(scRNAseqData)[GeneIndToKeep]})
+  names(gs) = names_gs_cp
+  names(gs2) = names_gs_2_cp
+  cell_markers_genes_score = marker_sensitivity[marker_sensitivity$gene_ %in% unique(unlist(gs)),]
 
   # z-scale if not
   if(!scaled) Z <- t(scale(t(scRNAseqData))) else Z <- scRNAseqData
@@ -66,13 +66,13 @@ sctype_score <- function(scRNAseqData, scaled = !0, gs_sctyper, gs_sctyper2 = NU
   }
 
   # subselect only with marker genes
-  Z = Z[unique(c(unlist(gs_sctyper),unlist(gs_sctyper2))), ]
+  Z = Z[unique(c(unlist(gs),unlist(gs2))), ]
 
   # combine scores
-  es = do.call("rbind", lapply(names(gs_sctyper), function(gs_sctypers_){
+  es = do.call("rbind", lapply(names(gs), function(gss_){
     sapply(1:ncol(Z), function(j) {
-      gs_sctyper_z = Z[gs_sctyper[[gs_sctypers_]], j]; gz_2 = Z[gs_sctyper2[[gs_sctypers_]], j] * -1
-      sum_t1 = (sum(gs_sctyper_z) / sqrt(length(gs_sctyper_z))); sum_t2 = sum(gz_2) / sqrt(length(gz_2));
+      gs_z = Z[gs[[gss_]], j]; gz_2 = Z[gs2[[gss_]], j] * -1
+      sum_t1 = (sum(gs_z) / sqrt(length(gs_z))); sum_t2 = sum(gz_2) / sqrt(length(gz_2));
       if(is.na(sum_t2)){
         sum_t2 = 0;
       }
@@ -80,7 +80,7 @@ sctype_score <- function(scRNAseqData, scaled = !0, gs_sctyper, gs_sctyper2 = NU
     })
   }))
 
-  dimnames(es) = list(names(gs_sctyper), colnames(Z))
+  dimnames(es) = list(names(gs), colnames(Z))
   es.max <- es[!apply(is.na(es) | es == "", 1, all),] # remove na rows
 
   es.max
@@ -110,7 +110,7 @@ auto_detect_tissue_type <- function(path_to_db_file, seuratObject, scaled, assay
   for(tissue in tissues_){ print(paste0("Checking...", tissue));
 
     # prepare gene sets
-    gs_sctyper_list = gene_sets_prepare(path_to_db_file, tissue);
+    gs_list = gene_sets_prepare(path_to_db_file, tissue);
 
     # prepare obj
     if(scaled){
@@ -119,8 +119,8 @@ auto_detect_tissue_type <- function(path_to_db_file, seuratObject, scaled, assay
       obj = as.matrix(seuratObject[[assay]]@counts)
     }
 
-    es.max = sctype_score(scRNAseqData = obj, scaled = scaled, gs_sctyper = gs_sctyper_list$gs_sctyper_positive, gs_sctyper2 = gs_sctyper_list$gs_sctyper_negative,
-                          marker_sensitivity = gs_sctyper_list$marker_sensitivity, verbose=!0);
+    es.max = sctype_score(scRNAseqData = obj, scaled = scaled, gs = gs_list$gs_positive, gs2 = gs_list$gs_negative,
+                          marker_sensitivity = gs_list$marker_sensitivity, verbose=!0);
 
     cL_resutls = do.call("rbind", lapply(unique(seuratObject@meta.data$seurat_clusters), function(cl){
 
@@ -163,22 +163,23 @@ auto_detect_tissue_type <- function(path_to_db_file, seuratObject, scaled, assay
 #' Written by Aleksandr Ianevski <aleksandr.ianevski@helsinki.fi>, June 2021
 #' Modified by IOBR organization <iobr2019@163.com>, Oct 2022
 #'
-#' @param gs_sctyper user can provide gene set file manually
+#' @param gs_data user can provide gene set data manually
 #' @param path_to_db_file - DB file with cell types
 #' @param cell_type default is null
 #' @param tissue_type default is null
 #' @param cell_subset default is null
+#' @param study
 #'
 #' @return
 #' @export
 #'
 #' @examples
-gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_type = NULL, tissue_type = NULL, cell_subset = NULL, study = NULL){
+gene_sets_prepare <- function(gs_data = NULL, path_to_db_file = NULL, cell_type = NULL, tissue_type = NULL, cell_subset = NULL, study = NULL){
 
 
-  if(!is.null(gs_sctyper)){
+  if(!is.null(gs_data)){
 
-    cell_markers<- gs_sctyper
+    cell_markers<- gs_data
 
     message(">>>- The input format must be: ")
     exam<- data.frame("tissueType" = "Immune", "cellName" = "T cell", "geneSymbolmore1" = "CD8,CD4", "geneSymbolmore2" = "",
@@ -244,13 +245,13 @@ gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_ty
     cell_markers = cell_markers[cell_markers$studyIndex == study,]
   }
 
-  cell_markers$geneSymbolmore1 = gs_sctyperub(" ","",cell_markers$geneSymbolmore1)
-  cell_markers$geneSymbolmore2 = gs_sctyperub(" ","",cell_markers$geneSymbolmore2)
+  cell_markers$geneSymbolmore1 = gsub(" ","",cell_markers$geneSymbolmore1)
+  cell_markers$geneSymbolmore2 = gsub(" ","",cell_markers$geneSymbolmore2)
 
   # correct gene symbols from the given DB (up-genes)
   cell_markers$geneSymbolmore1 = sapply(1:nrow(cell_markers), function(i){
 
-    markers_all = gs_sctyperub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore1[i],",")))
+    markers_all = gsub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore1[i],",")))
     markers_all = toupper(markers_all[markers_all != "NA" & markers_all != ""])
     markers_all = sort(markers_all)
 
@@ -265,7 +266,7 @@ gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_ty
   # correct gene symbols from the given DB (down-genes)
   cell_markers$geneSymbolmore2 = sapply(1:nrow(cell_markers), function(i){
 
-    markers_all = gs_sctyperub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore2[i],",")))
+    markers_all = gsub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore2[i],",")))
     markers_all = toupper(markers_all[markers_all != "NA" & markers_all != ""])
     markers_all = sort(markers_all)
 
@@ -277,13 +278,14 @@ gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_ty
     }
   })
 
-  cell_markers$geneSymbolmore1 = gs_sctyperub("///",",",cell_markers$geneSymbolmore1);cell_markers$geneSymbolmore1 = gs_sctyperub(" ","",cell_markers$geneSymbolmore1)
-  cell_markers$geneSymbolmore2 = gs_sctyperub("///",",",cell_markers$geneSymbolmore2);cell_markers$geneSymbolmore2 = gs_sctyperub(" ","",cell_markers$geneSymbolmore2)
+  cell_markers$geneSymbolmore1 = gsub("///",",",cell_markers$geneSymbolmore1);cell_markers$geneSymbolmore1 = gsub(" ","",cell_markers$geneSymbolmore1)
+  cell_markers$geneSymbolmore2 = gsub("///",",",cell_markers$geneSymbolmore2);cell_markers$geneSymbolmore2 = gsub(" ","",cell_markers$geneSymbolmore2)
 
-  gs_sctyper = lapply(1:nrow(cell_markers), function(j) gs_sctyperub(" ","",unlist(strsplit(toString(cell_markers$geneSymbolmore1[j]),",")))); names(gs_sctyper) = cell_markers$cellName
-  gs_sctyper2 = lapply(1:nrow(cell_markers), function(j) gs_sctyperub(" ","",unlist(strsplit(toString(cell_markers$geneSymbolmore2[j]),",")))); names(gs_sctyper2) = cell_markers$cellName
+  gs = lapply(1:nrow(cell_markers), function(j) gsub(" ","",unlist(strsplit(toString(cell_markers$geneSymbolmore1[j]),",")))); names(gs) = cell_markers$cellName
+  gs2 = lapply(1:nrow(cell_markers), function(j) gsub(" ","",unlist(strsplit(toString(cell_markers$geneSymbolmore2[j]),",")))); names(gs2) = cell_markers$cellName
 
-  list(gs_sctyper_positive = gs_sctyper, gs_sctyper_negative = gs_sctyper2)
+  gg<-list(gs_positive = gs, gs_negative = gs2)
+  return(gg)
 }
 
 
@@ -291,7 +293,7 @@ gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_ty
 
 #' Get gene sets from DB, or modified gene sets data
 #'
-#' @param gs_sctyper user can provide gene set file manually
+#' @param gs user can provide gene set file manually
 #' @param path_to_db_file - DB file with cell types
 #' @param cell_type default is null
 #' @param tissue_type default is null
@@ -301,12 +303,12 @@ gene_sets_prepare <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_ty
 #' @export
 #'
 #' @examples
-get_gene_sets <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_type = NULL, tissue_type = NULL, cell_subset = NULL){
+get_gene_sets <- function(gs = NULL, path_to_db_file = NULL, cell_type = NULL, tissue_type = NULL, cell_subset = NULL){
 
 
-  if(!is.null(gs_sctyper)){
+  if(!is.null(gs)){
 
-    cell_markers<- gs_sctyper
+    cell_markers<- gs
 
     message(">>>- The input format must be: ")
     exam<- data.frame("tissueType" = "Immune", "cellName" = "T cell", "geneSymbolmore1" = "CD8,CD4", "geneSymbolmore2" = "",
@@ -356,13 +358,13 @@ get_gene_sets <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_type =
   }
 
 
-  cell_markers$geneSymbolmore1 = gs_sctyperub(" ","",cell_markers$geneSymbolmore1)
-  cell_markers$geneSymbolmore2 = gs_sctyperub(" ","",cell_markers$geneSymbolmore2)
+  cell_markers$geneSymbolmore1 = gsub(" ","",cell_markers$geneSymbolmore1)
+  cell_markers$geneSymbolmore2 = gsub(" ","",cell_markers$geneSymbolmore2)
 
   # correct gene symbols from the given DB (up-genes)
   cell_markers$geneSymbolmore1 = sapply(1:nrow(cell_markers), function(i){
 
-    markers_all = gs_sctyperub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore1[i],",")))
+    markers_all = gsub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore1[i],",")))
     markers_all = toupper(markers_all[markers_all != "NA" & markers_all != ""])
     markers_all = sort(markers_all)
 
@@ -377,7 +379,7 @@ get_gene_sets <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_type =
   # correct gene symbols from the given DB (down-genes)
   cell_markers$geneSymbolmore2 = sapply(1:nrow(cell_markers), function(i){
 
-    markers_all = gs_sctyperub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore2[i],",")))
+    markers_all = gsub(" ", "", unlist(strsplit(cell_markers$geneSymbolmore2[i],",")))
     markers_all = toupper(markers_all[markers_all != "NA" & markers_all != ""])
     markers_all = sort(markers_all)
 
@@ -389,8 +391,8 @@ get_gene_sets <- function(gs_sctyper = NULL, path_to_db_file = NULL, cell_type =
     }
   })
 
-  cell_markers$geneSymbolmore1 = gs_sctyperub("///",",",cell_markers$geneSymbolmore1);cell_markers$geneSymbolmore1 = gs_sctyperub(" ","",cell_markers$geneSymbolmore1)
-  cell_markers$geneSymbolmore2 = gs_sctyperub("///",",",cell_markers$geneSymbolmore2);cell_markers$geneSymbolmore2 = gs_sctyperub(" ","",cell_markers$geneSymbolmore2)
+  cell_markers$geneSymbolmore1 = gsub("///",",",cell_markers$geneSymbolmore1);cell_markers$geneSymbolmore1 = gsub(" ","",cell_markers$geneSymbolmore1)
+  cell_markers$geneSymbolmore2 = gsub("///",",",cell_markers$geneSymbolmore2);cell_markers$geneSymbolmore2 = gsub(" ","",cell_markers$geneSymbolmore2)
 
  return(cell_markers)
 }

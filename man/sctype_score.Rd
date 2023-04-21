@@ -7,8 +7,8 @@
 sctype_score(
   scRNAseqData,
   scaled = !0,
-  gs_sctyper,
-  gs_sctyper2 = NULL,
+  gs,
+  gs2 = NULL,
   gene_names_to_uppercase = !0,
   ...
 )

@@ -4,10 +4,16 @@
 \alias{format_sig_from_df}
 \title{Title}
 \usage{
-format_sig_from_df(deg, cluster = "cluster", gene = "gene")
+format_sig_from_df(
+  deg,
+  cluster = "cluster",
+  gene = "gene",
+  avg_log2FC = "avg_log2FC",
+  n = 100
+)
 }
 \arguments{
-\item{gene}{}
+\item{avg_log2FC}{}
 }
 \description{
 Title

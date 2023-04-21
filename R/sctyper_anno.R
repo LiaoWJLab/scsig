@@ -5,23 +5,22 @@
 #'
 #' Cell type annotation using specific marker combinations from single-cell transcriptomic data
 #' refer to [ScType](https://www.nature.com/articles/s41467-022-28803-w)
+#'
 #' @param sce Seurat object
 #' @param assay Assay to pull from, e.g. RNA, SCT, integrated
 #' @param slot Data slot to use, choose from 'counts', 'data', or 'scale.data'
 #' @param scale Whether the matrix is scaled，default is NULL
 #' @param cluster A vector of variables to group cells by
-#' @param point.size Size of point, default is 1.5
 #' @param db_ Database of manually collected cell type annotation, default is "ScTypeDB_full.xlsx" deposited in data
-#' @param cols Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
-#'             See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details
-#' @param palette Numeric value corresponding with color palette. Default is 1, other options: 2, 3, 4
-#' @param show_col Whether to show color palettes
-#' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
-#' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
-#' @param gs_sctyper Default is null, user can provide gene set file manually
 #' @param tissue_type Default is NULL
-#' @param cell_type Cell types choosed from "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"
+#' @param cell_type Cell types options: "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base"
 #' @param cell_subset Default is NULL
+#' @param gs_list_positive gene set list that up regulated in cell types
+#' @param gs_list_netative gene set list that down regulated in cell types
+#' @param gs_data gene signature data with data frame format
+#' @param study an option to choose gene signatures
+#' @param db_path path of signature data, an example: paste0(base::system.file("data", package = "scsig"),"/ScTyperDB-merged.xlsx")
+#' @param gene_names_to_uppercase if TRUE, all gene symbol will be in uppercase
 #'
 #' @return Seurat object with updated metadata containing cell type annotation
 #' @export
@@ -29,28 +28,44 @@
 #' @examples
 #' tnbc<-sctyper_anno(sce = sce, tissue = "Immune system")
 sctyper_anno<-function(sce,
-                       gs_sctyper = NULL,
-                       tissue_type= NULL,
-                       cell_type  = "base",
-                       cell_subset= NULL,
-                       study      = NULL,
-                       assay      = NULL,
-                       slot       = "scale.data",
-                       scale      = NULL,
-                       cluster    = "seurat_clusters",
-                       db_        = "ScTyperDB-merged.xlsx",
-                       db_path    = NULL,
+                       gs_list_positive        = NULL,
+                       gs_list_netative        = NULL,
+                       gs_data                 = NULL,
+                       tissue_type             = NULL,
+                       cell_type               = "base",
+                       cell_subset             = NULL,
+                       study                   = NULL,
+                       assay                   = NULL,
+                       slot                    = "scale.data",
+                       scale                   = NULL,
+                       cluster                 = "seurat_clusters",
+                       db_                     = "ScTyperDB-merged.xlsx",
+                       db_path                 = NULL,
                        gene_names_to_uppercase = TRUE){
 
 
-  if(!is.null(db_path)){
-    db_<- db_path
+  # prepare gene sets
+
+  if(!is.null(gs_list_positive)|!is.null(gs_list_netative)){
+
+    gsp<- gs_list_positive
+    gsn<- gs_list_netative
+
   }else{
-    db_<- paste0(base::system.file("data", package = "scsig"),"/", db_)
+
+    if(!is.null(db_path)){
+      db_<- db_path
+    }else{
+      db_<- paste0(base::system.file("data", package = "scsig"),"/", db_)
+    }
+
+    gs_sctyper_list = gene_sets_prepare(gs_data = gs_data, path_to_db_file = db_, cell_type = cell_type, tissue_type = tissue_type, cell_subset = cell_subset, study = study)
+
+    gsp <- gs_sctyper_list$gs_positive
+    gsn <-  gs_sctyper_list$gs_negative
+
   }
 
-  # prepare gene sets
-  gs_sctyper_list = gene_sets_prepare(gs_sctyper = gs_sctyper, path_to_db_file = db_, cell_type = cell_type, tissue_type = tissue_type, cell_subset = cell_subset)
   ###################################
 
   message(">>>---Assay used to estimation:")
@@ -64,16 +79,18 @@ sctyper_anno<-function(sce,
   # get cell-type by cell matrix
   scRNAseqData<- SeuratObject::GetAssayData(sce, assay = assay, slot = slot)
 
-
   if(slot == "scale.data"|is.null(scale)){
     scale<-FALSE
   }else{
     scale<-scale
   }
+
+  ###################################
+
   es.max = sctype_score(scRNAseqData = scRNAseqData,
                         scaled = !scale,
-                        gs_sctyper = gs_sctyper_list$gs_sctyper_positive,
-                        gs_sctyper2 = gs_sctyper_list$gs_sctyper_negative,
+                        gs = gsp,
+                        gs2 = gsn,
                         gene_names_to_uppercase = gene_names_to_uppercase)
 
   # NOTE: scRNAseqData parameter should correspond to your input scRNA-seq matrix.
