@@ -78,7 +78,7 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
 
   if(combine_meta_data){
 
-    message(paste0(">>>--- Conbim metadata... "))
+    message(paste0(">>>--- Merging metadata... "))
     meta.data<-rownames_to_column(sce@meta.data, var = "ID")
     eset_cbind<- inner_join(meta.data, eset_cbind, by = "ID" )
   }

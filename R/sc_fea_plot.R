@@ -236,6 +236,7 @@ sc_fea_plot<-function(sce,
     level<-level[order(level)]
     res<-batch_wilcoxon(input, target = group, feature = vars)
     res<-rownames_to_column(res, var = "features")
+    print(res)
     writexl::write_xlsx(res, paste0(file_name$abspath, prefix, "0-statistical-res-with-",group,".xlsx"))
   }else{
 
@@ -243,9 +244,11 @@ sc_fea_plot<-function(sce,
     res<-data.frame(p.value = sapply(aa, getElement, name = "p.value"),
                     sig_names = vars,
                     statistic = sapply(aa, getElement, name = "statistic"))
-    res$p.adj<-p.adjust(res$p.value,method = "BH",n=length(res$p.value))
-    res<-res[order(res$p.adj,decreasing = F),]
+    res$p.adj<-p.adjust(res$p.value, method = "BH", n=length(res$p.value))
+    res<-res[order(res$p.adj, decreasing = F),]
+    res<-as.data.frame(res)
     res<-rownames_to_column(res, var = "features")
+    print(res)
     writexl::write_xlsx(res, paste0(file_name$abspath, prefix, "0-statistical-res-with-",group,".xlsx"))
     #######################################
   }
