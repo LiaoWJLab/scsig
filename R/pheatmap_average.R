@@ -187,7 +187,7 @@ pheatmap_average<-function(sce,
   # cluster_colors <- setNames(brewer.pal(8, "Set1"), levels(as.factor(sces$Model1_merge_subcluster)))
   ####################################################
 
-  mapal <- palettes(category = "heatmap", palette = palette_for_heatmape, counts = 200,show_col = show_col)
+  mapal <- palettes(category = "heatmap", palette = palette_for_heatmape, counts = 200, show_col = show_col)
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
@@ -236,6 +236,7 @@ pheatmap_average<-function(sce,
     annotation_row    = annotation_row,
     annotation_colors = list(cluster = cluster_colors),
     fontsize          = 6,
+    border            =FALSE,
     silent            =  T) #The color for clusters are sames as previous setting
   # dev.off()
   ggsave(p, filename =  paste0(file_name_prefix, "-pheatmap-of-markers-average-", group, ".", fig.type),

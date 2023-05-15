@@ -96,7 +96,6 @@ enrich_cluster_degs<-function(sce.markers,
                                            OrgDb = org.Hs.eg.db,
                                            pvalueCutoff=0.99)
       # table(xx@compareClusterResult$Cluster)
-      print(head(as_tibble(xx)))
 
     }
 
@@ -109,10 +108,11 @@ enrich_cluster_degs<-function(sce.markers,
       )
 
 
-      print(head(as_tibble(xx)))
-
-
     }
+
+    xx<- DOSE:: setReadable(xx, OrgDb = "org.Hs.eg.db", keyType = "ENTREZID")
+
+    print(head(as_tibble(xx)))
 
     if(!is.null(index)) {
       writexl::write_xlsx(as.data.frame(xx), paste0(path$abspath, index,"-",z,"-",method, "-enrichment-result.xlsx"))

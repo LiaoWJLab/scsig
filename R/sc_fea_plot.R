@@ -160,8 +160,7 @@ sc_fea_plot<-function(sce,
 
   }
 
-
-  ##############################################
+  #############################################
   reduction_method<-dims
   #############################################
 
@@ -297,8 +296,10 @@ sc_fea_plot<-function(sce,
     p<- ggplot(input, aes(x= !!sym(group), y = !!sym(var), fill = !!sym(group) )) + geom_violin(trim=FALSE)+ scale_fill_manual(values = cols ) + design_mytheme()
     # help("VlnPlot")
     # VlnPlot(object = sce, features = var, assay = assay,  cols = cols, ncol = 1) & theme(plot.title = element_text(size = 10))
-    ggsave(plot = p,filename=paste0(prefix,z,"-", "4-",var,"-VlnPlot_subcluster_markers.", fig.type),
-           width = box_width, height = 8,
+    ggsave(plot = p,
+           filename=paste0(prefix,z,"-", "4-",var,"-VlnPlot_subcluster_markers.", fig.type),
+           width = box_width,
+           height = 8,
            path = file_name$folder_name)
 
     # help("FeaturePlot")
@@ -311,14 +312,13 @@ sc_fea_plot<-function(sce,
     pp<- FeaturePlot(object = sce, features=var, reduction = "tsne",  split.by = split_by,   label = show_label, pt.size = pt.size, ncol = 1,
                      cols = c("lightgrey", "darkred"))  & theme(plot.title = element_text(size = 10))
     ggsave(plot = pp, filename=paste0(prefix,z,"-","6-",var,"-FeaturePlot-tsne.",fig.type),
-           width = feaPlot_width, height = 7,
+           width = feaPlot_width,
+           height = 7,
            path = file_name$folder_name)
-    ################################################################
-
   }
 
-
-  pp<-      scsig_heatmap(sce             = sce,
+  ########################################################
+  pp<-      scsig_heatmap(sce            = sce,
                          group           = group,
                          feas            = show_vars,
                          assay           = assay,
@@ -369,15 +369,14 @@ sc_fea_plot<-function(sce,
              cols = cols, #palettes(category = "random", palette = 1),
              ncol = 4)& theme(plot.title = element_text(size = 10), legend.position = "none")
   ggsave(p, filename=paste0(index,"-0-6-VlnPlot_subcluster_markers.", fig.type),
-         width = width_vln, height = height_VlnPlot,
+         width = width_vln,
+         height = height_VlnPlot,
          path = file_name$folder_name)
 
   ###################################
   message(">>>--- Processing pheatmap_average ")
-
   height_pheatmap<- 4.0+ length(show_vars)/3
-
-  res<-pheatmap_average(sce             = sce,
+  res<-pheatmap_average(sce                  = sce,
                         assay                = assay,
                         slot                 = slot,
                         marker_res           = NULL,
@@ -392,9 +391,9 @@ sc_fea_plot<-function(sce,
                         file_name_prefix     = paste0(index, "-0-5"),
                         show_col             = FALSE,
                         width                = 12,
-                        height               = height_pheatmap )
-  ####################################################
+                        height               = height_pheatmap)
 
+  ####################################################
   return(input)
 }
 
