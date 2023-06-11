@@ -151,7 +151,7 @@ scsig_cell_anno<-function(sce,
 
 
   message(">>>---Assay used to estimation:")
-  if(!is.null(assay)){
+  if(is.null(assay)){
     print(DefaultAssay(sce))
   }else{
     print(paste0(">>>>> ",assay))
@@ -253,7 +253,7 @@ scsig_cell_anno<-function(sce,
   if(length(cols)==1){
     if(cols=="random"){
 
-      mycols<-palettes(category = "random", palette = palette, show_col = show_col)
+      mycols<-  palettes(category = "random", palette = palette, show_col = show_col)
       message(">>>> Default seed is 123, you can change it by `seed`(parameter).")
       set.seed(seed)
       mycols<-mycols[sample(length(mycols), length(mycols))]
@@ -274,20 +274,21 @@ scsig_cell_anno<-function(sce,
 
   p2<-DimPlot(sces, reduction = reduction, label = TRUE, cols = mycols,
               repel = TRUE, pt.size = point.size, group.by = cluster)
-  p<-p1+p2
-
+  p <- p1+p2
   #################################
   if(show_plot) print(p)
 
+  # dev.off()
   if(save_plot){
     if(is.null(path)){
       path<- "./"
     }else{
       path<- creat_folder(path)
-      path<- path$abspath
+      path<- path$folder_name
     }
 
-    ggsave(p, filename = paste0("1-Celltype-predicted-by-", method, "-", reduction, ".", fig.type), width = width, height = height, path = path)
+   ggsave(p, filename = paste0("1-Celltype-", method, "-", reduction, ".", fig.type),
+                     width = width, height = height, path = path)
   }
 
   # get cell-type by cell matrix

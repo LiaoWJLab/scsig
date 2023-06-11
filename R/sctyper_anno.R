@@ -69,7 +69,7 @@ sctyper_anno<-function(sce,
   ###################################
 
   message(">>>---Assay used to estimation:")
-  if(!is.null(assay)){
+  if(is.null(assay)){
     print(DefaultAssay(sce))
   }else{
     print(paste0(">>>>> ",assay))
