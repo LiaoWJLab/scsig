@@ -165,6 +165,11 @@ pheatmap_average<-function(sce,
   feas<-feature_manipulation(data = phData, feature = colnames(phData))
   phData<-phData[, feas]
 
+  phData <-scale(phData, center = T, scale = T)
+  phData[phData >=3] <- 3
+  phData[phData <=3] <- -3
+  ##################################################
+
   for (x in 1:length(unique(celltypes))) {
     if(length(unique(rownames(phData)))<length(rownames(phData))){
       rownames(phData)[duplicated(rownames(phData))]<-paste0(rownames(phData)[duplicated(rownames(phData))], "_", x)
@@ -191,7 +196,7 @@ pheatmap_average<-function(sce,
 
   if(is.null(height)){
     # if(is.null(group)) stop("group must be define")
-    height<- 5 + length(unique(Idents(sce)))*top_n*0.25
+    height<- 5 + length(unique(Idents(sce)))*top_n*0.2
   }
   ####################################################
   if(!is.null(marker_res)){
