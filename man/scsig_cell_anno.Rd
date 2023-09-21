@@ -2,10 +2,12 @@
 % Please edit documentation in R/scsig_cell_anno.R
 \name{scsig_cell_anno}
 \alias{scsig_cell_anno}
-\title{Title}
+\title{Single cell annotation by multiple methods}
 \usage{
 scsig_cell_anno(
   sce,
+  subcluster = NULL,
+  main_celltype = NULL,
   gs = NULL,
   gs_data = NULL,
   deg = NULL,
@@ -45,6 +47,58 @@ scsig_cell_anno(
 )
 }
 \arguments{
+\item{sce}{Seurat object}
+
+\item{subcluster}{Name of main cell type to perform cell subtype annotation, such as "Myeloid, T-cells, B-cells". Default is NULL}
+
+\item{main_celltype}{Name of the metadata column in which the main cell type annotation is located}
+
+\item{gs}{Input own genesets as a list. Each element in the list is a gene set. The parameter works when `method`= "pca" or "sctype"}
+
+\item{gs_data}{gene signature data with data frame format. The parameter works when method ="sctype"}
+
+\item{deg}{Matrix containing a ranked list of putative markers, and associated statistics (p-values, ROC score, etc.)}
+
+\item{method}{Name of methods, choose from "pca", "sctyper" and  "model"}
+
+\item{assay}{Assay to pull from, e.g. RNA, SCT, integrated}
+
+\item{slot}{Data slot to use, choose from 'counts', 'data', or 'scale.data'}
+
+\item{min.feature}{The minimum genes per cell, default 10. The parameter works if a scRNA-seq matrix is input.}
+
+\item{scale}{Whether the matrix is scaled，default is NULL}
+
+\item{cluster}{A vector of variables to group cells by}
+
+\item{model_scpred}{A Seurat object with trained model(s) using scPred or a scPred object. The parameter works when method ="model"}
+
+\item{merge_seurat_cluster}{Whether to merge prediction results by`scPred` with clustering results. The parameter works when method ="model"}
+
+\item{mini_cluster}{Minimal cell counts of the cluster. The parameter works when method ="model"}
+
+\item{threshold}{Threshold used for probabilities to classify cells into classes. All cells below this threshold value will be labels as "unassigned". 
+In the case of binary classification (two cell tyoes), a threshold of 0.5 will force all cells to be classified to any of the two cell types. 
+For multi-class classification, if there's no probability higher than the threshold associated to a cell type, this will be labelled as "unassigned". The parameter works when method ="model"}
+
+\item{source}{Character string related to computer system name choose from win and linux. The parameter works when method ="model"}
+
+\item{path_model_scpred}{The path or the name of the file where the scPred model is read from. The parameter works when method ="model"}
+
+\item{tissue_type}{Tissue type. Default is NULL}
+
+\item{db_}{Database of manually collected cell type annotation, default is "ScTypeDB_full.xlsx" deposited in data. The parameter works when method ="sctype"}
+
+\item{db_path}{Path of gene signatures data, an example: paste0(base::system.file("data", package = "scsig"),"/ScTyperDB-merged.xlsx"). The parameter works when method ="sctype"}
+
+\item{cell_type}{Cell types options: "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base". The parameter works when method ="sctype"}
+
+\item{cell_subset}{Cell subtypes options. Default is NULL. The parameter works when method ="sctype"}
+
+\item{study}{Studes options to choose gene signatures. The parameter works when method ="sctype"}
+
+\item{gene_names_to_uppercase}{If TRUE, all gene symbol will be in uppercase.The parameter works when method ="sctype"}
+
 \item{cols}{Vector of colors, users can define the cols manually.  This may also be a single character, such as normal and random,  to a palette as specified by `palettes(){IOBR}`
 See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for details}
 
@@ -58,8 +112,22 @@ See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for 
 
 \item{reduction}{Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca}
 
-\item{fig.type}{}
+\item{show_plot}{Whether to show plots}
+
+\item{save_plot}{whether to save plots}
+
+\item{width}{Width of plot when saving}
+
+\item{height}{Height of plot when saving}
+
+\item{path}{Path of the output saving directory}
+
+\item{fig.type}{Format of plot saving, such as pdf and png}
+}
+\value{
+Seurat object with updated metadata containing cell type annotation
 }
 \description{
-Title
+Here, we provide three methods for single cell annotation : [ScType](https://www.nature.com/articles/s41467-022-28803-w) and PCA based on gene markers, 
+and [scPred](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1862-5) based on reference datasets.
 }

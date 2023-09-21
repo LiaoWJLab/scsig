@@ -2,13 +2,26 @@
 % Please edit documentation in R/scsig_cell_anno.R
 \name{ggplotConfusionMatrix}
 \alias{ggplotConfusionMatrix}
-\title{draw confusion matrix}
+\title{Create and show a confusion matrix
+Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with 
+"Accuracy" and "Kappa" values.}
 \usage{
 ggplotConfusionMatrix(input, x, y, axis_angle = 60)
 }
 \arguments{
-\item{axis_angle}{}
+\item{input}{Seurat object or dataframe}
+
+\item{x}{Name of a metadata column as a factor of predicted classes}
+
+\item{y}{Name of a metadata column as a factor of classes to be used as the true results}
+
+\item{axis_angle}{Axis angle}
+}
+\value{
+A plot object
 }
 \description{
-draw confusion matrix
+Create and show a confusion matrix
+Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with 
+"Accuracy" and "Kappa" values.
 }

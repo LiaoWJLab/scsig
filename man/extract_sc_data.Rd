@@ -38,3 +38,6 @@ vars<-c("PPBP", "IGLL5", "VDAC3", "CD1C", "AKR1C3", "PF4", "MYL9", "GNLY", "TREM
 #Get extracted data frame
 eset<-extract_sc_data(sce= pbmc_small, vars= vars, assay= "RNA")
 }
+\author{
+Dongqiang Zeng
+}

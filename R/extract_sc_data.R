@@ -17,6 +17,7 @@
 #' @return Data frame with cells as rows and features as columns
 #' @export
 #'
+#' @author Dongqiang Zeng
 #' @examples
 #' #Load data
 #' data("pbmc_small")
@@ -43,9 +44,23 @@ extract_sc_data<-function(sce, vars = NULL, assay, slot = "scale.data", combine_
     DefaultAssay(sce)<-method
 
     eset<- SeuratObject:: GetAssayData(sce, assay = assay, slot = slot)
-    eset<- eset[rownames(eset)%in% unique(vars), ]
+
+
+    feas <- rownames(eset)[rownames(eset)%in% unique(vars)]
+    if(length(feas)==0) stop(">>>== The required variables are not present in the expression matrix")
+    eset<- eset[feas, ]
     # print(head(eset))
-    eset<- as.data.frame(t(eset))
+    eset<- as.data.frame(t(as.matrix(eset)))
+
+    if(length(vars)==1) {
+
+      eset <-as.data.frame(eset)
+      rownames(eset) <- vars
+      eset <- t(eset)
+      eset <-as.data.frame(eset)
+    }
+
+    # print(head(eset[, 1:5]))
     eset<- tibble:: rownames_to_column(eset, var = "ID")
 
     # base::as.data.frame() %>%

@@ -2,7 +2,8 @@
 % Please edit documentation in R/scsig_cell_anno.R
 \name{format_sig_from_df}
 \alias{format_sig_from_df}
-\title{Title}
+\title{Gene lists from matrix of gene expression markers
+Get gene lists from matrix of gene expression markers for all identity classes}
 \usage{
 format_sig_from_df(
   deg,
@@ -13,8 +14,20 @@ format_sig_from_df(
 )
 }
 \arguments{
-\item{avg_log2FC}{}
+\item{deg}{Matrix containing a ranked list of putative markers, and associated statistics (p-values, ROC score, etc.)}
+
+\item{cluster}{Name of the column in which the clusters are located}
+
+\item{gene}{Name of the column in which the markers are located}
+
+\item{avg_log2FC}{Name of the column in which the average log2FC values are located}
+
+\item{n}{Number of selected top ranked markers}
+}
+\value{
+A list containing top n gene markers of each cell types
 }
 \description{
-Title
+Gene lists from matrix of gene expression markers
+Get gene lists from matrix of gene expression markers for all identity classes
 }
