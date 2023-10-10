@@ -4,7 +4,7 @@
 
 
 #' Gene lists from matrix of gene expression markers
-#' Get gene lists from matrix of gene expression markers for all identity classes 
+#' Get gene lists from matrix of gene expression markers for all identity classes
 #' @param deg Matrix containing a ranked list of putative markers, and associated statistics (p-values, ROC score, etc.)
 #' @param cluster Name of the column in which the clusters are located
 #' @param gene Name of the column in which the markers are located
@@ -12,18 +12,19 @@
 #' @param avg_log2FC Name of the column in which the average log2FC values are located
 #'
 #' @return A list containing top n gene markers of each cell types
-#' @export 
+#' @export
 #'
 #' @examples
 format_sig_from_df<-function(deg, cluster = "cluster", gene = "gene", avg_log2FC = "avg_log2FC", n = 100){
 
-  # cluster_<- !sym(cluster)
-  # avg_log2FC_ <- !sym(avg_log2FC)
+  # cluster <- !!sym(cluster)
+  # avg_log2FC <- !!sym(avg_log2FC)
   deg  <- as.data.frame(deg)
   deg  <- deg %>% dplyr:: group_by(cluster) %>%  dplyr::top_n(n, avg_log2FC)
   feas <- split(deg, deg[, cluster])
   feas <- lapply(feas, function(x) as.data.frame(x))
   feas <- lapply(feas, function(x) as.character(x[,gene]))
+  feas <- lapply(feas, function(x) x[1:n])
   return(feas)
 }
 
@@ -31,14 +32,14 @@ format_sig_from_df<-function(deg, cluster = "cluster", gene = "gene", avg_log2FC
 
 
 #' Create and show a confusion matrix
-#' Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with 
+#' Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with
 #' "Accuracy" and "Kappa" values.
-#' @param input Seurat object or dataframe 
+#' @param input Seurat object or dataframe
 #' @param x Name of a metadata column as a factor of predicted classes
 #' @param y Name of a metadata column as a factor of classes to be used as the true results
-#' @param axis_angle Axis angle 
+#' @param axis_angle Axis angle
 #'
-#' @return A plot object 
+#' @return A plot object
 #' @export
 #'
 #' @examples
@@ -69,12 +70,13 @@ ggplotConfusionMatrix <- function(input, x, y, axis_angle = 60){
 
 
 #' Single cell annotation by multiple methods
-#' 
-#' Here, we provide three methods for single cell annotation : [ScType](https://www.nature.com/articles/s41467-022-28803-w) and PCA based on gene markers, 
+#'
+#' Here, we provide three methods for single cell annotation : [ScType](https://www.nature.com/articles/s41467-022-28803-w) and PCA based on gene markers,
 #' and [scPred](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1862-5) based on reference datasets.
+#'
 #' @param sce Seurat object
 #' @param subcluster Name of main cell type to perform cell subtype annotation, such as "Myeloid, T-cells, B-cells". Default is NULL
-#' @param main_celltype Name of the metadata column in which the main cell type annotation is located 
+#' @param main_celltype Name of the metadata column in which the main cell type annotation is located
 #' @param gs Input own genesets as a list. Each element in the list is a gene set. The parameter works when `method`= "pca" or "sctype"
 #' @param method Name of methods, choose from "pca", "sctyper" and  "model"
 #' @param assay Assay to pull from, e.g. RNA, SCT, integrated
@@ -90,7 +92,7 @@ ggplotConfusionMatrix <- function(input, x, y, axis_angle = 60){
 #' @param seed Seed of the random number generator, default is 123. The parameter works when cols ="random"
 #' @param reduction Which dimensionality reduction to use. If not specified, first searches for umap, then tsne, then pca
 #' @param tissue_type Tissue type. Default is NULL
-#' @param gs_data gene signature data with data frame format. The parameter works when method ="sctype" 
+#' @param gs_data gene signature data with data frame format. The parameter works when method ="sctype"
 #' @param db_ Database of manually collected cell type annotation, default is "ScTypeDB_full.xlsx" deposited in data. The parameter works when method ="sctype"
 #' @param db_path Path of gene signatures data, an example: paste0(base::system.file("data", package = "scsig"),"/ScTyperDB-merged.xlsx"). The parameter works when method ="sctype"
 #' @param cell_type Cell types options: "base", "epithelial", "myeloid", "tcell", "bcell", "fibroblast" and "endothelial", default is "base". The parameter works when method ="sctype"
@@ -100,8 +102,8 @@ ggplotConfusionMatrix <- function(input, x, y, axis_angle = 60){
 #' @param model_scpred A Seurat object with trained model(s) using scPred or a scPred object. The parameter works when method ="model"
 #' @param merge_seurat_cluster Whether to merge prediction results by`scPred` with clustering results. The parameter works when method ="model"
 #' @param mini_cluster Minimal cell counts of the cluster. The parameter works when method ="model"
-#' @param threshold Threshold used for probabilities to classify cells into classes. All cells below this threshold value will be labels as "unassigned". 
-#' In the case of binary classification (two cell tyoes), a threshold of 0.5 will force all cells to be classified to any of the two cell types. 
+#' @param threshold Threshold used for probabilities to classify cells into classes. All cells below this threshold value will be labels as "unassigned".
+#' In the case of binary classification (two cell tyoes), a threshold of 0.5 will force all cells to be classified to any of the two cell types.
 #' For multi-class classification, if there's no probability higher than the threshold associated to a cell type, this will be labelled as "unassigned". The parameter works when method ="model"
 #' @param source Character string related to computer system name choose from win and linux. The parameter works when method ="model"
 #' @param path_model_scpred The path or the name of the file where the scPred model is read from. The parameter works when method ="model"
@@ -112,51 +114,55 @@ ggplotConfusionMatrix <- function(input, x, y, axis_angle = 60){
 #' @param height Height of plot when saving
 #' @param deg Matrix containing a ranked list of putative markers, and associated statistics (p-values, ROC score, etc.)
 #' @param fig.type Format of plot saving, such as pdf and png
+#' @param top_n_deg
+#' @param gs_sctyper
+#' @param raster
 #'
 #' @return Seurat object with updated metadata containing cell type annotation
 #' @export
 #'
 #' @examples
 scsig_cell_anno<-function(sce,
-                          subcluster = NULL,
-                          main_celltype = NULL,
-                          gs         = NULL,
-                          gs_data    = NULL,  # for sctyper
-                          deg        = NULL,
-                          top_n_deg  = 100,
-                          method     = c("pca", "sctyper", "model", "censu"),
-                          assay      = NULL,
-                          slot       = "scale.data",
-                          min.feature= 10,
-                          scale      = NULL,
-                          cluster    = "seurat_clusters",
-                          model_scpred= NULL,
-                          merge_seurat_cluster = FALSE,
-                          mini_cluster         = 50,
-                          threshold            = 0.65,
-                          source               = "win",
-                          path_model_scpred    = NULL,
+                          subcluster              = NULL,
+                          main_celltype           = NULL,
+                          gs                      = NULL,
+                          gs_data                 = NULL,  # for sctyper
+                          deg                     = NULL,
+                          top_n_deg               = 100,
+                          method                  = c("pca", "sctyper", "model", "censu"),
+                          assay                   = NULL,
+                          slot                    = "scale.data",
+                          min.feature             = 10,
+                          scale                   = NULL,
+                          cluster                 = "seurat_clusters",
+                          model_scpred            = NULL,
+                          merge_seurat_cluster    = FALSE,
+                          mini_cluster            = 50,
+                          threshold               = 0.65,
+                          source                  = "win",
+                          path_model_scpred       = NULL,
 
-                          tissue_type= NULL,
-                          gs_sctyper = NULL,
-                          db_        = "ScTyperDB-merged.xlsx",
-                          db_path    = NULL,
-                          cell_type  = "base",
-                          cell_subset= NULL,
-                          study      = NULL,
+                          tissue_type             = NULL,
+                          gs_sctyper              = NULL,
+                          db_                     = "ScTyperDB-merged.xlsx",
+                          db_path                 = NULL,
+                          cell_type               = "base",
+                          cell_subset             = NULL,
+                          study                   = NULL,
                           gene_names_to_uppercase = TRUE,
-                          cols       = "normal",
-                          palette    = 1,
-                          show_col   = FALSE,
-                          seed       = 123,
-                          point.size = 1.5,
-                          reduction  = "umap",
-                          show_plot  = TRUE,
-                          save_plot  = TRUE,
-                          width      = 12,
-                          height     = 5,
-                          path       = NULL,
-                          fig.type   = "pdf"){
+                          cols                    = "normal",
+                          palette                 = 1,
+                          show_col                = FALSE,
+                          seed                    = 123,
+                          point.size              = 1.5,
+                          reduction               = "umap",
+                          show_plot               = TRUE,
+                          save_plot               = TRUE,
+                          width                   = 12,
+                          height                  = 5,
+                          path                    = NULL,
+                          fig.type                = "pdf",
+                          raster                  = FALSE){
 
 
   message(">>>---Assay used to estimation:")
@@ -288,10 +294,10 @@ scsig_cell_anno<-function(sce,
 
 
   p1<-DimPlot(sces, reduction = reduction, label = TRUE, cols = mycols,
-              repel = TRUE, pt.size = point.size, group.by = new_cluster)
+              repel = TRUE, pt.size = point.size, group.by = new_cluster, raster = raster)
 
   p2<-DimPlot(sces, reduction = reduction, label = TRUE, cols = mycols,
-              repel = TRUE, pt.size = point.size, group.by = cluster)
+              repel = TRUE, pt.size = point.size, group.by = cluster, raster = raster)
   p<-p1+p2
 
   #################################
@@ -302,7 +308,7 @@ scsig_cell_anno<-function(sce,
       path<- "./"
     }else{
       path<- creat_folder(path)
-      path<- path$abspath
+      path<- path$folder_name
     }
 
     ggsave(p, filename = paste0("1-Celltype-predicted-by-", method, "-", reduction, ".", fig.type), width = width, height = height, path = path)
