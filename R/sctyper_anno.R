@@ -97,10 +97,27 @@ sctyper_anno<-function(sce,
   # In case Seurat is used, it is either sce[["RNA"]]@scale.data (default), sce[["SCT"]]@scale.data, in case sctransform is used for normalization,
   # or sce[["integrated"]]@scale.data, in case a joint analysis of multiple single-cell datasets is performed.
 
+
   # merge by cluster sce@meta.data[, cluster]
-  cL_resutls = do.call("rbind", lapply(unique(sce@meta.data[, cluster]), function(cl){
-    es.max.cl = sort(rowSums(es.max[ ,rownames(sce@meta.data[sce@meta.data[, cluster]==cl, ])]), decreasing = !0)
-    head(data.frame(cluster = cl, type = names(es.max.cl), scores = es.max.cl, ncells = sum(sce@meta.data[, cluster]==cl)), 10)
+  # cL_resutls = do.call("rbind", lapply(unique(sce@meta.data[, cluster]), function(cl){
+  #   es.max.cl = sort(rowSums(es.max[ ,rownames(sce@meta.data[sce@meta.data[, cluster]==cl, ])]), decreasing = !0)
+  #   head(data.frame(cluster = cl, type = names(es.max.cl), scores = es.max.cl, ncells = sum(sce@meta.data[, cluster]==cl)), 10)
+  # }))
+
+
+  cL_results = do.call("rbind", lapply(unique(sce@meta.data[, cluster]), function(cl){
+
+
+    print(head(sce@meta.data))
+    # 正确地索引行，且确保结果仍为矩阵
+    es_max_indices = rownames(sce@meta.data[sce@meta.data[, cluster] == cl, , drop = FALSE])
+    es_max_cl = es.max[, es_max_indices, drop = FALSE]
+
+    # 计算行和并排序
+    es_max_cl_sums = sort(rowSums(es_max_cl), decreasing = TRUE)
+
+    # 创建数据框，返回前10行
+    head(data.frame(cluster = cl, type = names(es_max_cl_sums), scores = es_max_cl_sums, ncells = sum(sce@meta.data[, cluster] == cl)), 10)
   }))
 
 

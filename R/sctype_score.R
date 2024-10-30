@@ -128,6 +128,25 @@ auto_detect_tissue_type <- function(path_to_db_file, seuratObject, scaled, assay
       head(data.frame(cluster = cl, type = names(es.max.cl), scores = es.max.cl), 10)
     }))
 
+
+    # es.max = sctype_score(scRNAseqData = obj, scaled = scaled, gs = gs_list$gs_positive, gs2 = gs_list$gs_negative,
+    #                       marker_sensitivity = gs_list$marker_sensitivity, verbose = TRUE)
+    #
+    # cL_results = do.call("rbind", lapply(unique(seuratObject@meta.data$seurat_clusters), function(cl) {
+    #   # 获取属于当前聚类的细胞的行名
+    #   cell_indices = rownames(seuratObject@meta.data[seuratObject@meta.data$seurat_clusters == cl, , drop = FALSE])
+    #
+    #   # 选择es.max中相应的列，确保不降维
+    #   es_max_cl = es.max[, cell_indices, drop = FALSE]
+    #
+    #   # 计算行和并排序
+    #   es_max_cl_sums = sort(rowSums(es_max_cl), decreasing = TRUE)
+    #
+    #   # 构建结果数据框，返回前10个结果
+    #   head(data.frame(cluster = cl, type = names(es_max_cl_sums), scores = es_max_cl_sums), 10)
+    # }))
+    #
+
     dt_out = cL_resutls %>% group_by(cluster) %>% top_n(n = 1)
 
     # return mean score for tissue

@@ -3,7 +3,7 @@
 \name{ggplotConfusionMatrix}
 \alias{ggplotConfusionMatrix}
 \title{Create and show a confusion matrix
-Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with 
+Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with
 "Accuracy" and "Kappa" values.}
 \usage{
 ggplotConfusionMatrix(input, x, y, axis_angle = 60)
@@ -22,6 +22,6 @@ A plot object
 }
 \description{
 Create and show a confusion matrix
-Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with 
+Calculates a cross-tabulation of observed and predicted classes with associated statistics by `confusionMatrix{caret}`,and show it by`ggplot`with
 "Accuracy" and "Kappa" values.
 }

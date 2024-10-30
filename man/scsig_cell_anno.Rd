@@ -43,7 +43,8 @@ scsig_cell_anno(
   width = 12,
   height = 5,
   path = NULL,
-  fig.type = "pdf"
+  fig.type = "pdf",
+  raster = FALSE
 )
 }
 \arguments{
@@ -77,8 +78,8 @@ scsig_cell_anno(
 
 \item{mini_cluster}{Minimal cell counts of the cluster. The parameter works when method ="model"}
 
-\item{threshold}{Threshold used for probabilities to classify cells into classes. All cells below this threshold value will be labels as "unassigned". 
-In the case of binary classification (two cell tyoes), a threshold of 0.5 will force all cells to be classified to any of the two cell types. 
+\item{threshold}{Threshold used for probabilities to classify cells into classes. All cells below this threshold value will be labels as "unassigned".
+In the case of binary classification (two cell tyoes), a threshold of 0.5 will force all cells to be classified to any of the two cell types.
 For multi-class classification, if there's no probability higher than the threshold associated to a cell type, this will be labelled as "unassigned". The parameter works when method ="model"}
 
 \item{source}{Character string related to computer system name choose from win and linux. The parameter works when method ="model"}
@@ -123,11 +124,13 @@ See [palettes](http://127.0.0.1:60491/help/library/IOBR/html/palettes.html) for 
 \item{path}{Path of the output saving directory}
 
 \item{fig.type}{Format of plot saving, such as pdf and png}
+
+\item{raster}{}
 }
 \value{
 Seurat object with updated metadata containing cell type annotation
 }
 \description{
-Here, we provide three methods for single cell annotation : [ScType](https://www.nature.com/articles/s41467-022-28803-w) and PCA based on gene markers, 
+Here, we provide three methods for single cell annotation : [ScType](https://www.nature.com/articles/s41467-022-28803-w) and PCA based on gene markers,
 and [scPred](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1862-5) based on reference datasets.
 }

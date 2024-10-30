@@ -211,6 +211,8 @@ scsig_cell_anno<-function(sce,
     ######################################################
     # cluster<- "RNA_snn_res.0.4"
     # merge by cluster sce@meta.data[, cluster]
+
+
     cL_resutls = do.call("rbind", lapply(unique(sces@meta.data[, cluster]), function(cl){
       pca.cl = sort(rowSums(pca[ ,rownames(sces@meta.data[sces@meta.data[, cluster]==cl, ])]), decreasing = !0)
       head(data.frame(cluster = cl, type = names(pca.cl), scores = pca.cl, ncells = sum(sces@meta.data[, cluster]==cl)), 10)
